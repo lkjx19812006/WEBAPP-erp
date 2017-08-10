@@ -1,0 +1,43 @@
+{
+	"index.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css"
+		],
+		"refer": []
+	},
+	"pages/login.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"libs/crypto-js.js",
+			"fonts/mui.ttf",
+			"pages/home.html"
+		],
+		"refer": [
+			"pages/home.html"
+		]
+	},
+	"pages/home.html": {
+		"resources": [
+			"libs/crypto-js.js",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"fonts/mui.ttf",
+			"libs/vueDirective.js"
+		],
+		"refer": [
+			"pages/menu.html"
+		]
+	},
+	"pages/menu.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css"
+		]
+	}
+}

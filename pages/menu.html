@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			body,
+			.mui-content {
+				background-color: #f0f0f0;
+				color: #333;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			
+			header.mui-bar {
+				display: none;
+			}
+			
+			.mui-bar-nav~.mui-content {
+				padding: 0;
+			}
+			
+			.title {
+				margin: 35px 15px 10px;
+			}
+			
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			
+			.mui-table-view {
+				margin-bottom: 35px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+
+			<div class="title">侧滑导航</div>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
+			mui.init({
+				keyEventBind: {
+					backbutton: true,
+					menubutton: true
+				},
+				beforeback: back
+			});
+			mui.plusReady(() => {
+				//获取当前窗口的WebviewObject对象
+				menu = plus.webview.currentWebview();
+			})
+
+			function back() {
+				//通知某个窗口关闭蒙层就可以了
+				//触发详情页面的newsId事件
+				setTimeout(function() {
+					var home = plus.webview.getWebviewById('home')
+					mui.fire(home, 'closeMask');
+				}, 0)
+				return false;
+			}
+		</script>
+	</body>
+
+</html>
