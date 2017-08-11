@@ -224,7 +224,8 @@
 					"libs/vueDirective.js"
 				],
 				"refer": [
-					"pages/menu.html"
+					"pages/menu.html",
+					"pages/userInfo.html"
 				],
 				"priority": 0
 			},

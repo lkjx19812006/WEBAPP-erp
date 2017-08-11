@@ -68,17 +68,20 @@
 								common.setItem('no', '')
 								common.setItem('password', '')
 							}
+							//打开新的窗口
+							mui.openWindow({
+								url: 'home.html',
+								id: 'home',
+								createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+								waiting: {
+									autoShow: true, //自动显示等待框，默认为true
+									title: '正在加载...', //等待对话框上显示的提示内容
+								}
+							})
+						}, (err) => {
+							console.log(err)
 						})
-						//打开新的窗口
-						mui.openWindow({
-							url: 'home.html',
-							id: 'home',
-							createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-							waiting: {
-								autoShow: true, //自动显示等待框，默认为true
-								title: '正在加载...', //等待对话框上显示的提示内容
-							}
-						})
+
 					},
 					changeAutoLogin() {
 						if(this.autoLogin === 'on') {

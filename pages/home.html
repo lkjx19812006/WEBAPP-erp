@@ -13,8 +13,8 @@
 		<div id="home">
 			<header class="mui-bar mui-bar-nav">
 				<h1 class="mui-title">首页</h1>
-				<a class="mui-icon mui-icon-bars mui-pull-left" @click="showCanvas"></a>
-				<a class="mui-icon mui-icon-person mui-pull-right"></a>
+				<a class="mui-icon mui-icon-bars mui-pull-left" @touchStart="showMenu"></a>
+				<a class="mui-icon mui-icon-person mui-pull-right" @touchStart="showUserInfo"></a>
 			</header>
 			<div class="mui-content">
 
@@ -28,7 +28,8 @@
 			mui.init();
 			var home, menu, mask;
 			mask = mui.createMask(function() {
-				common.openWebViewById('menu', 'left', '80%')
+				common.closeWebViewById('menu', 'left')
+				common.closeWebViewById('userInfo', 'right')	
 			});
 			var vm = new Vue({
 				el: '#home',
@@ -39,10 +40,14 @@
 					fun() {
 						alert('asdfs')
 					},
-					showCanvas() {
+					showMenu() {
 						//显示菜单
-						common.openWebViewById('menu', 'left', '80%')
 						mask.show()
+						common.openWebViewById('menu', 'left')						
+					},
+					showUserInfo(){
+						mask.show()
+						common.openWebViewById('userInfo', 'right')		
 					}
 				}
 			})
@@ -58,8 +63,18 @@
 						id: 'menu',
 						url: 'menu.html',
 						styles: {
-							width: '80%',
-							zindex: 9997
+							left: '0',
+							width: '70%',
+							zindex: 9999
+						}
+					});
+					userInfo = mui.preload({
+						id: 'userInfo',
+						url: 'userInfo.html',
+						styles: {
+							right: '0',
+							width: '70%',
+							zindex: 9998
 						}
 					});
 				}, 300);
@@ -67,8 +82,8 @@
 			//添加自定义事件监听
 			window.addEventListener('closeMask', function(event) {
 				//console.log(event.detail.id)
-				common.closeWebViewById('menu', 'left', '80%')
-				mask.close()
+				common.closeWebViewById('menu', 'left').then((mask.close()))	
+				common.closeWebViewById('userInfo', 'right').then((mask.close()))	
 			});
 		</script>
 	</body>

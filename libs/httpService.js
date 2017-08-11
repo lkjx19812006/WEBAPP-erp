@@ -4,9 +4,9 @@
 (function(CryptoJS, window, mui) {
 	mui.init();
 	var common = {}
-	common.KEY = window.localStorage.KEY || 'sadfasasdf_fasdfas-_fadsfasdf-asdfasd'
-	common.SID = window.localStorage.SID || 'sadfasasdf_fasdfas-_fadsfasdf-asdfasd'
-	common.commonUrl = 'http://192.168.1.103:8080/front'
+	common.KEY = window.localStorage.KEY || ''
+	common.SID = window.localStorage.SID || ''
+	common.commonUrl = 'http://192.168.1.142/front'
 	common.version = 1
 	common.difTime = 0
 	common.apiUrl = {
@@ -62,24 +62,28 @@
 			data.time = localTime + this.difTime
 			data.sign = this.getSign('biz_module=' + data.biz_module + '&biz_method=' + data.biz_method + '&time=' + data.time)
 		}
+		console.log(JSON.stringify(data))
+		console.log(JSON.stringify(url))
 		return new Promise((resolve, reject) => {
-			mui.ajax('http://192.168.1.103:8080/front/account/erpLogin.do', {
+			mui.ajax(url, {
 				data: data,
 				crossDomain: true, //强制使用 5+跨域 基于 plus.net方法
 				dataType: 'json', //服务器返回json格式数据
 				type: 'post', //HTTP请求类型
 				timeout: 10000, //超时时间设置为10秒；
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json;charset=UTF-8'
 				},
 				processData: true, //data 数据不转换 key=value&key=value形式
 				success: function(data) {
 					//服务器返回响应，根据响应结果，分析是否登录成功；
 					resolve(data)
+					console.log(JSON.stringify(data))
 				},
 				error: function(xhr, type, errorThrown) {
+					console.log(JSON.stringify(type))
 					//异常处理；
-					reject()
+					reject(JSON.stringify(type))
 				}
 			});
 		})
@@ -157,29 +161,29 @@
 	 * position 方向位置 left 或者 right
 	 * width 盒子宽度 根据盒子设置的大小设置 否则会遮盖头部
 	 * **/
-	common.openWebViewById = function openWebViewById(webViewId, position, width) {
+	common.openWebViewById = function openWebViewById(webViewId, position) {
 		var webView = plus.webview.getWebviewById(webViewId);
-		if(!width) width = '70%';
 		if(position === 'right') {
+			console.log(position)
 			webView.setStyle({
-				right: '-' + width
+				right: '-30%'
 			});
 			webView.show();
 			webView.setStyle({
 				right: 0,
 				transition: {
-					duration: 150
+					duration: 200
 				}
 			})
 		} else {
 			webView.setStyle({
-				left: '-' + width
+				left: '-30%'
 			});
 			webView.show();
 			webView.setStyle({
 				left: 0,
 				transition: {
-					duration: 150
+					duration: 200
 				}
 			})
 		}
@@ -191,27 +195,36 @@
 	 * position 方向位置 left 或者 right
 	 * width 盒子宽度 根据盒子设置的大小设置 否则会遮盖头部
 	 * **/
-	common.closeWebViewById = function closeWebViewById(webViewId, position, width) {
-		var webView = plus.webview.getWebviewById(webViewId);
-		if(!width) width = '70%';
-		if(position === 'right') {
-			webView.setStyle({
-				right: '-' + width,
-				transition: {
-					duration: 150
-				}
-			})
-		} else {
-			webView.setStyle({
-				left: '-' + width,
-				transition: {
-					duration: 150
-				}
-			})
-		}
-		setTimeout(function() {
-			webView.hide()
-		}, 200)
+	common.closeWebViewById = function closeWebViewById(webViewId, position) {
+		return new Promise(function(resolve, reject) {
+			var webView = plus.webview.getWebviewById(webViewId);
+			if(position === 'right') {
+				webView.setStyle({
+					right: '-70%',
+					zindex: 9999,
+					transition: {
+						duration: 200
+					}
+				})
+				setTimeout(function() {
+					webView.hide()
+					resolve()
+				}, 300)
+			} else {
+				webView.setStyle({
+					left: '-70%',
+					zindex: 9999,
+					transition: {
+						duration: 200
+					}
+				})
+				setTimeout(function() {
+					webView.hide()
+					resolve()
+				}, 300)
+			}
+		})
+
 	}
 
 	window.common = common;
