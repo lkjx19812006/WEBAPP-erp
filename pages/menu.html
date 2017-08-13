@@ -13,38 +13,16 @@
 			.mui-content {
 				background-color: #404040;
 				color: #fff;
-			}
+			}			
 			
-			header.mui-bar {
-				display: none;
-			}
-			
-			.mui-bar-nav~.mui-content {
-				padding: 0;
-			}
-			
-			.title {
-				margin: 35px 15px 10px;
-			}
-			
-			.title+.content {
-				margin: 10px 15px 35px;
-				color: #bbb;
-				text-indent: 1em;
-				font-size: 14px;
-				line-height: 24px;
-			}
-			
-			.mui-table-view {
-				margin-bottom: 35px;
-			}
 		</style>
 	</head>
 
 	<body>
 		<div class="mui-content">
-			<div class="title">侧滑导航</div>
-
+			<div id="">
+				sdfsd
+			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
@@ -54,19 +32,21 @@
 					backbutton: true,
 					menubutton: true
 				},
-				beforeback: back
 			});
-			mui.plusReady(() => {
+			var home;
+			mui.plusReady(function(){
 				//获取当前窗口的WebviewObject对象
 				menu = plus.webview.currentWebview();
+				//获取首页的webViewID
+				home = plus.webview.getWebviewById('home');
 			})
-
-			function back() {
-				//通知某个窗口关闭蒙层就可以了
-				//触发详情页面的newsId事件
-				var home = plus.webview.getWebviewById('home')
+			//缓存老的 old_back 重新back
+			var old_back = mui.back;
+			mui.back = function() {
+				console.log(JSON.stringify(home))	
+				old_back()
 				mui.fire(home, 'closeMask');
-				return false;
+				return true;
 			}
 		</script>
 	</body>

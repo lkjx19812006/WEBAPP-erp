@@ -34,7 +34,7 @@
 				</ul>
 			</form>
 			<div class="mui-content-padded">
-				<button style="padding: 10px 0 ;" @click="submit" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" @click="submit" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -42,6 +42,12 @@
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script>
+			mui.init({
+				keyEventBind: {
+					backbutton: true,
+					menubutton: true
+				},
+			});
 			var vm = new Vue({
 				el: '#login',
 				data: {
@@ -50,14 +56,16 @@
 					autoLogin: 'on',
 				},
 				methods: {
-					submit() {
+					submit: function() {
+						mui(this.$refs.submit).button('loading')
 						var obj = {
 							biz_param: {
 								no: this.no,
 								password: this.password
 							}
 						}
-						common.commonPost(common.commonUrl + common.apiUrl.login, obj).then((suc) => {
+						var _self = this;
+						common.commonPost(common.commonUrl + common.apiUrl.login, obj, function(suc) {
 							common.setItem('KEY', suc.biz_result.KEY)
 							common.setItem('SID', suc.biz_result.SID)
 							//自动登录 记录账号密码
@@ -68,6 +76,7 @@
 								common.setItem('no', '')
 								common.setItem('password', '')
 							}
+							mui(_self.$refs.submit).button('reset')
 							//打开新的窗口
 							mui.openWindow({
 								url: 'home.html',
@@ -78,12 +87,25 @@
 									title: '正在加载...', //等待对话框上显示的提示内容
 								}
 							})
-						}, (err) => {
-							console.log(err)
+						}, function(err) {
+							mui(_self.$refs.submit).button('reset');
+							mui.toast(err, {
+								duration: 'long',
+								type: 'div'
+							})
+							//打开新的窗口
+							mui.openWindow({
+								url: 'home.html',
+								id: 'home',
+								createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+								waiting: {
+									autoShow: true, //自动显示等待框，默认为true
+									title: '正在加载...', //等待对话框上显示的提示内容
+								}
+							})
 						})
-
 					},
-					changeAutoLogin() {
+					changeAutoLogin: function() {
 						if(this.autoLogin === 'on') {
 							this.autoLogin = 'off'
 						} else {
@@ -97,14 +119,25 @@
 			})
 			//在mui.plusReady完成后 执行一些配置
 			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
-			mui.plusReady(() => {
+			mui.plusReady(function() {
 				vm.autoLogin = common.getItem('autoLogin');
 				if(vm.autoLogin === 'on') {
 					vm.no = common.getItem('no');
 					vm.password = common.getItem('password');
-					vm.submit()
+					if(vm.no && vm.password) {
+						vm.submit()
+					}
 				}
 			})
+			//缓存老的 old_back 重新back
+			var old_back = mui.back;
+			mui.back = function() {
+				mui.confirm('确定退出应用吗？', '提示信息', ['确定', '取消'], function(e){
+					if(e.index === 0){
+						plus.runtime.quit()
+					}
+				})
+			}
 		</script>
 	</body>
 

@@ -1,7 +1,7 @@
 /**
  * 公共的请求数据模块
  * */
-(function(CryptoJS, window, mui) {
+(function(CryptoJS, window, mui, Vue) {
 	mui.init();
 	var common = {}
 	common.KEY = window.localStorage.KEY || ''
@@ -54,7 +54,7 @@
 		var signStr = CryptoJS.HmacSHA1(str, _self.KEY).toString(CryptoJS.enc.Base64)
 		return signStr
 	}
-	common.commonPost = function(url, data) {
+	common.commonPost = function(url, data, suc, err) {
 		url = this.addSID(url);
 		if(data || typeof data === 'object') {
 			data.version = this.version
@@ -64,29 +64,27 @@
 		}
 		console.log(JSON.stringify(data))
 		console.log(JSON.stringify(url))
-		return new Promise((resolve, reject) => {
-			mui.ajax(url, {
-				data: data,
-				crossDomain: true, //强制使用 5+跨域 基于 plus.net方法
-				dataType: 'json', //服务器返回json格式数据
-				type: 'post', //HTTP请求类型
-				timeout: 10000, //超时时间设置为10秒；
-				headers: {
-					'Content-Type': 'application/json;charset=UTF-8'
-				},
-				processData: true, //data 数据不转换 key=value&key=value形式
-				success: function(data) {
-					//服务器返回响应，根据响应结果，分析是否登录成功；
-					resolve(data)
-					console.log(JSON.stringify(data))
-				},
-				error: function(xhr, type, errorThrown) {
-					console.log(JSON.stringify(type))
-					//异常处理；
-					reject(JSON.stringify(type))
-				}
-			});
-		})
+		mui.ajax(url, {
+			data: data,
+			crossDomain: true, //强制使用 5+跨域 基于 plus.net方法
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 1000, //超时时间设置为10秒；
+			headers: {
+				'Content-Type': 'application/json;charset=UTF-8'
+			},
+			processData: true, //data 数据不转换 key=value&key=value形式
+			success: function(data) {
+				//服务器返回响应，根据响应结果，分析是否登录成功；
+				suc(data)
+				console.log(JSON.stringify(data))
+			},
+			error: function(xhr, type, errorThrown) {
+				console.log(JSON.stringify(type))
+				//异常处理；
+				err(JSON.stringify(type))
+			}
+		});
 
 	}
 	common.commonGet = function commonGet(url) {
@@ -94,19 +92,19 @@
 			method: "GET",
 			cache: 'reload'
 		})
-		return new Promise((resolve, reject) => {
-			fetch(req).then(response => {
-				if(response.ok) {
-					response.json().then((data) => {
-						resolve(data)
-					})
-				} else {
-					console.log('请求失败，状态码为', response.status);
-				}
-			}, error => {
-				reject(error)
-			})
-		});
+		//		return new Promise((resolve, reject) => {
+		//			fetch(req).then(response => {
+		//				if(response.ok) {
+		//					response.json().then((data) => {
+		//						resolve(data)
+		//					})
+		//				} else {
+		//					console.log('请求失败，状态码为', response.status);
+		//				}
+		//			}, error => {
+		//				reject(error)
+		//			})
+		//		});
 	}
 	/**
 	 * 本地存儲 調用原生api
@@ -196,36 +194,53 @@
 	 * width 盒子宽度 根据盒子设置的大小设置 否则会遮盖头部
 	 * **/
 	common.closeWebViewById = function closeWebViewById(webViewId, position) {
-		return new Promise(function(resolve, reject) {
-			var webView = plus.webview.getWebviewById(webViewId);
-			if(position === 'right') {
-				webView.setStyle({
-					right: '-70%',
-					zindex: 9999,
-					transition: {
-						duration: 200
-					}
-				})
-				setTimeout(function() {
-					webView.hide()
-					resolve()
-				}, 300)
-			} else {
-				webView.setStyle({
-					left: '-70%',
-					zindex: 9999,
-					transition: {
-						duration: 200
-					}
-				})
-				setTimeout(function() {
-					webView.hide()
-					resolve()
-				}, 300)
-			}
-		})
+		var webView = plus.webview.getWebviewById(webViewId);
+		if(position === 'right') {
+			webView.setStyle({
+				right: '-70%',
+				zindex: 9999,
+				transition: {
+					duration: 200
+				}
+			})
+			setTimeout(function() {
+				webView.hide()
+			}, 300)
+		} else {
+			webView.setStyle({
+				left: '-70%',
+				zindex: 9999,
+				transition: {
+					duration: 200
+				}
+			})
+			setTimeout(function() {
+				webView.hide()
+			}, 300)
+		}
+
+	}
+	//登录状态校验
+	common.validateLogin = function() {
+		if(!common.getItem('KEY') || !common.getItem('SID')) {
+			mui.openWindow({
+				url: 'login.html',
+				id: 'login',
+				createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+				waiting: {
+					autoShow: false, //自动显示等待框，默认为true
+//					title: '正在加载...', //等待对话框上显示的提示内容
+				}
+			})
+			return false;
+		}
+		return true;
+	}
+	
+	//自定义指令
+	if(Vue) {
 
 	}
 
 	window.common = common;
-})(CryptoJS, window, mui)
+})(CryptoJS, window, mui, Vue)

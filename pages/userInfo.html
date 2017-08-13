@@ -1,9 +1,8 @@
-<!DOCTYPE html>
+<!DOCTYlPE html>
 <html>
 
 	<head>
 		<meta charset="utf-8">
-		<title>Hello MUI</title>
 		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -11,42 +10,97 @@
 		<style>
 			body,
 			.mui-content {
-				background-color: #404040;
-				color: #fff;
+				background-color: #f0f0f0;
+				color: #333;
 			}
 			
-			header.mui-bar {
-				display: none;
+			#userInfo {
+				padding: 10px;
+				height: 100px;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
 			}
 			
-			.mui-bar-nav~.mui-content {
-				padding: 0;
+			#userInfo a {
+				padding: 5px;
+				flex: 0 0 auto;
+				align-self: flex-start;
 			}
 			
-			.title {
-				margin: 35px 15px 10px;
+			#userInfo .img_wrap {
+				flex: 0 0 auto;
+				width: 80px;
+				height: 80px;
+				display: flex;
+				background-color: #e0e0e0;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+				border-radius: 40px;
+				box-shadow: 5px 5px 40px #888;
 			}
 			
-			.title+.content {
-				margin: 10px 15px 35px;
-				color: #bbb;
-				text-indent: 1em;
-				font-size: 14px;
-				line-height: 24px;
+			#userInfo .mui-table-view {
+				margin-top: 20px;
+				flex: 0 0 auto;
+				width: 100%;
 			}
 			
-			.mui-table-view {
-				margin-bottom: 35px;
+			#userInfo .mui-table-view>li {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+			}
+			
+			#userInfo .mui-btn {
+				flex: 0 0 auto;
+				margin: 20px auto;
+				padding: 10px;
 			}
 		</style>
 	</head>
 
 	<body>
-		<div class="mui-content">
-			<div class="title">侧滑导航</div>
+		<div class="mui-content" id="userInfo">
+			<a class="mui-icon mui-icon-back mui-pull-left mui-action-back"></a>
+			<div class="img_wrap">
+				<img src="../images/userImg.png" />
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<span>语言：</span>
+					<div class="mui-input-row mui-radio mui-left">
+						<label>中文</label>
+						<input v-model="language" value="zh" type="radio">
+					</div>
+					<div class="mui-input-row mui-radio mui-left">
+						<label>English</label>
+						<input v-model="language" value="en" type="radio">
+					</div>
 
+				</li>
+				<li class="mui-table-view-cell">
+					<span>姓名：</span>
+					<span>殷谦</span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span>职位：</span>
+					<span>前端开发工程师</span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span>手机：</span>
+					<span>17763732365</span>
+				</li>
+			</ul>
+			<button @click="singOut" type="button" class="mui-btn mui-btn-block mui-btn-primary">退出登录</button>
 		</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../libs/vue.min.js"></script>
+		<script src="../libs/crypto-js.js"></script>
+		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
 			mui.init({
@@ -54,20 +108,48 @@
 					backbutton: true,
 					menubutton: true
 				},
-				beforeback: back
 			});
-			mui.plusReady(() => {
-				//获取当前窗口的WebviewObject对象
-				menu = plus.webview.currentWebview();
-			})
+			var userInfo;
+			var vm = new Vue({
+				el: '#userInfo',
+				data: {
+					language: 'zh',
+				},
+				watch: {
+					language: function(newVal) {
+						common.setItem('language', newVal);
+					}
+				},
+				methods: {
+					singOut: function() {
+						mui.confirm('确定要退出登录？', '提示信息', function(e) {
+							if(e.index === 1) {
+								
+								mui.openWindow({
+									url: 'login.html',
+									id: 'login',
+									createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+									waiting: {
+										autoShow: false, //自动显示等待框，默认为true
 
-			function back() {
-				//通知某个窗口关闭蒙层就可以了
-				//触发详情页面的newsId事件
-				var home = plus.webview.getWebviewById('home')
-				mui.fire(home, 'closeMask');
-				return false;
-			}
+									}
+								})
+								
+								setTimeout(function(){
+									userInfo.close()
+								}, 0)								
+							}
+						})
+					}
+				}
+			})
+			mui.plusReady(function() {
+				//获取当前窗口的WebviewObject对象
+				userInfo = plus.webview.currentWebview();
+				if(common.getItem('language')) {
+					vm.language = common.getItem('language')
+				}
+			})
 		</script>
 	</body>
 

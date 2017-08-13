@@ -10,15 +10,12 @@
 
 	<body>
 		<!-- 主页面标题 -->
-		<div id="home">
+		<div class="mui-content" id="home">
 			<header class="mui-bar mui-bar-nav">
 				<h1 class="mui-title">首页</h1>
 				<a class="mui-icon mui-icon-bars mui-pull-left" @touchStart="showMenu"></a>
 				<a class="mui-icon mui-icon-person mui-pull-right" @touchStart="showUserInfo"></a>
 			</header>
-			<div class="mui-content">
-
-			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
 		<script src="../libs/vue.min.js"></script>
@@ -26,10 +23,10 @@
 		<script src="../libs/httpService.js"></script>
 		<script>
 			mui.init();
-			var home, menu, mask;
+			var home, menu, mask, userInfo;
 			mask = mui.createMask(function() {
-				common.closeWebViewById('menu', 'left')
-				common.closeWebViewById('userInfo', 'right')	
+				menu = plus.webview.getWebviewById('menu')
+				if(menu) menu.close();
 			});
 			var vm = new Vue({
 				el: '#home',
@@ -37,53 +34,58 @@
 
 				},
 				methods: {
-					fun() {
+					fun: function() {
 						alert('asdfs')
 					},
-					showMenu() {
-						//显示菜单
-						mask.show()
-						common.openWebViewById('menu', 'left')						
+					showMenu: function() {
+						//显示菜单	
+						setTimeout(function() {
+							mask.show()
+						}, 100)
+						menu = mui.openWindow({
+							url: 'menu.html',
+							id: 'menu',
+							show: {
+								aniShow: 'slide-in-left',
+							},
+							createNew: false,
+							styles: {
+								left: '0',
+								width: '70%',
+								zindex: 9999
+							},
+							waiting: {
+								autoShow: false, //自动显示等待框，默认为true
+								title: '正在加载...', //等待对话框上显示的提示内容
+							}
+						})
 					},
-					showUserInfo(){
-						mask.show()
-						common.openWebViewById('userInfo', 'right')		
+					showUserInfo: function() {
+						userInfo = mui.openWindow({
+							url: 'userInfo.html',
+							id: 'userInfo',
+							show: {
+								aniShow: 'slide-in-right',
+							},
+							createNew: false,
+							waiting: {
+								autoShow: false, //自动显示等待框，默认为true
+							}
+						})
 					}
 				}
 			})
-			//在mui.plusReady完成后 执行一些配置
-			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
-			mui.plusReady(() => {
-				//muiplusReady 完成后 DOM渲染完成后执行的方法
-				//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
-				//获取当前窗口的WebviewObject对象
+			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
-				setTimeout(function() {
-					menu = mui.preload({
-						id: 'menu',
-						url: 'menu.html',
-						styles: {
-							left: '0',
-							width: '70%',
-							zindex: 9999
-						}
-					});
-					userInfo = mui.preload({
-						id: 'userInfo',
-						url: 'userInfo.html',
-						styles: {
-							right: '0',
-							width: '70%',
-							zindex: 9998
-						}
-					});
-				}, 300);
+				if(!common.validateLogin()) {
+					setTimeout(function() {
+						home.close();
+					}, 0)
+				}
 			})
 			//添加自定义事件监听
 			window.addEventListener('closeMask', function(event) {
-				//console.log(event.detail.id)
-				common.closeWebViewById('menu', 'left').then((mask.close()))	
-				common.closeWebViewById('userInfo', 'right').then((mask.close()))	
+				mask.close()
 			});
 		</script>
 	</body>

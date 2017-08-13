@@ -2,9 +2,13 @@
 	"index.html": {
 		"resources": [
 			"js/mui.min.js",
-			"css/mui.min.css"
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"js/update.js"
 		],
-		"refer": []
+		"refer": [
+			"index-menu.html"
+		]
 	},
 	"pages/login.html": {
 		"resources": [
@@ -32,13 +36,30 @@
 		],
 		"refer": [
 			"pages/menu.html",
-			"pages/userInfo.html"
+			"pages/userInfo.html",
+			"pages/login.html"
 		]
 	},
 	"pages/menu.html": {
 		"resources": [
 			"js/mui.min.js",
 			"css/mui.min.css"
+		],
+		"refer": []
+	},
+	"pages/userInfo.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"images/userImg.png",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"libs/crypto-js.js",
+			"pages/login.html"
+		],
+		"refer": [
+			"pages/login.html"
 		]
 	}
 }
