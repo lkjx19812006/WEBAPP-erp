@@ -258,7 +258,8 @@
 					"libs/vue.min.js",
 					"libs/httpService.js",
 					"fonts/mui.ttf",
-					"libs/vueDirective.js"
+					"libs/vueDirective.js",
+					"pages/search.html"
 				],
 				"refer": [
 					"pages/menu.html",
@@ -286,6 +287,15 @@
 					"libs/httpService.js",
 					"libs/crypto-js.js",
 					"pages/login.html"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/search.html": {
+				"resources": [
+					"js/mui.min.js",
+					"css/mui.min.css",
+					"libs/vue.min.js"
 				],
 				"refer": [],
 				"priority": 0

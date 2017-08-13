@@ -22,7 +22,17 @@
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script>
-			mui.init();
+			mui.init({
+				subpages: [{
+					url:'search.html', //子页面HTML地址，支持本地地址和网络地址
+					id: 'search', //子页面标志
+					styles: {
+						top: '45px', //子页面顶部位置		
+						height: '40px'
+					},
+					extras: {} //额外扩展参数
+				}]
+			});
 			var home, menu, mask, userInfo;
 			mask = mui.createMask(function() {
 				menu = plus.webview.getWebviewById('menu')
@@ -77,11 +87,12 @@
 			})
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
-				if(!common.validateLogin()) {
-					setTimeout(function() {
-						home.close();
-					}, 0)
-				}
+				//校验登录状态
+//				if(!common.validateLogin()) {
+//					setTimeout(function() {
+//						home.close();
+//					}, 0)
+//				}
 			})
 			//添加自定义事件监听
 			window.addEventListener('closeMask', function(event) {
