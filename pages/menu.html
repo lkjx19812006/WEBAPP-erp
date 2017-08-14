@@ -8,23 +8,111 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--国际化引入-->
+		<script src="../i18n/en.js"></script>
+		<script src="../i18n/zh_CN.js"></script>
 		<style>
 			body,
 			.mui-content {
-				background-color: #404040;
+				background-color: #e0e0e0;
 				color: #fff;
-			}			
+			}
 			
+			#menu {
+				color: #333
+			}
+			
+			#menu .mui-navigate-right {
+				background-color: #f0f0f0;
+			}
+			
+			#menu .mui-collapse-content {
+				padding: 15px;
+				border-bottom: 1px solid #d0d0d0;
+			}
+			
+			#menu .mui-collapse-content p {
+				font-size: 16px !important;
+			}
 		</style>
 	</head>
 
 	<body>
-		<div class="mui-content">
-			<div id="">
-				sdfsd
-			</div>
+		<div class="mui-content" id="menu">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-collapse">
+					<a class="mui-navigate-right" href="#">订单管理</a>
+					<div v-tap="openWindow" class="mui-collapse-content">
+						<p>我的订单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门订单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>全部订单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>我的收付款</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门收付款</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>我的补充合同</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门补充合同</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>我的售后单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门售后单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>需要我采购</p>
+					</div>
+				</li>
+				<li class="mui-table-view-cell mui-collapse">
+					<a class="mui-navigate-right" href="#">采购单管理</a>
+					<div class="mui-collapse-content">
+						<p>我的订单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门订单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>全部订单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>我的收付款</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门收付款</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>我的补充合同</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门补充合同</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>我的售后单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>部门售后单</p>
+					</div>
+					<div class="mui-collapse-content">
+						<p>需要我采购</p>
+					</div>
+				</li>
+			</ul>
 		</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../libs/vue.min.js"></script>
+		<script src="../libs/vue-i18n.min.js"></script>
+		<script src="../libs/crypto-js.js"></script>
+		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
 			mui.init({
@@ -34,16 +122,34 @@
 				},
 			});
 			var home;
-			mui.plusReady(function(){
+			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
 				menu = plus.webview.currentWebview();
 				//获取首页的webViewID
 				home = plus.webview.getWebviewById('home');
+
+				//解决android 4.4以下版本webview移动时，导致fixed定位元素错乱的bug;
+				if(mui.os.android && parseFloat(mui.os.version) < 4.4) {
+					document.querySelector("header.mui-bar").style.position = "static";
+					//同时需要修改以下.mui-contnt的padding-top，否则会多出空白；
+					document.querySelector(".mui-bar-nav~.mui-content").style.paddingTop = "0px";
+				}
 			})
+
+			var vm = new Vue({
+				el: '#menu',
+				data: {},
+				methods: {
+					openWindow: function(params) {
+						console.log(params)
+					}
+				}
+			})
+
 			//缓存老的 old_back 重新back
 			var old_back = mui.back;
 			mui.back = function() {
-				console.log(JSON.stringify(home))	
+				console.log(JSON.stringify(home))
 				old_back()
 				mui.fire(home, 'closeMask');
 				return true;

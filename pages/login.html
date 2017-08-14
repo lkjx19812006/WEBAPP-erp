@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPEtop html>
 <html class="ui-page-login">
 
 	<head>
@@ -6,27 +6,68 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../i18n/en.js"></script>
+		<script src="../i18n/zh_CN.js"></script>
+		<style>
+			#login {
+				padding-top: 50px;
+			}
+			
+			#login .language {
+				background-color: #fff;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				padding: 5px 15px;
+			}
+			
+			#login .mui-input-row {
+				position: relative;
+			}
+			
+			#login .mui-input-row span {
+				position: absolute;
+				top: 7px;
+				right: 10px;
+				color: #007AFF;
+			}
+		</style>
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title">登录</h1>
-		</header>
 		<div class="mui-content" id="login">
+			<header class="mui-bar mui-bar-nav">
+				<h1 class="mui-title">{{$t('message.login')}}</h1>
+			</header>
+			<div class="language">
+				<span>{{$t('message.language')}}</span>
+				<div class="mui-input-row mui-radio mui-left">
+					<label>中文</label>
+					<input v-model="language" value="zh" type="radio">
+				</div>
+				<div class="mui-input-row mui-radio mui-left">
+					<label>English</label>
+					<input v-model="language" value="en" type="radio">
+				</div>
+			</div>
 			<form class="mui-input-group">
 				<div class="mui-input-row">
-					<label>账号</label>
-					<input v-model='no' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+					<label>{{$t('message.userName')}}</label>
+					<input v-model='no' type="text" class="mui-input" :placeholder="$t('message.account_or_password')">
+					<span v-tap="clearNo" v-show="no" class="mui-icon mui-icon-cslose"></span>
 				</div>
 				<div class="mui-input-row">
-					<label>密码</label>
-					<input v-model='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+					<label>{{$t('message.passWord')}}</label>
+					<input v-model='password' type="password" class="mui-input" :placeholder="$t('message.account_or_password')">
+					<span v-tap="clearPW" v-show="password" class="mui-icon mui-icon-close"></span>
 				</div>
 			</form>
 			<form class="mui-input-group">
 				<ul class="mui-table-view mui-table-view-chevron">
 					<li class="mui-table-view-cell">
-						自动登录
+						{{$t('message.automatic_logon')}}
 						<div id="autoLogin" class="mui-switch" @click="changeAutoLogin" :class="{'mui-active':autoLogin === 'on'}">
 							<div class="mui-switch-handle"></div>
 						</div>
@@ -34,11 +75,12 @@
 				</ul>
 			</form>
 			<div class="mui-content-padded">
-				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" @click="submit" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" v-tap="this.submit('password')" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
 		<script src="../libs/vue.min.js"></script>
+		<script src="../libs/vue-i18n.min.js"></script>
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script>
@@ -48,62 +90,95 @@
 					menubutton: true
 				},
 			});
+
 			var vm = new Vue({
 				el: '#login',
+				i18n: window.i18n,
 				data: {
 					no: '',
 					password: '',
 					autoLogin: 'on',
+					language: 'zh'
+				},
+				watch: {
+					language(newVal) {
+						switch(newVal) {
+							case 'zh':
+								window.localStorage.language = 'zh';
+								common.setItem('language', 'zh');
+								this.$root.$i18n.locale = 'zh';
+								break;
+							case 'en':
+								window.localStorage.language = 'en';
+								common.setItem('language', 'en');
+								this.$root.$i18n.locale = 'en'
+								break;
+						}
+					}
 				},
 				methods: {
-					submit: function() {
-						mui(this.$refs.submit).button('loading')
-						var obj = {
-							biz_param: {
-								no: this.no,
-								password: this.password
+					clearPW: function() {
+						this.password = '';
+					},
+					clearNo: function() {
+						this.no = ''
+					},
+					submit: function(asdfa) {
+						//校验通过 进行登录
+						if(common.validate([common.ruls.no(this.no), common.ruls.password(this.password)])) {
+							mui(this.$refs.submit).button('loading')
+							var obj = {
+								biz_param: {
+									no: this.no,
+									password: this.password
+								}
 							}
+							var _self = this;
+							common.commonPost(common.commonUrl + common.apiUrl.login, obj, function(suc) {
+								if(suc.code === '1c01') {
+									common.setItem('KEY', suc.biz_result.KEY)
+									common.setItem('SID', suc.biz_result.SID)
+									window.localStorage.KEY = suc.biz_result.KEY
+									window.localStorage.SID = suc.biz_result.SID;
+									common.KEY = suc.biz_result.KEY;
+									common.SID = suc.biz_result.SID;
+									//自动登录 记录账号密码
+									if(vm.autoLogin === 'on') {
+										common.setItem('no', _self.no)
+										common.setItem('password', _self.password)
+									} else {
+										common.setItem('no', '')
+										common.setItem('password', '')
+									}
+									mui(_self.$refs.submit).button('reset')
+									//打开新的窗口
+									mui.openWindow({
+										url: 'home.html',
+										id: 'home',
+										createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+										waiting: {
+											autoShow: true, //自动显示等待框，默认为true
+											title: 'loading...', //等待对话框上显示的提示内容
+										}
+									})
+									//获取用户信息
+									_self.getUserInfo()
+								} else if(suc.code === '0e00') {
+									mui.toast(suc.msg, {
+										duration: 'short',
+										type: 'div'
+									})
+									mui(_self.$refs.submit).button('reset')
+								}
+
+							}, function(err) {
+								mui(_self.$refs.submit).button('reset');
+								mui.toast(err, {
+									duration: 'long',
+									type: 'div'
+								})
+							})
 						}
-						var _self = this;
-						common.commonPost(common.commonUrl + common.apiUrl.login, obj, function(suc) {
-							common.setItem('KEY', suc.biz_result.KEY)
-							common.setItem('SID', suc.biz_result.SID)
-							//自动登录 记录账号密码
-							if(vm.autoLogin === 'on') {
-								common.setItem('no', this.no)
-								common.setItem('password', this.password)
-							} else {
-								common.setItem('no', '')
-								common.setItem('password', '')
-							}
-							mui(_self.$refs.submit).button('reset')
-							//打开新的窗口
-							mui.openWindow({
-								url: 'home.html',
-								id: 'home',
-								createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-								waiting: {
-									autoShow: true, //自动显示等待框，默认为true
-									title: '正在加载...', //等待对话框上显示的提示内容
-								}
-							})
-						}, function(err) {
-							mui(_self.$refs.submit).button('reset');
-							mui.toast(err, {
-								duration: 'long',
-								type: 'div'
-							})
-							//打开新的窗口
-							mui.openWindow({
-								url: 'home.html',
-								id: 'home',
-								createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-								waiting: {
-									autoShow: true, //自动显示等待框，默认为true
-									title: '正在加载...', //等待对话框上显示的提示内容
-								}
-							})
-						})
 					},
 					changeAutoLogin: function() {
 						if(this.autoLogin === 'on') {
@@ -114,6 +189,22 @@
 						common.setItem('autoLogin', this.autoLogin)
 						console.log(common.getItem('autoLogin'))
 
+					},
+					getUserInfo: function() {
+						//先同步时间
+						common.getDate(function() {
+							var url = common.commonUrl + common.apiUrl.most
+							var body = {
+								biz_module: 'userService',
+								biz_method: 'getCmsUserInfo'
+							}
+							common.commonPost(url, body, function(suc) {
+								window.localStorage.userInfo = JSON.stringify(suc.biz_result);
+								common.setItem('userInfo', suc.biz_result)
+							}, function(err) {
+
+							})
+						})
 					}
 				}
 			})
@@ -121,6 +212,7 @@
 			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
 			mui.plusReady(function() {
 				vm.autoLogin = common.getItem('autoLogin');
+				vm.language = common.getItem('language') || vm.language;
 				if(vm.autoLogin === 'on') {
 					vm.no = common.getItem('no');
 					vm.password = common.getItem('password');
@@ -131,9 +223,10 @@
 			})
 			//缓存老的 old_back 重新back
 			var old_back = mui.back;
+			console.log()
 			mui.back = function() {
-				mui.confirm('确定退出应用吗？', '提示信息', ['确定', '取消'], function(e){
-					if(e.index === 0){
+				mui.confirm(vm.$t('message.Determine_exit_application'), vm.$t('message.friendly_warning'), [vm.$t('message.confirm'), vm.$t('message.cancel')], function(e) {
+					if(e.index === 0) {
 						plus.runtime.quit()
 					}
 				})

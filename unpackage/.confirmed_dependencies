@@ -18,7 +18,12 @@
 			"libs/httpService.js",
 			"libs/crypto-js.js",
 			"fonts/mui.ttf",
-			"pages/home.html"
+			"pages/home.html",
+			"i18n/en.js",
+			"i18n/zh_CN.js",
+			"libs/vue-i18n.min.js",
+			"libs/validation.js",
+			"libs/validate.js"
 		],
 		"refer": [
 			"pages/home.html"
@@ -33,7 +38,10 @@
 			"libs/httpService.js",
 			"fonts/mui.ttf",
 			"libs/vueDirective.js",
-			"pages/search.html"
+			"pages/search.html",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"i18n/zh_CN.js"
 		],
 		"refer": [
 			"pages/menu.html",
@@ -45,7 +53,14 @@
 	"pages/menu.html": {
 		"resources": [
 			"js/mui.min.js",
-			"css/mui.min.css"
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"libs/crypto-js.js",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"i18n/zh_CN.js"
 		],
 		"refer": []
 	},

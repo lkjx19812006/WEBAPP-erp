@@ -1,0 +1,74 @@
+<!DOCTYPEtop html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../../i18n/en.js"></script>
+		<script src="../../i18n/zh_CN.js"></script>
+		<style>
+
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="login">
+			<header class="mui-bar mui-bar-nav">
+				<h1 class="mui-title">{{$t('message.login')}}</h1>
+			</header>
+			<div class="language">
+				<span>{{$t('message.language')}}</span>
+				<div class="mui-input-row mui-radio mui-left">
+					<label>中文</label>
+					<input v-model="language" value="zh" type="radio">
+				</div>
+				<div class="mui-input-row mui-radio mui-left">
+					<label>English</label>
+					<input v-model="language" value="en" type="radio">
+				</div>
+			</div>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>{{$t('message.userName')}}</label>
+					<input v-model='no' type="text" class="mui-input" :placeholder="$t('message.account_or_password')">
+					<span v-tap="clearNo" v-show="no" class="mui-icon mui-icon-close"></span>
+				</div>
+				<div class="mui-input-row">
+					<label>{{$t('message.passWord')}}</label>
+					<input v-model='password' type="password" class="mui-input" :placeholder="$t('message.account_or_password')">
+					<span v-tap="clearPW" v-show="password" class="mui-icon mui-icon-close"></span>
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						{{$t('message.automatic_logon')}}
+						<div id="autoLogin" class="mui-switch" @click="changeAutoLogin" :class="{'mui-active':autoLogin === 'on'}">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="mui-content-padded">
+				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" @click="submit" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/crypto-js.js"></script>
+		<script src="../../libs/httpService.js"></script>
+		<script>
+			mui.init({
+				keyEventBind: {
+					backbutton: true, //开启back键
+					menubutton: true //开启home键
+				},
+			});
+		</script>
+	</body>
+
+</html>

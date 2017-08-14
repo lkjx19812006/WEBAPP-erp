@@ -6,33 +6,44 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../i18n/en.js"></script>
+		<script src="../i18n/zh_CN.js"></script>
 	</head>
 
 	<body>
 		<!-- 主页面标题 -->
 		<div class="mui-content" id="home">
 			<header class="mui-bar mui-bar-nav">
-				<h1 class="mui-title">首页</h1>
+				<h1 class="mui-title">移动ERP</h1>
 				<a class="mui-icon mui-icon-bars mui-pull-left" @touchStart="showMenu"></a>
-				<a class="mui-icon mui-icon-person mui-pull-right" @touchStart="showUserInfo"></a>
+				<a class="mui-icon mui-icon-email mui-pull-right"></a>
 			</header>
+			<nav class="mui-bar mui-bar-tab">
+				<a class="mui-tab-item mui-active" href="#tabbar">
+					<span class="mui-icon mui-icon-home"></span>
+					<span class="mui-tab-label">主页</span>
+				</a>
+				<a class="mui-tab-item" href="#tabbar-with-contact">
+					<span class="mui-icon mui-icon-plus"></span>
+					<span class="mui-tab-label">更多</span>
+				</a>
+				<a class="mui-tab-item  mui-navigate" v-tap="clickUser">
+					<span class="mui-icon mui-icon-contact"></span>
+					<span class="mui-tab-label">我的</span>
+				</a>
+			</nav>
+			<div class="my-content">
+					
+			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
 		<script src="../libs/vue.min.js"></script>
+		<script src="../libs/vue-i18n.min.js"></script>
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script>
-			mui.init({
-				subpages: [{
-					url:'search.html', //子页面HTML地址，支持本地地址和网络地址
-					id: 'search', //子页面标志
-					styles: {
-						top: '45px', //子页面顶部位置		
-						height: '40px'
-					},
-					extras: {} //额外扩展参数
-				}]
-			});
+			mui.init();
 			var home, menu, mask, userInfo;
 			mask = mui.createMask(function() {
 				menu = plus.webview.getWebviewById('menu')
@@ -41,10 +52,10 @@
 			var vm = new Vue({
 				el: '#home',
 				data: {
-
+					msgNum: 0,
 				},
 				methods: {
-					fun: function() {
+					clickUser: function() {
 						alert('asdfs')
 					},
 					showMenu: function() {
@@ -88,11 +99,11 @@
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
 				//校验登录状态
-//				if(!common.validateLogin()) {
-//					setTimeout(function() {
-//						home.close();
-//					}, 0)
-//				}
+				//				if(!common.validateLogin()) {
+				//					setTimeout(function() {
+				//						home.close();
+				//					}, 0)
+				//				}
 			})
 			//添加自定义事件监听
 			window.addEventListener('closeMask', function(event) {

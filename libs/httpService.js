@@ -8,7 +8,7 @@
 	common.SID = window.localStorage.SID || ''
 	common.commonUrl = 'http://192.168.1.142/front'
 	common.version = 1
-	common.difTime = 0
+	common.difTime = window.localStorage.difTime || 0
 	common.apiUrl = {
 		login: '/account/erpLogin.do',
 		code_login: '/account/verifiLogin.do',
@@ -23,25 +23,19 @@
 		}
 	}
 	common.getDate = function getDate(cb) {
-		var _self = this
-		if(_self.difTime && cb) {
-			return cb()
-		} else if(_self.difTime) {
-			return
-		} else {
-			this.commonGet(this.urlCommon + this.apiUrl.getDate).then(function(response) {
-				if(response.code === '1c01') {
-					var timestamp = Date.parse(new Date())
-					window.localStorage.difTime = response.biz_result.time - timestamp;
-					_self.difTime = response.biz_result.time - timestamp;
-					if(cb) cb()
-				} else {
-
-				}
-			}, function(err) {
-
-			});
-		}
+		this.commonGet(this.commonUrl + this.apiUrl.getDate, function(response) {
+			var timestamp = Date.parse(new Date())
+			common.setItem('difTime', response.biz_result.time - timestamp)
+			common.difTime = response.biz_result.time - timestamp
+			window.localStorage.difTime = response.biz_result.time - timestamp
+			console.log(response.biz_result.time - timestamp)
+			if(cb) cb()
+		}, function(err) {
+			mui.toast(err, {
+				duration: 'long',
+				type: 'div'
+			})
+		})
 	}
 	common.getSign = function getSign(str) {
 		var _self = this;
@@ -59,7 +53,8 @@
 		if(data || typeof data === 'object') {
 			data.version = this.version
 			var localTime = new Date().getTime();
-			data.time = localTime + this.difTime
+			data.time = localTime + common.getItem('difTime') || 0;
+			console.log(common.getItem('difTime'))
 			data.sign = this.getSign('biz_module=' + data.biz_module + '&biz_method=' + data.biz_method + '&time=' + data.time)
 		}
 		console.log(JSON.stringify(data))
@@ -69,7 +64,7 @@
 			crossDomain: true, //强制使用 5+跨域 基于 plus.net方法
 			dataType: 'json', //服务器返回json格式数据
 			type: 'post', //HTTP请求类型
-			timeout: 1000, //超时时间设置为10秒；
+			timeout: 10000, //超时时间设置为10秒；
 			headers: {
 				'Content-Type': 'application/json;charset=UTF-8'
 			},
@@ -80,31 +75,38 @@
 				console.log(JSON.stringify(data))
 			},
 			error: function(xhr, type, errorThrown) {
-				console.log(JSON.stringify(type))
+				console.log(JSON.stringify(errorThrown))
 				//异常处理；
 				err(JSON.stringify(type))
 			}
 		});
 
 	}
-	common.commonGet = function commonGet(url) {
-		var req = new Request(url, {
-			method: "GET",
-			cache: 'reload'
-		})
-		//		return new Promise((resolve, reject) => {
-		//			fetch(req).then(response => {
-		//				if(response.ok) {
-		//					response.json().then((data) => {
-		//						resolve(data)
-		//					})
-		//				} else {
-		//					console.log('请求失败，状态码为', response.status);
-		//				}
-		//			}, error => {
-		//				reject(error)
-		//			})
-		//		});
+	common.commonGet = function commonGet(url, suc, err) {
+		console.log(url)
+		mui.ajax(url, {
+			crossDomain: true, //强制使用 5+跨域 基于 plus.net方法
+			dataType: 'json', //服务器返回json格式数据
+			type: 'get', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			headers: {
+				'Content-Type': 'application/json;charset=UTF-8'
+			},
+			processData: true, //data 数据不转换 key=value&key=value形式
+			success: function(data) {
+				//服务器返回响应，根据响应结果，分析是否登录成功；
+				suc(data)
+				console.log(JSON.stringify(data))
+			},
+			error: function(xhr, type, errorThrown) {
+				mui.toast(errorThrown, {
+					duration: 'short',
+					type: 'div'
+				})
+				//异常处理；
+				err(JSON.stringify(type))
+			}
+		});
 	}
 	/**
 	 * 本地存儲 調用原生api
@@ -229,18 +231,145 @@
 				createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
 				waiting: {
 					autoShow: false, //自动显示等待框，默认为true
-//					title: '正在加载...', //等待对话框上显示的提示内容
+					//					title: '正在加载...', //等待对话框上显示的提示内容
 				}
 			})
 			return false;
 		}
 		return true;
 	}
-	
-	//自定义指令
-	if(Vue) {
 
+	//自定义指令 tap
+	if(Vue) {
+		//全局tap事件
+		Vue.directive('tap', {
+			////			acceptStatement: false,
+			//			isLiterral: true,
+			////			deep: true,
+			//			inserted: function(el, binding) {
+			//				// 聚焦元素
+			//				el.addEventListener('tap', function() {
+			//					//					binding.value()
+			//					console.log(binding)
+			//				}, false)
+			//			},
+			isFn: true,
+			update: function(fn) {
+				console.log(fn)
+				var self = this; //存下this，方便以后用
+				//在directive上绑定的属性和方法
+				//都可通过self.xxx   self.touchstart()获取
+				self.tapObj = {}; //初始化我们的tap对象
+
+				if(typeof fn !== 'function') {
+					//你别给我搞事！
+					return console.error('The param of directive "v-tap" must be a function!');
+				}
+
+				self.handler = function(e) { //给当前directive存个handler方便之后调用
+					e.tapObj = self.tapObj;
+					//把我们的tap对象赋值给原生event对象上，方便回调里获取参数
+					fn.call(self, e);
+				};
+
+				//把我们的start和end剥离出来，写在directive上
+				//由于只有tap事件，所以我们在move过程就不需要做处理
+				this.el.addEventListener('tap', function(e) {
+					console.log(e)
+				}, false);
+
+				this.el.addEventListener('touchend', function(e) {
+					self.touchend(e, self, fn);
+				}, false);
+
+			}
+		})
+		//		Vue.directive('tap', {
+		//			/*
+		//			 *  @param el 指令所绑定的元素
+		//			 * @param binding {Object} 
+		//			 * @param vnode vue编译生成的虚拟节点
+		//			 */
+		//		
+		//		})
 	}
 
+	Vue.use(window.VueI18n)
+	//国际化处理		
+	var messages = {
+		zh: window.zh,
+		en: window.en
+	}
+	window.i18n = new window.VueI18n({
+		locale: 'zh',
+		messages
+	})
+
+	//表单校验
+	common.validate = function(params) {
+		var flag = true;
+		if(params && typeof params === 'object') {
+			for(var i = 0; i < params.length; i++) {
+				for(var key in params[i]) {
+					if(params[i].required) {
+						if(params[i].data === undefined || params[i].data === '') {
+							mui.toast(params[i].msg, {
+								duration: 'short',
+								type: 'div'
+							})
+							flag = false;
+							return flag;
+						}
+					}
+					if(params[i].validate !== undefined && params[i].validate.Reg !== undefined && typeof params[i].validate.Reg === 'object') {
+						if(!params[i].validate.Reg.test(params[i].data)) {
+							mui.toast(params[i].validate.msg, {
+								duration: 'short',
+								type: 'div'
+							})
+							flag = false;
+							return flag;
+						}
+					}
+				}
+				if(!flag) {
+					break
+				}
+			}
+		} else {
+			return false;
+		}
+		return flag;
+	}
+	//常用验证规则
+	common.ruls = {
+		phone: function(data) {
+			return {
+				data: data,
+				required: true,
+				msg: window.i18n.t('message.enter_phone'),
+				validate: {
+					Reg: /^1[34578]\d{9}$/,
+					msg: window.i18n.t('message.enter_phone')
+				}
+			}
+		},
+		no: function(data) {
+			return {
+				data: data,
+				required: true,
+				msg: window.i18n.t('message.empty_account'),
+			}
+		},
+		password: function(data) {
+			return {
+				data: data,
+				required: true,
+				msg: window.i18n.t('message.empty_password')
+			}
+		}
+
+	}
 	window.common = common;
+
 })(CryptoJS, window, mui, Vue)
