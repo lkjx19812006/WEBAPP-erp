@@ -242,56 +242,17 @@
 	//自定义指令 tap
 	if(Vue) {
 		//全局tap事件
-		Vue.directive('tap', {
-			////			acceptStatement: false,
-			//			isLiterral: true,
-			////			deep: true,
-			//			inserted: function(el, binding) {
-			//				// 聚焦元素
-			//				el.addEventListener('tap', function() {
-			//					//					binding.value()
-			//					console.log(binding)
-			//				}, false)
-			//			},
-			isFn: true,
-			update: function(fn) {
-				console.log(fn)
-				var self = this; //存下this，方便以后用
-				//在directive上绑定的属性和方法
-				//都可通过self.xxx   self.touchstart()获取
-				self.tapObj = {}; //初始化我们的tap对象
-
-				if(typeof fn !== 'function') {
-					//你别给我搞事！
-					return console.error('The param of directive "v-tap" must be a function!');
-				}
-
-				self.handler = function(e) { //给当前directive存个handler方便之后调用
-					e.tapObj = self.tapObj;
-					//把我们的tap对象赋值给原生event对象上，方便回调里获取参数
-					fn.call(self, e);
-				};
-
-				//把我们的start和end剥离出来，写在directive上
-				//由于只有tap事件，所以我们在move过程就不需要做处理
-				this.el.addEventListener('tap', function(e) {
-					console.log(e)
-				}, false);
-
-				this.el.addEventListener('touchend', function(e) {
-					self.touchend(e, self, fn);
-				}, false);
-
-			}
+		Vue.directive('tap', function(el, binding){
+			el.addEventListener('tap', function(e){
+				if(typeof binding.value.func === 'function'){
+					if(binding.value.params !== undefined){
+						binding.value.func(binding.value.params,e)
+					}else{
+						binding.value.func(e)
+					}
+				}				
+			}, false)
 		})
-		//		Vue.directive('tap', {
-		//			/*
-		//			 *  @param el 指令所绑定的元素
-		//			 * @param binding {Object} 
-		//			 * @param vnode vue编译生成的虚拟节点
-		//			 */
-		//		
-		//		})
 	}
 
 	Vue.use(window.VueI18n)

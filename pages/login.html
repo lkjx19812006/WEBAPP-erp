@@ -75,7 +75,7 @@
 				</ul>
 			</form>
 			<div class="mui-content-padded">
-				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" v-tap="this.submit('password')" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
+				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" v-tap="{'func': submit, 'params': '测试数据'}" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -123,7 +123,8 @@
 					clearNo: function() {
 						this.no = ''
 					},
-					submit: function(asdfa) {
+					submit: function(asdfa, e) {
+						console.log(asdfa, e)
 						//校验通过 进行登录
 						if(common.validate([common.ruls.no(this.no), common.ruls.password(this.password)])) {
 							mui(this.$refs.submit).button('loading')
