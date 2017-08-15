@@ -257,12 +257,13 @@
 		//全局tap事件
 		Vue.directive('tap', {
 			bind: function(el, binding) {
+				var _self = this;
 				el.addEventListener('tap', function(e) {
 					if(typeof binding.value.func === 'function') {
 						if(binding.value.params !== undefined) {
-							binding.value.func(binding.value.params, e)
+							binding.value.func.call(_self,binding.value.params,e);
 						} else {
-							binding.value.func(e)
+							binding.value.func.call(_self,e);
 						}
 					} else {
 						return console.error('The param of directive "v-tap" must be a Object!');

@@ -268,7 +268,9 @@
 					"libs/vue-i18n.min.js",
 					"i18n/en.js",
 					"i18n/zh_CN.js",
-					"pages/orderMg/order.js"
+					"pages/orderMg/order.js",
+					"libs/filters.js",
+					"libs/vueComponents.js"
 				],
 				"refer": [
 					"pages/menu.html",

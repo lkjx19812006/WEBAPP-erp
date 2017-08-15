@@ -12,43 +12,25 @@
 	</head>
 
 	<body>
-		<!-- 主页面标题 -->
-		<div class="mui-content" id="home">
-			<my-header v-on:increment="incrementCounter">
-				<!--<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{'func':showMenu}"></a>
-				<a class="mui-icon mui-icon-email mui-pull-right"></a>-->
-			</my-header>
-
-			<!--<header class="mui-bar mui-bar-nav">
-				<h1 class="mui-title">移动ERP</h1>
-				<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{'func':showMenu}"></a>
-				<a class="mui-icon mui-icon-email mui-pull-right"></a>
-			</header>-->
-			<!--<nav class="mui-bar mui-bar-tab">
-				<a class="mui-tab-item mui-active" href="#tabbar">
-					<span class="mui-icon mui-icon-home"></span>
-					<span class="mui-tab-label">主页</span>
-				</a>
-				<a class="mui-tab-item" href="#tabbar-with-contact">
-					<span class="mui-icon mui-icon-plus"></span>
-					<span class="mui-tab-label">更多</span>
-				</a>
-				<a class="mui-tab-item  mui-navigate" v-tap="clickUser">
-					<span class="mui-icon mui-icon-contact"></span>
-					<span class="mui-tab-label">我的</span>
-				</a>
-			</nav>-->
-			<my-navbar>
-				
-			</my-navbar>
-		</div>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="#tabbar">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">主页</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-contact">
+				<span class="mui-icon mui-icon-plus"></span>
+				<span class="mui-tab-label">更多</span>
+			</a>
+			<a class="mui-tab-item  mui-navigate" v-tap="clickUser">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
 		<script src="../js/mui.min.js"></script>
 		<script src="../libs/vue.min.js"></script>
 		<script src="../libs/vue-i18n.min.js"></script>
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
-		<script src="../libs/filters.js"></script>
-		<script src="../libs/vueComponents.js"></script>
 		<script>
 			mui.init({
 				beforeback: back
@@ -81,8 +63,7 @@
 					clickUser: function() {
 						alert('asdfs')
 					},
-					incrementCounter: function() {
-						console.log('asdfasd')
+					showMenu: function() {
 						isshowMenu = true
 						//显示菜单							
 						menu = mui.openWindow({

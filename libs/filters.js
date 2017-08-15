@@ -167,7 +167,7 @@
 	}
 	//过滤时间
 	//消息的时间过滤
-	filters.getYMD =  function(time, type) {
+	filters.getYMD = function(time, type) {
 		if(time === undefined || time === '' || time === 0) {
 			return '1970-01-01 00:00:00';
 		} else {
@@ -211,5 +211,6 @@
 	Object.keys(filters).forEach(key => {
 		Vue.filter(key, filters[key])
 	})
+
 
 })(window, Vue)
