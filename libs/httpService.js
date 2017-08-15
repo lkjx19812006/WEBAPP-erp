@@ -53,8 +53,7 @@
 		if(data || typeof data === 'object') {
 			data.version = this.version
 			var localTime = new Date().getTime();
-			data.time = localTime + common.getItem('difTime') || 0;
-			console.log(common.getItem('difTime'))
+			data.time = localTime - (-window.localStorage.difTime) || 0;
 			data.sign = this.getSign('biz_module=' + data.biz_module + '&biz_method=' + data.biz_method + '&time=' + data.time)
 		}
 		console.log(JSON.stringify(data))
@@ -68,7 +67,7 @@
 			headers: {
 				'Content-Type': 'application/json;charset=UTF-8'
 			},
-			processData: true, //data 数据不转换 key=value&key=value形式
+			processData: true, //data 数据不转换 key=value&key=value形式,		
 			success: function(data) {
 				//服务器返回响应，根据响应结果，分析是否登录成功；
 				suc(data)
@@ -108,6 +107,20 @@
 			}
 		});
 	}
+
+	//过滤掉数据请求对象为空的字段
+	common.filterFormData = function(params) {
+		if(params && typeof params == 'object') {
+			var obj = {};
+			Object.keys(params).forEach((item) => {
+				if(params[item] || params[item] === 0 || params[item] === false) obj[item] = params[item];
+			});
+			return obj;
+		} else {
+			return params;
+		}
+	}
+
 	/**
 	 * 本地存儲 調用原生api
 	 * 1.获取键值对总数
@@ -242,16 +255,20 @@
 	//自定义指令 tap
 	if(Vue) {
 		//全局tap事件
-		Vue.directive('tap', function(el, binding){
-			el.addEventListener('tap', function(e){
-				if(typeof binding.value.func === 'function'){
-					if(binding.value.params !== undefined){
-						binding.value.func(binding.value.params,e)
-					}else{
-						binding.value.func(e)
+		Vue.directive('tap', {
+			bind: function(el, binding) {
+				el.addEventListener('tap', function(e) {
+					if(typeof binding.value.func === 'function') {
+						if(binding.value.params !== undefined) {
+							binding.value.func(binding.value.params, e)
+						} else {
+							binding.value.func(e)
+						}
+					} else {
+						return console.error('The param of directive "v-tap" must be a Object!');
 					}
-				}				
-			}, false)
+				}, false)
+			}
 		})
 	}
 

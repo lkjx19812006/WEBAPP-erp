@@ -42,7 +42,7 @@
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell mui-collapse">
 					<a class="mui-navigate-right" href="#">订单管理</a>
-					<div v-tap="openWindow" class="mui-collapse-content">
+					<div v-tap="{'func': openWindow, params: {'url':'./orderMg/myOrder.html','id': 'myOder'}}" class="mui-collapse-content">
 						<p>我的订单</p>
 					</div>
 					<div class="mui-collapse-content">
@@ -105,7 +105,7 @@
 					<div class="mui-collapse-content">
 						<p>需要我采购</p>
 					</div>
-				</li>
+				</li>				
 			</ul>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -117,8 +117,8 @@
 			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
 			mui.init({
 				keyEventBind: {
-					backbutton: true,
-					menubutton: true
+					backbutton: false,
+					menubutton: false
 				},
 			});
 			var home;
@@ -141,19 +141,30 @@
 				data: {},
 				methods: {
 					openWindow: function(params) {
-						console.log(params)
+						mui.openWindow({
+							url: params.url,
+							id: params.id,
+							createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+							waiting: {
+								autoShow: true, //自动显示等待框，默认为true
+								title: 'loading...', //等待对话框上显示的提示内容
+							}
+						})
+						setTimeout(function() {
+							mui.fire(home, 'closeMask');
+						}, 200)
 					}
 				}
 			})
-
-			//缓存老的 old_back 重新back
-			var old_back = mui.back;
-			mui.back = function() {
-				console.log(JSON.stringify(home))
-				old_back()
-				mui.fire(home, 'closeMask');
-				return true;
-			}
+			//
+			//			//缓存老的 old_back 重新back
+			//			var old_back = mui.back;
+			//			mui.back = function() {
+			//				console.log(JSON.stringify(home))
+			//				old_back()
+			//				mui.fire(home, 'closeMask');
+			//				return true;
+			//			}
 		</script>
 	</body>
 

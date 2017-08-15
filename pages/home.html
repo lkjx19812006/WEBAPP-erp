@@ -16,7 +16,7 @@
 		<div class="mui-content" id="home">
 			<header class="mui-bar mui-bar-nav">
 				<h1 class="mui-title">移动ERP</h1>
-				<a class="mui-icon mui-icon-bars mui-pull-left" @touchStart="showMenu"></a>
+				<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{'func':showMenu}"></a>
 				<a class="mui-icon mui-icon-email mui-pull-right"></a>
 			</header>
 			<nav class="mui-bar mui-bar-tab">
@@ -34,7 +34,7 @@
 				</a>
 			</nav>
 			<div class="my-content">
-					
+
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -43,11 +43,27 @@
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script>
-			mui.init();
-			var home, menu, mask, userInfo;
+			mui.init({
+				beforeback: back
+			});
+			var home, menu, mask, userInfo, isshowMenu;
+
+			function back() {
+				if(isshowMenu) {
+					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+					common.closeWebViewById('menu', 'left');
+					mask.close();
+					isshowMenu = false;
+					return false;
+				} else {
+					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+					if(menu) menu.close('none');
+					return true;
+				}
+			}
 			mask = mui.createMask(function() {
-				menu = plus.webview.getWebviewById('menu')
-				if(menu) menu.close();
+				isshowMenu = false;
+				menu.close();
 			});
 			var vm = new Vue({
 				el: '#home',
@@ -59,10 +75,8 @@
 						alert('asdfs')
 					},
 					showMenu: function() {
-						//显示菜单	
-						setTimeout(function() {
-							mask.show()
-						}, 100)
+						isshowMenu = true
+						//显示菜单							
 						menu = mui.openWindow({
 							url: 'menu.html',
 							id: 'menu',
@@ -80,6 +94,7 @@
 								title: '正在加载...', //等待对话框上显示的提示内容
 							}
 						})
+						mask.show()
 					},
 					showUserInfo: function() {
 						userInfo = mui.openWindow({

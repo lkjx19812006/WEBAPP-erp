@@ -56,12 +56,12 @@
 				<div class="mui-input-row">
 					<label>{{$t('message.userName')}}</label>
 					<input v-model='no' type="text" class="mui-input" :placeholder="$t('message.account_or_password')">
-					<span v-tap="clearNo" v-show="no" class="mui-icon mui-icon-cslose"></span>
+					<span v-tap="{'func': clearNo}" v-show="no" class="mui-icon mui-icon-close"></span>
 				</div>
 				<div class="mui-input-row">
 					<label>{{$t('message.passWord')}}</label>
 					<input v-model='password' type="password" class="mui-input" :placeholder="$t('message.account_or_password')">
-					<span v-tap="clearPW" v-show="password" class="mui-icon mui-icon-close"></span>
+					<span v-tap="{'func': clearPW}" v-show="password" class="mui-icon mui-icon-close"></span>
 				</div>
 			</form>
 			<form class="mui-input-group">
@@ -75,7 +75,7 @@
 				</ul>
 			</form>
 			<div class="mui-content-padded">
-				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" v-tap="{'func': submit, 'params': '测试数据'}" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
+				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" v-tap="{'func': submit}" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -124,7 +124,6 @@
 						this.no = ''
 					},
 					submit: function(asdfa, e) {
-						console.log(asdfa, e)
 						//校验通过 进行登录
 						if(common.validate([common.ruls.no(this.no), common.ruls.password(this.password)])) {
 							mui(this.$refs.submit).button('loading')

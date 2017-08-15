@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../../i18n/en.js"></script>
+		<script src="../../i18n/zh_CN.js"></script>
+		<style>
+			#myOrder {
+				padding-top: 45px;
+				padding-bottom: 60px;
+			}
+			/*头部搜索开始*/
+			
+			#myOrder .my-search {
+				padding: 0 10px;
+				padding-top: 5px;
+				border-bottom: 1px solid #d0d0d0;
+				background-color: #e0e0e0;
+				height: 45px;
+				overflow: hidden;
+				box-sizing: border-box;
+				color: #007AFF
+			}
+			
+			#myOrder .my-search .mui-input-clear {
+				background-color: #fff;
+				color: #333
+			}
+			/*头部筛选开始*/
+			
+			#myOrder .header-filter {
+				background-color: #fff;
+				padding-top: 10px;
+			}
+			
+			#myOrder .header-filter-wrap {
+				display: flex;
+				padding: 5px;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				border-bottom: 1px solid #ccc;
+				border-top: 1px solid #ccc;
+			}
+			
+			#myOrder .header-filter-wrap a {
+				color: #666;
+				font-size: 14px;
+			}
+			
+			#myOrder .header-filter-wrap .mui-icon {
+				font-size: 12px;
+			}
+			
+			#myOrder .mui-popover {
+				width: 120px;
+				font-size: 14px;
+				color: #666;
+			}
+			
+			#myOrder .mui-popover .mui-table-view {
+				max-width: 120px;
+			}
+			/*订单列表开始*/
+			
+			#myOrder .list-wrap {}
+			
+			#myOrder .list-wrap .item {
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				padding: 10px;
+				border-bottom: 1px solid #d0d0d0;
+				font-size: 16px;
+				color: #333;
+			}
+			
+			#myOrder .list-wrap .item:active {
+				background-color: #f0f0f0;
+			}
+			
+			#myOrder .list-wrap .detail {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				padding: 2px 0;
+			}
+			
+			#myOrder .list-wrap .detail .tit {
+				flex: 0 0 auto;
+			}
+			
+			#myOrder .list-wrap .detail .info {
+				flex: 1;
+			}
+			
+			#myOrder .list-wrap .detail .validate {
+				flex: 0 0 auto;
+				align-self: flex-end;
+				color: orangered;
+			}
+			
+			#myOrder .my-active {
+				background-color: #e0e0e0;
+				color: #007AFF;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="myOrder">
+			<header class="mui-bar mui-bar-nav">
+				<h1 class="mui-title">我的订单</h1>
+				<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{'func':showMenu}"></a>
+				<a class="mui-icon mui-icon-email mui-pull-right"></a>
+			</header>
+			<!--搜索框-->
+			<div class="my-search">
+				<div class="mui-input-row mui-search">
+					<input type="search" class="mui-input-clear" placeholder="">
+				</div>
+			</div>
+			<!--头部筛选-->
+			<div class="header-filter">
+				<div class="header-filter-wrap">
+					<a href="#orderType">
+						<span>订单类型</span>
+						<span class="mui-icon mui-icon-arrowdown"></span>
+					</a>
+					<a href="#orderSell">
+						<span>订单状态</span>
+						<span class="mui-icon mui-icon-arrowdown"></span>
+					</a>
+					<a href="#validate">
+						<span>审核状态</span>
+						<span class="mui-icon mui-icon-arrowdown"></span>
+					</a>
+					<a href="#filters">
+						<span class="mui-icon mui-icon-more"></span>
+						<span>筛选</span>
+					</a>
+				</div>
+				<div id="orderType" class="mui-popover">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+							<a href="#" v-tap="{func:changeType, params:-1}">全部订单</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === 0}">
+							<a href="#" v-tap="{func:changeType, params: 0}">采购订单</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === 1}">
+							<a href="#" v-tap="{func:changeType, params: 1}">销售订单</a>
+						</li>
+					</ul>
+				</div>
+				<div id="orderSell" class="mui-popover">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+							<a href="#" v-tap="{func:changeState, params:-1}">新的订单</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+							<a href="#" v-tap="{func:changeState, params:-1}">订单处理中</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+							<a href="#" v-tap="{func:changeState, params:-1}">等待发货</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+							<a href="#" v-tap="{func:changeState, params:-1}">等待付款</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+							<a href="#" v-tap="{func:changeState, params:-1}">等待验证</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+							<a href="#" v-tap="{func:changeState, params:-1}">订单完成</a>
+						</li>
+					</ul>
+				</div>
+				<div id="validate" class="mui-popover">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.validate === 0}">
+							<a href="#" v-tap="{func:changeValidate, params:0}">待审核</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.validate === 1}">
+							<a href="#" v-tap="{func:changeValidate, params:1}">审核中</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.validate === 2}">
+							<a href="#" v-tap="{func:changeValidate, params:2}">审核通过</a>
+						</li>
+						<li class="mui-table-view-cell" :class="{'my-active':formData.validate === -2}">
+							<a href="#" v-tap="{func:changeValidate, params:-2}">审核未通过</a>
+						</li>
+					</ul>
+				</div>
+				<div id="orderType" class="mui-popover">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">
+							<a href="#">全部订单</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a href="#">采购订单</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a href="#">销售订单</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!--订单列表-->
+			<ul class="list-wrap mui-table-view">
+				<li class="item" v-for="item in listData.list" :key="item.id">
+					<div class="detail">
+						<span class="tit">订单类型：</span>
+						<span class="info">{{item.type | orderType}}</span>
+						<!--<span class="validate">待发货</span>-->
+					</div>
+					<div class="detail">
+						<span class="tit">成交时间：</span>
+						<span class="info">{{item.ctime, 'YYYY-MM-DD'| getYMD}}</span>
+						<span class="validate" style="color: #8A6DE9">{{item.validate | validateType}}</span>
+					</div>
+					<div class="detail">
+						<span class="tit">客户名称：</span>
+						<span class="info">{{item.customerName,14 | filterTxt}}</span>
+					</div>
+					<div class="detail">
+						<span class="tit">成交品种：</span>
+						<span class="info">{{item.goodsDesc, 14 | filterTxt}}</span>
+					</div>
+					<div class="detail">
+						<span class="tit">成交金额：</span>
+						<span class="info">¥&nbsp;{{item.amount}}</span>
+					</div>
+				</li>
+			</ul>
+			<!--底部导航-->
+			<nav class="mui-bar mui-bar-tab">
+				<a class="mui-tab-item mui-active" href="#tabbar">
+					<span class="mui-icon mui-icon-home"></span>
+					<span class="mui-tab-label">主页</span>
+				</a>
+				<a class="mui-tab-item" href="#tabbar-with-contact">
+					<span class="mui-icon mui-icon-plus"></span>
+					<span class="mui-tab-label">更多</span>
+				</a>
+				<a class="mui-tab-item  mui-navigate">
+					<span class="mui-icon mui-icon-contact"></span>
+					<span class="mui-tab-label">我的</span>
+				</a>
+			</nav>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/filters.js"></script>
+		<script src="../../libs/crypto-js.js"></script>
+		<script src="../../libs/httpService.js"></script>
+		<script src="./order.js"></script>
+		<script>
+			mui.init({
+				beforeback: back,
+				subpages: [{
+					url: './subSearchView.html', //子页面HTML地址，支持本地地址和网络地址
+					id: 'subSearchView', //子页面标志
+					styles: {
+						top: '45px', //子页面顶部位置
+						bottom: '0px', //子页面底部位置
+						width: '80%', //子页面宽度，默认为100%
+					},
+					show: {
+
+					},
+					extras: formData //额外扩展参数
+				}]
+			});
+			var myOrder, mask, menu, isshowMenu;
+
+			function back() {
+				if(isshowMenu) {
+					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+					common.closeWebViewById('menu', 'left');
+					mask.close();
+					isshowMenu = false;
+					return false;
+				} else {
+					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+					if(menu) menu.close('none');
+					return true;
+				}
+			}
+			mask = mui.createMask(function() {
+				isshowMenu = false;
+				menu.close();
+			});
+
+			mui.plusReady(function() {
+				myOrder = plus.webview.currentWebview();
+				console.log(JSON.stringify(myOrder))
+				vm.getHttp();
+			})
+			//以上动画显示与窗口加载
+			var vm = new Vue({
+				el: '#myOrder',
+				i18n: window.i18n,
+				data: {
+					listData: {
+						list: []
+					}
+				},
+				computed: {
+					formData() {
+						if(formData) return formData;
+						return {
+							pn: 1,
+							pSize: 15,
+							type: -1
+						}
+					}
+				},
+				methods: {
+					showMenu: function() {
+						isshowMenu = true
+						//显示菜单							
+						menu = mui.openWindow({
+							url: '../menu.html',
+							id: 'menu',
+							show: {
+								aniShow: 'slide-in-left',
+							},
+							createNew: false,
+							styles: {
+								left: '0',
+								width: '70%',
+								zindex: 9999
+							},
+							waiting: {
+								autoShow: false, //自动显示等待框，默认为true
+							}
+						})
+						mask.show()
+					},
+					//获取列表是数据
+					getHttp: function() {
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'erpOrderService',
+							biz_method: 'queryMyOrderList',
+							biz_param: common.filterFormData(this.formData)
+						}
+						console.log(JSON.stringify(this.formData))
+						var _self = this;
+						plus.nativeUI.showWaiting('loading......', {
+							width: 100,
+							height: 80
+						});
+						common.commonPost(url, body, function(suc) {
+							_self.listData = suc.biz_result
+							plus.nativeUI.closeWaiting();
+						}, function(err) {
+							plus.nativeUI.closeWaiting();
+						})
+					},
+					//改变订单类型
+					changeType: function(params) {
+						formData.type = params;
+						this.getHttp();
+					},
+					//改变订单状态
+					changeState: function(params) {
+						formData.orderStatus = params;
+						this.getHttp();
+					},
+					//改变审核状态
+					changeValidate: function(params) {
+						formData.validate = params;
+						this.getHttp();
+					},
+				}
+			})
+			//页面创建完毕后 执行获取数据
+		</script>
+	</body>
+
+</html>

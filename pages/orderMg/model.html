@@ -1,4 +1,4 @@
-<!DOCTYPEtop html>
+<!DOCTYPE html>
 <html class="ui-page-login">
 
 	<head>
@@ -10,51 +10,34 @@
 		<script src="../../i18n/en.js"></script>
 		<script src="../../i18n/zh_CN.js"></script>
 		<style>
-
+			#myOrder {
+				padding-top: 50px;
+				padding-bottom: 60px;
+			}
 		</style>
 	</head>
 
 	<body>
-		<div class="mui-content" id="login">
+		<div class="mui-content" id="myOrder">
 			<header class="mui-bar mui-bar-nav">
-				<h1 class="mui-title">{{$t('message.login')}}</h1>
+				<h1 class="mui-title">我的订单</h1>
+				<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{'func':showMenu}"></a>
+				<a class="mui-icon mui-icon-email mui-pull-right"></a>
 			</header>
-			<div class="language">
-				<span>{{$t('message.language')}}</span>
-				<div class="mui-input-row mui-radio mui-left">
-					<label>中文</label>
-					<input v-model="language" value="zh" type="radio">
-				</div>
-				<div class="mui-input-row mui-radio mui-left">
-					<label>English</label>
-					<input v-model="language" value="en" type="radio">
-				</div>
-			</div>
-			<form class="mui-input-group">
-				<div class="mui-input-row">
-					<label>{{$t('message.userName')}}</label>
-					<input v-model='no' type="text" class="mui-input" :placeholder="$t('message.account_or_password')">
-					<span v-tap="clearNo" v-show="no" class="mui-icon mui-icon-close"></span>
-				</div>
-				<div class="mui-input-row">
-					<label>{{$t('message.passWord')}}</label>
-					<input v-model='password' type="password" class="mui-input" :placeholder="$t('message.account_or_password')">
-					<span v-tap="clearPW" v-show="password" class="mui-icon mui-icon-close"></span>
-				</div>
-			</form>
-			<form class="mui-input-group">
-				<ul class="mui-table-view mui-table-view-chevron">
-					<li class="mui-table-view-cell">
-						{{$t('message.automatic_logon')}}
-						<div id="autoLogin" class="mui-switch" @click="changeAutoLogin" :class="{'mui-active':autoLogin === 'on'}">
-							<div class="mui-switch-handle"></div>
-						</div>
-					</li>
-				</ul>
-			</form>
-			<div class="mui-content-padded">
-				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" @click="submit" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
-			</div>
+			<nav class="mui-bar mui-bar-tab">
+				<a class="mui-tab-item mui-active" href="#tabbar">
+					<span class="mui-icon mui-icon-home"></span>
+					<span class="mui-tab-label">主页</span>
+				</a>
+				<a class="mui-tab-item" href="#tabbar-with-contact">
+					<span class="mui-icon mui-icon-plus"></span>
+					<span class="mui-tab-label">更多</span>
+				</a>
+				<a class="mui-tab-item  mui-navigate">
+					<span class="mui-icon mui-icon-contact"></span>
+					<span class="mui-tab-label">我的</span>
+				</a>
+			</nav>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../libs/vue.min.js"></script>
@@ -63,11 +46,65 @@
 		<script src="../../libs/httpService.js"></script>
 		<script>
 			mui.init({
-				keyEventBind: {
-					backbutton: true,//开启back键
-					menubutton: true//开启home键
-				},
+				beforeback: back
 			});
+			var myOrder, mask, menu, isshowMenu;
+
+			function back() {
+				if(isshowMenu) {
+					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+					common.closeWebViewById('menu', 'left');
+					mask.close();
+					isshowMenu = false;
+					return false;
+				} else {
+					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+					if(menu) menu.close('none');
+					return true;
+				}
+			}
+			mask = mui.createMask(function() {
+				isshowMenu = false;
+				menu.close();
+			});
+
+			mui.plusReady(function() {
+				myOrder = plus.webview.currentWebview();
+				console.log(JSON.stringify(myOrder))
+			})
+			//以上动画显示与窗口加载
+			var vm = new Vue({
+				el: '#myOrder',
+				i18n: window.i18n,
+				data: {
+
+				},
+				methods: {
+					showMenu: function() {
+						isshowMenu = true
+						//显示菜单	
+						setTimeout(function() {
+							mask.show()
+						}, 100)
+						menu = mui.openWindow({
+							url: '../menu.html',
+							id: 'menu',
+							show: {
+								aniShow: 'slide-in-left',
+							},
+							createNew: false,
+							styles: {
+								left: '0',
+								width: '70%',
+								zindex: 9999
+							},
+							waiting: {
+								autoShow: false, //自动显示等待框，默认为true
+							}
+						})
+					},
+				}
+			})
 		</script>
 	</body>
 
