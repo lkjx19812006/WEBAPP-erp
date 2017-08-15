@@ -101,7 +101,7 @@
 					language: 'zh'
 				},
 				watch: {
-					language(newVal) {
+					language: function(newVal) {
 						switch(newVal) {
 							case 'zh':
 								window.localStorage.language = 'zh';
@@ -123,7 +123,7 @@
 					clearNo: function() {
 						this.no = ''
 					},
-					submit: function(asdfa, e) {
+					submit: function() {
 						//校验通过 进行登录
 						if(common.validate([common.ruls.no(this.no), common.ruls.password(this.password)])) {
 							mui(this.$refs.submit).button('loading')

@@ -208,9 +208,7 @@
 	}
 
 	//注册过滤器
-	Object.keys(filters).forEach(key => {
+	for(var key in filters) {
 		Vue.filter(key, filters[key])
-	})
-
-
+	}
 })(window, Vue)

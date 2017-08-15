@@ -112,9 +112,9 @@
 	common.filterFormData = function(params) {
 		if(params && typeof params == 'object') {
 			var obj = {};
-			Object.keys(params).forEach((item) => {
-				if(params[item] || params[item] === 0 || params[item] === false) obj[item] = params[item];
-			});
+			for(var key in params){
+				if(params[key] || params[key] === 0 || params[key] === false) obj[key] = params[key];
+			}			
 			return obj;
 		} else {
 			return params;
@@ -278,10 +278,10 @@
 	var messages = {
 		zh: window.zh,
 		en: window.en
-	}
+	};
 	window.i18n = new window.VueI18n({
 		locale: 'zh',
-		messages
+		messages:messages
 	})
 
 	//表单校验
