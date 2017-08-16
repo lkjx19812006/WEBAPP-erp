@@ -111,7 +111,8 @@
 		"refer": [
 			"pages/menu.html",
 			"pages/orderMg/subSearchView.html",
-			"pages/orderMg/searchView.html"
+			"pages/orderMg/searchView.html",
+			"pages/orderMg/myOrderDetail.html"
 		]
 	},
 	"pages/orderMg/subSearchView.html": {
@@ -137,6 +138,20 @@
 			"libs/httpService.js",
 			"i18n/zh_CN.js",
 			"pages/orderMg/order.js"
+		]
+	},
+	"pages/orderMg/myOrderDetail.html": {
+		"resources": [
+			"libs/crypto-js.js",
+			"libs/filters.js",
+			"js/mui.min.js",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"i18n/zh_CN.js"
 		]
 	}
 }

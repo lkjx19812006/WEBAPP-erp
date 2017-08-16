@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html class="ui-page-login">
 
 	<head>
@@ -10,101 +10,30 @@
 		<script src="../../i18n/en.js"></script>
 		<script src="../../i18n/zh_CN.js"></script>
 		<style>
-			#myOrder {
-				padding-top: 50px;
-				padding-bottom: 60px;
+			#myOrderDetail {
+				padding-top: 45px;
+				padding-bottom: 50px;
 			}
 		</style>
 	</head>
 
 	<body>
-		<div class="mui-content" id="myOrder">
+		<div class="mui-content" id="myOrderDetail">
 			<header class="mui-bar mui-bar-nav">
-				<h1 class="mui-title">我的订单</h1>
-				<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{'func':showMenu}"></a>
-				<a class="mui-icon mui-icon-email mui-pull-right"></a>
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">订单详情</h1>
 			</header>
-			<nav class="mui-bar mui-bar-tab">
-				<a class="mui-tab-item mui-active" href="#tabbar">
-					<span class="mui-icon mui-icon-home"></span>
-					<span class="mui-tab-label">主页</span>
-				</a>
-				<a class="mui-tab-item" href="#tabbar-with-contact">
-					<span class="mui-icon mui-icon-plus"></span>
-					<span class="mui-tab-label">更多</span>
-				</a>
-				<a class="mui-tab-item  mui-navigate">
-					<span class="mui-icon mui-icon-contact"></span>
-					<span class="mui-tab-label">我的</span>
-				</a>
-			</nav>
+
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../libs/vue.min.js"></script>
 		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/filters.js"></script>
 		<script src="../../libs/crypto-js.js"></script>
 		<script src="../../libs/httpService.js"></script>
 		<script>
-			mui.init({
-				beforeback: back
-			});
-			var myOrder, mask, menu, isshowMenu;
-
-			function back() {
-				if(isshowMenu) {
-					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
-					common.closeWebViewById('menu', 'left');
-					mask.close();
-					isshowMenu = false;
-					return false;
-				} else {
-					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
-					if(menu) menu.close('none');
-					return true;
-				}
-			}
-			mask = mui.createMask(function() {
-				isshowMenu = false;
-				menu.close();
-			});
-
-			mui.plusReady(function() {
-				myOrder = plus.webview.currentWebview();
-				console.log(JSON.stringify(myOrder))
-			})
-			//以上动画显示与窗口加载
-			var vm = new Vue({
-				el: '#myOrder',
-				i18n: window.i18n,
-				data: {
-
-				},
-				methods: {
-					showMenu: function() {
-						isshowMenu = true
-						//显示菜单	
-						setTimeout(function() {
-							mask.show()
-						}, 100)
-						menu = mui.openWindow({
-							url: '../menu.html',
-							id: 'menu',
-							show: {
-								aniShow: 'slide-in-left',
-							},
-							createNew: false,
-							styles: {
-								left: '0',
-								width: '70%',
-								zindex: 9999
-							},
-							waiting: {
-								autoShow: false, //自动显示等待框，默认为true
-							}
-						})
-					},
-				}
-			})
+			mui.init();
+			
 		</script>
 	</body>
 

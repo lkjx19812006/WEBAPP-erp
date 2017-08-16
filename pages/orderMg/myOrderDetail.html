@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../../i18n/en.js"></script>
+		<script src="../../i18n/zh_CN.js"></script>
+		<style>
+			ul,
+			li {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			/*订单详情页开始*/
+			
+			#myOrderDetail {
+				padding-top: 45px;
+				padding-bottom: 60px;
+				background-color: #e0e0e0;
+			}
+			
+			#myOrderDetail ul li {
+				margin-top: 10px;
+				border-top: 1px solid #d0d0d0;
+				background-color: #fff;
+			}
+			
+			#myOrderDetail ul .list-item>.title {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+				padding: 8px 15px;
+			}
+			/*基本信息开始*/
+			
+			#myOrderDetail ul .list-item .base-info .item-info {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 8px 15px;
+				border-bottom: 1px solid #d0d0d0;
+			}
+			/*商品信息开始*/
+			
+			#myOrderDetail ul .list-item .product-table-title,
+			#myOrderDetail ul .list-item .product-table-td {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 8px 15px;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+			}
+			
+			#myOrderDetail ul .list-item .product-table-title span,
+			#myOrderDetail ul .list-item .product-table-td span {
+				flex 0 0 auto;
+				width: 25%;
+				text-align: center;
+			}
+			
+			#myOrderDetail ul .list-item .product-table-total {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-end;
+				padding: 10px 15px;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+			}
+			
+			#myOrderDetail ul .list-item .product-table-total .totalNum {
+				flex 0 0 auto;
+				width: 25%;
+				text-align: center;
+				color: #FF4500;
+			}
+			/*付款方式开始*/
+			
+			#myOrderDetail ul .list-item .price-table-title,
+			#myOrderDetail ul .list-item .price-table-td {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 8px 15px;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+			}
+			
+			#myOrderDetail ul .list-item .price-table-title span,
+			#myOrderDetail ul .list-item .price-table-td span {
+				text-align: center;
+			}
+			
+			#myOrderDetail ul .list-item .price-table-title span:nth-child(1),
+			#myOrderDetail ul .list-item .price-table-td span:nth-child(1) {
+				flex: 0 0 auto;
+				width: 30%;
+			}
+			
+			#myOrderDetail ul .list-item .price-table-title span:nth-child(2),
+			#myOrderDetail ul .list-item .price-table-td span:nth-child(2) {
+				flex: 0 0 auto;
+				width: 40%;
+			}
+			
+			#myOrderDetail ul .list-item .price-table-title span:nth-child(3),
+			#myOrderDetail ul .list-item .price-table-td span:nth-child(3) {
+				flex: 0 0 auto;
+				width: 30%;
+			}
+			/*采销对应*/
+			
+			#myOrderDetail ul .list-item .purchase-table-title,
+			#myOrderDetail ul .list-item .purchase-table-td {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 8px 15px;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+			}
+			
+			#myOrderDetail ul .list-item .purchase-table-title span,
+			#myOrderDetail ul .list-item .purchase-table-td span {
+				text-align: center;
+			}
+			
+			#myOrderDetail ul .list-item .purchase-table-title span:nth-child(1),
+			#myOrderDetail ul .list-item .purchase-table-td span:nth-child(1) {
+				flex: 0 0 auto;
+				width: 30%;
+			}
+			
+			#myOrderDetail ul .list-item .purchase-table-title span:nth-child(2),
+			#myOrderDetail ul .list-item .purchase-table-td span:nth-child(2) {
+				flex: 0 0 auto;
+				width: 40%;
+			}
+			
+			#myOrderDetail ul .list-item .purchase-table-title span:nth-child(3),
+			#myOrderDetail ul .list-item .purchase-table-td span:nth-child(3) {
+				flex: 0 0 auto;
+				width: 30%;
+			}
+			
+			/*底部导航开始*/			
+			#myOrderDetail .mui-bar-tab a:nth-child(1) {
+				background-color: #007AFF;
+				color: #fff;
+			}
+			#myOrderDetail .mui-bar-tab a:nth-child(2) {
+				background-color: #fff;
+				color: #333;
+			}
+			#myOrderDetail .mui-bar-tab a:nth-child(3){
+				border: none;
+				background-color: #8A6DE9;
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="myOrderDetail">
+			<!--页面头部-->
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">订单详情</h1>
+			</header>
+			<ul class="list-wrap" v-show="!detailData.id">
+				<!--基本信息-->
+				<li class="list-item">
+					<div class="title">
+						<h4>基本信息</h4>
+						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+					</div>
+					<div class="base-info">
+						<div class="item-info">
+							<span class="tit">创建时间</span>
+							<span class="txt">2017-08-11</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">订单ID：</span>
+							<span class="txt">12121212121</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">订单状态：</span>
+							<span class="txt">12121212121</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">订单类型：</span>
+							<span class="txt">12121212121</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">客户名称：</span>
+							<span class="txt">12121212121</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">联系电话：</span>
+							<span class="txt">12121212121</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">收货人姓名：</span>
+							<span class="txt">12121212121</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">收货人电话：</span>
+							<span class="txt">12121212121</span>
+						</div>
+						<div class="item-info">
+							<span class="tit">收货地址：</span>
+							<span class="txt">12121212121</span>
+						</div>
+					</div>
+				</li>
+				<!--商品信息-->
+				<li class="list-item">
+					<div class="title">
+						<h4>商品信息</h4>
+						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+					</div>
+					<div class="product-table-title">
+						<span>品名</span>
+						<span>销价</span>
+						<span>销量</span>
+						<span>合计金额</span>
+					</div>
+					<div class="product-table-td">
+						<span class="name">藏红花</span>
+						<span class="price">13元/g</span>
+						<span class="num">1kg</span>
+						<span class="total">1kg</span>
+					</div>
+					<div class="product-table-td">
+						<span class="name">藏红花</span>
+						<span class="price">13元/g</span>
+						<span class="num">1kg</span>
+						<span class="total">1kg</span>
+					</div>
+					<div class="product-table-td">
+						<span class="name">藏红花</span>
+						<span class="price">13元/g</span>
+						<span class="num">1kg</span>
+						<span class="total">1kg</span>
+					</div>
+					<div class="product-table-total">
+						<h4 class="totalNum">3900</h4 >
+					</div>
+				</li>
+
+				<!--付款方式-->
+				<li class="list-item">
+					<div class="title">
+						<h4>付款方式</h4>
+						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+					</div>
+					<div class="price-table-title">
+						<span>收/付款类型</span>
+						<span>收/付款节点</span>
+						<span>收/付款金额</span>
+					</div>
+					<div class="price-table-td">
+						<span class="name">藏红花</span>
+						<span class="price">合同签订后立即</span>
+						<span class="num">900元</span>
+					</div>
+					<div class="price-table-td">
+						<span class="name">藏红花</span>
+						<span class="price">合同签订后立即</span>
+						<span class="num">900元</span>
+					</div>
+				</li>
+
+				<!--采销对应-->
+				<li class="list-item">
+					<div class="title">
+						<h4>采销对应</h4>
+						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+					</div>
+					<div class="purchase-table-title">
+						<span>采购人</span>
+						<span>采购品种</span>
+						<span>采购数量</span>
+					</div>
+					<div class="purchase-table-td">
+						<span class="name">椰皇</span>
+						<span class="price">藏红花</span>
+						<span class="num">900g</span>
+					</div>
+					<div class="purchase-table-td">
+						<span class="name">魏鹏飞</span>
+						<span class="price">黄芪</span>
+						<span class="num">900g</span>
+					</div>
+				</li>
+			</ul>
+			<!--底部按钮-->
+			<nav class="mui-bar mui-bar-tab">
+				<a class="mui-tab-item">
+					<span class="mui-tab-label">申请收款</span>
+				</a>
+				<a class="mui-tab-item">
+					<span class="mui-tab-label">售后申请</span>
+				</a>
+				<a class="mui-tab-item">
+					<span class="mui-tab-label">验收合格</span>
+				</a>
+			</nav>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/filters.js"></script>
+		<script src="../../libs/crypto-js.js"></script>
+		<script src="../../libs/httpService.js"></script>
+		<script>
+			mui.init();
+			var myOrderDetail, detailData;
+			mui.plusReady(function() {
+				myOrderDetail = plus.webview.currentWebview();
+
+			})
+			var vm = new Vue({
+				el: '#myOrderDetail',
+				i18n: window.i18n,
+				data: {
+					detailData: {}
+				},
+				methods: {
+
+				}
+			})
+			//注册一个时间用来监听ID变化请求数据
+			window.addEventListener('getDetail', function(event) {
+				vm.detailData = event.detail;
+			})
+		</script>
+	</body>
+
+</html>
