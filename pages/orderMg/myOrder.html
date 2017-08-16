@@ -123,7 +123,7 @@
 	<body>
 		<div class="mui-content" id="myOrder">
 			<!--头部组件-->
-			<my-header v-on:show="showMenu" title="我的订单">
+			<my-header ref="header" v-on:show="showMenu" v-on:mysrolltop="goToTop" title="我的订单">
 			</my-header>
 			<!--搜索框-->
 			<div class="my-search">
@@ -217,32 +217,34 @@
 				</div>
 			</div>
 			<!--订单列表-->
-			<ul class="list-wrap mui-table-view">
-				<li class="item" v-for="item in listData.list" :key="item.id">
-					<div class="detail">
-						<span class="tit">订单类型：</span>
-						<span class="info">{{item.type | orderType}}</span>
-						<!--<span class="validate">待发货</span>-->
-					</div>
-					<div class="detail">
-						<span class="tit">成交时间：</span>
-						<span class="info">{{item.ctime, 'YYYY-MM-DD'| getYMD}}</span>
-						<span class="validate" style="color: #8A6DE9">{{item.validate | validateType}}</span>
-					</div>
-					<div class="detail">
-						<span class="tit">客户名称：</span>
-						<span class="info">{{item.customerName,14 | filterTxt}}</span>
-					</div>
-					<div class="detail">
-						<span class="tit">成交品种：</span>
-						<span class="info">{{item.goodsDesc, 14 | filterTxt}}</span>
-					</div>
-					<div class="detail">
-						<span class="tit">成交金额：</span>
-						<span class="info">¥&nbsp;{{item.amount}}</span>
-					</div>
-				</li>
-			</ul>
+			<div id="pullrefresh" ref='pullrefresh'>
+				<ul class="list-wrap mui-table-view">
+					<li class="item" v-for="item in listData.list" :key="item.id">
+						<div class="detail">
+							<span class="tit">订单类型：</span>
+							<span class="info">{{item.type | orderType}}</span>
+							<!--<span class="validate">待发货</span>-->
+						</div>
+						<div class="detail">
+							<span class="tit">成交时间：</span>
+							<span class="info">{{item.ctime, 'YYYY-MM-DD'| getYMD}}</span>
+							<span class="validate" style="color: #8A6DE9">{{item.validate | validateType}}</span>
+						</div>
+						<div class="detail">
+							<span class="tit">客户名称：</span>
+							<span class="info">{{item.customerName,14 | filterTxt}}</span>
+						</div>
+						<div class="detail">
+							<span class="tit">成交品种：</span>
+							<span class="info">{{item.goodsDesc, 14 | filterTxt}}</span>
+						</div>
+						<div class="detail">
+							<span class="tit">成交金额：</span>
+							<span class="info">¥&nbsp;{{item.amount}}</span>
+						</div>
+					</li>
+				</ul>
+			</div>
 			<!--底部导航-->
 			<my-navbar>
 			</my-navbar>
@@ -257,7 +259,24 @@
 		<script src="./order.js"></script>
 		<script>
 			mui.init({
-				beforeback: back
+				beforeback: back,
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置					
+						auto: false, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh
+					},
+					up: {
+						auto: false,
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
 			});
 			var myOrder, mask, menu, isshowMenu, searchView;
 
@@ -278,6 +297,7 @@
 					return true;
 				}
 			}
+
 			mask = mui.createMask(function() {
 				isshowMenu = false;
 				if(menu) menu.close();
@@ -324,7 +344,7 @@
 						mask.show()
 					},
 					//获取列表是数据
-					getHttp: function() {
+					getHttp: function(fn) {
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
 							biz_module: 'erpOrderService',
@@ -334,25 +354,45 @@
 						var _self = this;
 						plus.nativeUI.showWaiting('loading...');
 						common.commonPost(url, body, function(suc) {
-							_self.listData = suc.biz_result
+							//合并数据 首次加载将数据全部拿过来 后面只拿list
+							if(_self.listData.total === undefined) {
+								_self.listData = suc.biz_result
+							} else {
+								_self.listData.list = _self.listData.list.concat(suc.biz_result.list)
+							}
+							if(typeof fn === 'function') {
+								fn(suc)
+							}
 							plus.nativeUI.closeWaiting();
 						}, function(err) {
 							plus.nativeUI.closeWaiting();
 						})
 					},
+					initGetHttp: function() {
+						this.formData.pn = 1;
+						this.formData.pSize = 15;
+						this.listData = {
+							list: []
+						};
+						//重置上拉加载业务
+						mui('#pullrefresh').pullRefresh().refresh(true);
+					},
 					//改变订单类型
 					changeType: function(params) {
 						formData.type = params;
+						this.initGetHttp()
 						this.getHttp();
 					},
 					//改变订单状态
 					changeState: function(params) {
 						formData.orderStatus = params;
+						this.initGetHttp()
 						this.getHttp();
 					},
 					//改变审核状态
 					changeValidate: function(params) {
 						formData.validate = params;
+						this.initGetHttp()
 						this.getHttp();
 					},
 					//显示筛选列表
@@ -380,9 +420,36 @@
 							}
 						})
 						mask.show()
+					},
+					//快速回到頂部
+					goToTop: function() {
+						mui('#pullrefresh').pullRefresh().scrollTo(0, 0, 200)
 					}
+
 				}
 			})
+
+			//上拉加载数据
+			function pullupRefresh() {
+				vm.formData.pn++;
+				vm.getHttp(function() {
+					console.log(vm.listData.total)
+					console.log(vm.listData.list.length)
+					if(vm.listData.total <= vm.listData.list.length || vm.listData.total === 0) {
+						mui('#pullrefresh').pullRefresh().endPullup(true);
+					} else {
+						mui('#pullrefresh').pullRefresh().endPullup(false);
+					}
+
+				})
+			}
+			//下拉刷新数据
+			function pulldownRefresh() {
+				vm.initGetHttp()
+				vm.getHttp(function() {
+					mui('#pullrefresh').pullRefresh().endPulldown();
+				});
+			}
 			//自定义事件接受搜索页面传递的数据
 			//获取数据
 			window.addEventListener('getFormData', function(event) {
@@ -395,8 +462,7 @@
 						vm.formData[key] = newObj[key]
 					}
 					//获取数据
-					vm.formData.pn = 1;
-					vm.formData.pSize = 15;
+					vm.initGetHttp()
 					vm.getHttp();
 				}
 				setTimeout(function() {
@@ -411,8 +477,7 @@
 					vm.formData[key] = '';
 				}
 				//获取数据
-				vm.formData.pn = 1;
-				vm.formData.pSize = 15;
+				vm.initGetHttp();
 				vm.formData.type = -1;
 				vm.getHttp();
 				setTimeout(function() {

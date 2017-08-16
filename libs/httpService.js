@@ -254,7 +254,7 @@
 
 	//自定义指令 tap
 	if(Vue) {
-		//全局tap事件
+		//全局tap事件 doubletap
 		Vue.directive('tap', {
 			bind: function(el, binding) {
 				var _self = this;

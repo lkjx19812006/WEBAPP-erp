@@ -3,7 +3,7 @@
 	// 注册 头部组件
 	Vue.component('my-header', {
 		template: '<header class="mui-bar mui-bar-nav">' +
-			'<h1 class="mui-title">{{title}}</h1>' +
+			'<h1 v-tap="{'+ "func" +':mysrolltop}" class="mui-title">{{title}}</h1>' +
 			'<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{' + "func" + ':showMenu}"></a>' +
 			'<a class="mui-icon mui-icon-email mui-pull-right"></a>' +
 			'</header>',
@@ -19,6 +19,9 @@
 		methods: {
 			showMenu: function() {
 				this.$emit('show')
+			},
+			mysrolltop: function(){				
+				this.$emit('mysrolltop')
 			}
 		}
 	})
