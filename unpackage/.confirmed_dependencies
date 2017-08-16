@@ -1,115 +1,142 @@
 {
-  "index.html": {
-    "resources": [
-      "js/mui.min.js",
-      "css/mui.min.css",
-      "fonts/mui.ttf",
-      "js/update.js"
-    ],
-    "refer": [
-      "index-menu.html"
-    ]
-  },
-  "pages/login.html": {
-    "resources": [
-      "js/mui.min.js",
-      "css/mui.min.css",
-      "libs/vue.min.js",
-      "libs/httpService.js",
-      "libs/crypto-js.js",
-      "fonts/mui.ttf",
-      "pages/home.html",
-      "i18n/en.js",
-      "i18n/zh_CN.js",
-      "libs/vue-i18n.min.js",
-      "libs/validation.js",
-      "libs/validate.js"
-    ],
-    "refer": [
-      "pages/home.html"
-    ]
-  },
-  "pages/home.html": {
-    "resources": [
-      "libs/crypto-js.js",
-      "js/mui.min.js",
-      "css/mui.min.css",
-      "libs/vue.min.js",
-      "libs/httpService.js",
-      "fonts/mui.ttf",
-      "libs/vueDirective.js",
-      "pages/search.html",
-      "libs/vue-i18n.min.js",
-      "i18n/en.js",
-      "i18n/zh_CN.js",
-      "pages/orderMg/order.js",
-      "libs/filters.js",
-      "libs/vueComponents.js"
-    ],
-    "refer": [
-      "pages/menu.html",
-      "pages/userInfo.html",
-      "pages/login.html",
-      "pages/search.html"
-    ]
-  },
-  "pages/menu.html": {
-    "resources": [
-      "js/mui.min.js",
-      "css/mui.min.css",
-      "fonts/mui.ttf",
-      "libs/crypto-js.js",
-      "libs/vue-i18n.min.js",
-      "i18n/en.js",
-      "libs/vue.min.js",
-      "libs/httpService.js",
-      "i18n/zh_CN.js"
-    ],
-    "refer": [
-      "pages/orderMg/myOder.html",
-      "pages/orderMg/myOrder.html"
-    ]
-  },
-  "pages/userInfo.html": {
-    "resources": [
-      "js/mui.min.js",
-      "fonts/mui.ttf",
-      "css/mui.min.css",
-      "images/userImg.png",
-      "libs/vue.min.js",
-      "libs/httpService.js",
-      "libs/crypto-js.js",
-      "pages/login.html"
-    ],
-    "refer": [
-      "pages/login.html"
-    ]
-  },
-  "pages/search.html": {
-    "resources": [
-      "js/mui.min.js",
-      "css/mui.min.css",
-      "libs/vue.min.js"
-    ]
-  },
-  "pages/orderMg/myOrder.html": {
-    "resources": [
-      "libs/crypto-js.js",
-      "js/mui.min.js",
-      "libs/vue-i18n.min.js",
-      "i18n/en.js",
-      "fonts/mui.ttf",
-      "css/mui.min.css",
-      "libs/vue.min.js",
-      "libs/httpService.js",
-      "i18n/zh_CN.js",
-      "libs/filters.js",
-      "pages/orderMg/order.js",
-      "pages/orderMg/subSearchView.html"
-    ],
-    "refer": [
-      "pages/menu.html",
-      "pages/orderMg/subSearchView.html"
-    ]
-  }
+	"index.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"js/update.js"
+		],
+		"refer": [
+			"index-menu.html"
+		]
+	},
+	"pages/login.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"libs/crypto-js.js",
+			"fonts/mui.ttf",
+			"pages/home.html",
+			"i18n/en.js",
+			"i18n/zh_CN.js",
+			"libs/vue-i18n.min.js",
+			"libs/validation.js",
+			"libs/validate.js"
+		],
+		"refer": [
+			"pages/home.html"
+		]
+	},
+	"pages/home.html": {
+		"resources": [
+			"libs/crypto-js.js",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"fonts/mui.ttf",
+			"libs/vueDirective.js",
+			"pages/search.html",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"i18n/zh_CN.js",
+			"pages/orderMg/order.js",
+			"libs/filters.js",
+			"libs/vueComponents.js"
+		],
+		"refer": [
+			"pages/menu.html",
+			"pages/userInfo.html",
+			"pages/login.html",
+			"pages/search.html"
+		]
+	},
+	"pages/menu.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"libs/crypto-js.js",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"i18n/zh_CN.js"
+		],
+		"refer": [
+			"pages/orderMg/myOder.html",
+			"pages/orderMg/myOrder.html"
+		]
+	},
+	"pages/userInfo.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"images/userImg.png",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"libs/crypto-js.js",
+			"pages/login.html"
+		],
+		"refer": [
+			"pages/login.html"
+		]
+	},
+	"pages/search.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"libs/vue.min.js"
+		]
+	},
+	"pages/orderMg/myOrder.html": {
+		"resources": [
+			"libs/crypto-js.js",
+			"js/mui.min.js",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"i18n/zh_CN.js",
+			"libs/filters.js",
+			"pages/orderMg/order.js",
+			"pages/orderMg/subSearchView.html",
+			"libs/vueComponents.js"
+		],
+		"refer": [
+			"pages/menu.html",
+			"pages/orderMg/subSearchView.html",
+			"pages/orderMg/searchView.html"
+		]
+	},
+	"pages/orderMg/subSearchView.html": {
+		"resources": [
+			"libs/crypto-js.js",
+			"js/mui.min.js",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"i18n/zh_CN.js",
+			"css/mui.min.css"
+		]
+	},
+	"pages/orderMg/searchView.html": {
+		"resources": [
+			"libs/crypto-js.js",
+			"js/mui.min.js",
+			"libs/vue-i18n.min.js",
+			"i18n/en.js",
+			"css/mui.min.css",
+			"libs/vue.min.js",
+			"libs/httpService.js",
+			"i18n/zh_CN.js",
+			"pages/orderMg/order.js"
+		]
+	}
 }

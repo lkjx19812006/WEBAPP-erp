@@ -35,7 +35,11 @@
 			
 			#myOrder .header-filter {
 				background-color: #fff;
-				padding-top: 10px;
+				padding-top: 12px;
+			}
+			
+			#myOrder .mui-table-view-cell {
+				overflow: hidden;
 			}
 			
 			#myOrder .header-filter-wrap {
@@ -65,6 +69,10 @@
 			
 			#myOrder .mui-popover .mui-table-view {
 				max-width: 120px;
+			}
+			
+			#myOrder .more:active {
+				color: #007AFF
 			}
 			/*订单列表开始*/
 			
@@ -114,11 +122,9 @@
 
 	<body>
 		<div class="mui-content" id="myOrder">
-			<header class="mui-bar mui-bar-nav">
-				<h1 class="mui-title">我的订单</h1>
-				<a class="mui-icon mui-icon-bars mui-pull-left" v-tap="{'func':showMenu}"></a>
-				<a class="mui-icon mui-icon-email mui-pull-right"></a>
-			</header>
+			<!--头部组件-->
+			<my-header v-on:show="showMenu" title="我的订单">
+			</my-header>
 			<!--搜索框-->
 			<div class="my-search">
 				<div class="mui-input-row mui-search">
@@ -140,7 +146,7 @@
 						<span>审核状态</span>
 						<span class="mui-icon mui-icon-arrowdown"></span>
 					</a>
-					<a href="#filters">
+					<a class="more" v-tap="{'func': showMore}">
 						<span class="mui-icon mui-icon-more"></span>
 						<span>筛选</span>
 					</a>
@@ -160,22 +166,22 @@
 				</div>
 				<div id="orderSell" class="mui-popover">
 					<ul class="mui-table-view">
-						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.orderStatus === -1}">
 							<a href="#" v-tap="{func:changeState, params:-1}">新的订单</a>
 						</li>
-						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.orderStatus === -1}">
 							<a href="#" v-tap="{func:changeState, params:-1}">订单处理中</a>
 						</li>
-						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.orderStatus === -1}">
 							<a href="#" v-tap="{func:changeState, params:-1}">等待发货</a>
 						</li>
-						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.orderStatus === -1}">
 							<a href="#" v-tap="{func:changeState, params:-1}">等待付款</a>
 						</li>
-						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.orderStatus === -1}">
 							<a href="#" v-tap="{func:changeState, params:-1}">等待验证</a>
 						</li>
-						<li class="mui-table-view-cell" :class="{'my-active':formData.type === -1}">
+						<li class="mui-table-view-cell" :class="{'my-active':formData.orderStatus === -1}">
 							<a href="#" v-tap="{func:changeState, params:-1}">订单完成</a>
 						</li>
 					</ul>
@@ -183,7 +189,7 @@
 				<div id="validate" class="mui-popover">
 					<ul class="mui-table-view">
 						<li class="mui-table-view-cell" :class="{'my-active':formData.validate === 0}">
-							<a href="#" v-tap="{func:changeValidate, params:0}">待审核</a>
+							<a href="#" v-tap="{func:changeValidate, params:0}">待申请</a>
 						</li>
 						<li class="mui-table-view-cell" :class="{'my-active':formData.validate === 1}">
 							<a href="#" v-tap="{func:changeValidate, params:1}">审核中</a>
@@ -238,20 +244,8 @@
 				</li>
 			</ul>
 			<!--底部导航-->
-			<nav class="mui-bar mui-bar-tab">
-				<a class="mui-tab-item mui-active" href="#tabbar">
-					<span class="mui-icon mui-icon-home"></span>
-					<span class="mui-tab-label">主页</span>
-				</a>
-				<a class="mui-tab-item" href="#tabbar-with-contact">
-					<span class="mui-icon mui-icon-plus"></span>
-					<span class="mui-tab-label">更多</span>
-				</a>
-				<a class="mui-tab-item  mui-navigate">
-					<span class="mui-icon mui-icon-contact"></span>
-					<span class="mui-tab-label">我的</span>
-				</a>
-			</nav>
+			<my-navbar>
+			</my-navbar>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../libs/vue.min.js"></script>
@@ -259,47 +253,42 @@
 		<script src="../../libs/filters.js"></script>
 		<script src="../../libs/crypto-js.js"></script>
 		<script src="../../libs/httpService.js"></script>
+		<script src="../../libs/vueComponents.js"></script>
 		<script src="./order.js"></script>
 		<script>
 			mui.init({
-				beforeback: back,
-				subpages: [{
-					url: './subSearchView.html', //子页面HTML地址，支持本地地址和网络地址
-					id: 'subSearchView', //子页面标志
-					styles: {
-						top: '45px', //子页面顶部位置
-						bottom: '0px', //子页面底部位置
-						width: '80%', //子页面宽度，默认为100%
-					},
-					show: {
-
-					},
-					extras: formData //额外扩展参数
-				}]
+				beforeback: back
 			});
-			var myOrder, mask, menu, isshowMenu;
+			var myOrder, mask, menu, isshowMenu, searchView;
 
 			function back() {
 				if(isshowMenu) {
 					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
-					common.closeWebViewById('menu', 'left');
+					if(menu) common.closeWebViewById('menu', 'left');
+					menu = '';
+					if(searchView) common.closeWebViewById('searchView', 'right');
+					searchView = '';
 					mask.close();
 					isshowMenu = false;
 					return false;
 				} else {
 					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
 					if(menu) menu.close('none');
+					if(searchView) searchView.close('none');
 					return true;
 				}
 			}
 			mask = mui.createMask(function() {
 				isshowMenu = false;
-				menu.close();
+				if(menu) menu.close();
+				menu = '';
+				if(searchView) searchView.close();
+				searchView = '';
 			});
 
 			mui.plusReady(function() {
 				myOrder = plus.webview.currentWebview();
-				console.log(JSON.stringify(myOrder))
+				vm.formData = formData;
 				vm.getHttp();
 			})
 			//以上动画显示与窗口加载
@@ -311,16 +300,6 @@
 						list: []
 					}
 				},
-				computed: {
-					formData: function(){
-						if(formData) return formData;
-						return {
-							pn: 1,
-							pSize: 15,
-							type: -1
-						}
-					}
-				},
 				methods: {
 					showMenu: function() {
 						isshowMenu = true
@@ -330,6 +309,7 @@
 							id: 'menu',
 							show: {
 								aniShow: 'slide-in-left',
+								duration: '100'
 							},
 							createNew: false,
 							styles: {
@@ -351,12 +331,8 @@
 							biz_method: 'queryMyOrderList',
 							biz_param: common.filterFormData(this.formData)
 						}
-						console.log(JSON.stringify(this.formData))
 						var _self = this;
-						plus.nativeUI.showWaiting('loading......', {
-							width: 100,
-							height: 80
-						});
+						plus.nativeUI.showWaiting('loading...');
 						common.commonPost(url, body, function(suc) {
 							_self.listData = suc.biz_result
 							plus.nativeUI.closeWaiting();
@@ -379,9 +355,72 @@
 						formData.validate = params;
 						this.getHttp();
 					},
+					//显示筛选列表
+					showMore: function() {
+						//显示侧边搜索	
+						isshowMenu = true
+						searchView = mui.openWindow({
+							url: './searchView.html',
+							id: 'searchView',
+							extras: {
+								formData: this.formData, //扩展参数表单参数
+								parentId: myOrder.id
+							},
+							show: {
+								aniShow: 'slide-in-right',
+							},
+							createNew: false,
+							styles: {
+								right: '0',
+								width: '85%',
+								zindex: 9996
+							},
+							waiting: {
+								autoShow: false, //自动显示等待框，默认为true								
+							}
+						})
+						mask.show()
+					}
 				}
 			})
-			//页面创建完毕后 执行获取数据
+			//自定义事件接受搜索页面传递的数据
+			//获取数据
+			window.addEventListener('getFormData', function(event) {
+				//通过event.detail可获得传递过来的参数内容
+				//将内容合并到vm中 请求新数据
+				if(event.detail !== undefined && typeof event.detail === 'object') {
+					//先过滤空键值对
+					var newObj = common.filterFormData(event.detail);
+					for(var key in newObj) {
+						vm.formData[key] = newObj[key]
+					}
+					//获取数据
+					vm.formData.pn = 1;
+					vm.formData.pSize = 15;
+					vm.getHttp();
+				}
+				setTimeout(function() {
+					if(searchView) common.closeWebViewById('searchView', 'right');
+					searchView = '';
+					mask.close()
+				}, 100)
+			});
+			//重置筛选			
+			window.addEventListener('resetFormData', function(event) {
+				for(var key in vm.formData) {
+					vm.formData[key] = '';
+				}
+				//获取数据
+				vm.formData.pn = 1;
+				vm.formData.pSize = 15;
+				vm.formData.type = -1;
+				vm.getHttp();
+				setTimeout(function() {
+					if(searchView) common.closeWebViewById('searchView', 'right');
+					searchView = '';
+					mask.close()
+				}, 100)
+			})
 		</script>
 	</body>
 

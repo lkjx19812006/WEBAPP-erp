@@ -212,25 +212,25 @@
 		var webView = plus.webview.getWebviewById(webViewId);
 		if(position === 'right') {
 			webView.setStyle({
-				right: '-70%',
+				right: '-85%',
 				zindex: 9999,
 				transition: {
-					duration: 200
+					duration: 250
 				}
 			})
 			setTimeout(function() {
-				webView.hide()
+				webView.close()
 			}, 300)
 		} else {
 			webView.setStyle({
 				left: '-70%',
 				zindex: 9999,
 				transition: {
-					duration: 200
+					duration: 250
 				}
 			})
 			setTimeout(function() {
-				webView.hide()
+				webView.close()
 			}, 300)
 		}
 

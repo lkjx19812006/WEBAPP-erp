@@ -334,11 +334,42 @@
 					"i18n/zh_CN.js",
 					"libs/filters.js",
 					"pages/orderMg/order.js",
-					"pages/orderMg/subSearchView.html"
+					"pages/orderMg/subSearchView.html",
+					"libs/vueComponents.js"
 				],
 				"refer": [
-					"pages/menu.html"
+					"pages/menu.html",
+					"pages/orderMg/searchView.html"
 				],
+				"priority": 0
+			},
+			"pages/orderMg/subSearchView.html": {
+				"resources": [
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js",
+					"css/mui.min.css"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/orderMg/searchView.html": {
+				"resources": [
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js",
+					"pages/orderMg/order.js"
+				],
+				"refer": [],
 				"priority": 0
 			}
 		},

@@ -151,7 +151,7 @@
 				str = '待申请'
 				break;
 			case 1:
-				str = '已申请'
+				str = '审核中'
 				break;
 			case 2:
 				str = '审核通过'

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>search</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--国际化引入-->
+		<script src="../../i18n/en.js"></script>
+		<script src="../../i18n/zh_CN.js"></script>
+		<style>
+			body,
+			.mui-content {
+				background-color: #f0f0f0;
+				color: #333;
+				padding-bottom: 50px;
+				font-size: 16px;
+				padding-top: 10px;
+			}
+			/*搜索条件开始*/
+			
+			#search .search-item {
+				padding: 10px;
+				padding-top: 5px;
+			}
+			
+			#search .search-item .type {
+				border-left: 2px solid #007AFF;
+				text-indent: 10px;
+			}
+			
+			#search .search-item .info {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				flex-wrap: wrap;
+			}
+			
+			#search .search-item .info span {
+				flex: 0 0 auto;
+				padding: 5px 10px;
+				height: 32px;
+				margin: 5px;
+				border: 1px solid #bbb;
+				background-color: #e0e0e0;
+				border-radius: 16px 16px;
+				color: #333;
+			}
+			
+			#search .search-item .info .active {
+				border: 1px solid #007AFF;
+				background-color: #007AFF;
+				color: #fff;
+			}
+			
+			#search .search-item .mui-input-row {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: flex-start;
+			}
+			
+			#search .search-item .mui-input-row span {
+				flex: 0 0 auto;
+				width: 75px;
+				margin-top: 10px;
+				font-size: 14px;
+			}
+			
+			#search .search-item .mui-input-row input {
+				flex: 1;
+				font-size: 14px;
+			}
+			/*底部按钮开始*/
+			
+			#search .mui-bar {
+				border-color: #fff;
+			}
+			
+			#search .mui-bar .reset {
+				border-color: #fff;
+				border-right: 1px solid #ccc;
+			}
+			
+			#search .mui-bar .confirm {
+				background-color: #007AFF;
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="search">
+			<div class="search-item">
+				<div class="type">
+					订单类型
+				</div>
+				<div class="info">
+					<span :class="{'active':formData.type===1}" v-tap="{'func':changeType, params: 1}">销售</span>
+					<span :class="{'active':formData.type===0}" v-tap="{'func':changeType, params: 0}">采购</span>
+				</div>
+			</div>
+			<div class="search-item">
+				<div class="type">
+					订单状态
+				</div>
+				<div class="info">
+					<span>新的订单</span>
+					<span>订单处理中</span>
+					<span>待支付</span>
+					<span>待审核</span>
+					<span>待发货</span>
+					<span>待收货</span>
+					<span>检测中</span>
+					<span>已完成</span>
+					<span>已取消</span>
+				</div>
+			</div>
+			<div class="search-item">
+				<div class="type">
+					审核状态
+				</div>
+				<div class="info">
+					<span :class="{'active':formData.validate===0}" v-tap="{'func':changeValidate, params: 0}">待申请</span>
+					<span :class="{'active':formData.validate===1}" v-tap="{'func':changeValidate, params: 1}">审核中</span>
+					<span :class="{'active':formData.validate===2}" v-tap="{'func':changeValidate, params: 2}">审核通过</span>
+					<span :class="{'active':formData.validate===-2}" v-tap="{'func':changeValidate, params: -2}">审核未通过</span>
+				</div>
+			</div>
+			<div class="search-item">
+				<div class="type">
+					订单来源
+				</div>
+				<div class="info">
+					<span :class="{'active':formData.sourceType===0}" v-tap="{'func':changeSource, params: 0}">新建</span>
+					<span :class="{'active':formData.sourceType===1}" v-tap="{'func':changeSource, params: 1}">意向</span>
+					<span :class="{'active':formData.sourceType===2}" v-tap="{'func':changeSource, params: 2}">报价</span>
+					<span :class="{'active':formData.sourceType===3}" v-tap="{'func':changeSource, params: 3}">样品</span>
+					<span :class="{'active':formData.sourceType===4}" v-tap="{'func':changeSource, params: 4}">库存</span>
+					<span :class="{'active':formData.sourceType===5}" v-tap="{'func':changeSource, params: 5}">待采购</span>
+					<!--<span :class="{'active':formData.sourceType===0}" v-tap="{'func':changeSource, params: 6}">采购单</span>-->
+				</div>
+			</div>
+			<div class="search-item">
+				<div class="mui-input-row">
+					<span>订单ID</span>
+					<input v-model="formData.id" type="text" placeholder="请输入订单ID，长按可粘贴">
+				</div>
+				<div class="mui-input-row">
+					<span>客户ID</span>
+					<input v-model="formData.customer" type="text" placeholder="请输入客户ID，长按可粘贴">
+				</div>
+				<div class="mui-input-row">
+					<span>收货人姓名</span>
+					<input v-model="formData.consignee" type="text" placeholder="请输入收货人姓名">
+				</div>
+				<div class="mui-input-row">
+					<span>收货人手机</span>
+					<input v-model="formData.consigneePhone" type="text" placeholder="请输入收货人手机">
+				</div>
+				<div class="mui-input-row">
+					<span>日期筛选</span>
+					<input type="text" placeholder="请输入日期筛选">
+				</div>
+			</div>
+			<nav class="mui-bar mui-bar-tab ">
+				<span class="mui-tab-item reset" v-tap="{'func': myReset}">重置</span>
+				<span class="mui-tab-item confirm" v-tap="{'func':myConfirm}">确定</span>
+			</nav>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/crypto-js.js"></script>
+		<script src="../../libs/httpService.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
+			mui.init({
+				keyEventBind: {
+					backbutton: false,
+					menubutton: false
+				}
+			});
+			var search;
+			mui.plusReady(function() {
+				//获取当前窗口的WebviewObject对象
+				search = plus.webview.currentWebview();
+				vm.formData = search.formData;
+			})
+			var vm = new Vue({
+				el: '#search',
+				data: {
+					formData: {}
+				},
+				methods: {
+					//改变类型
+					changeType: function(params) {
+						this.formData.type = params
+					},
+					//改变订单
+					changeOrder: function(params) {
+						//this.formData.orderStatus = params
+					},
+					//改变审核
+					changeValidate: function(params) {
+						this.formData.validate = params
+					},
+					//改变订单来源
+					changeSource: function(params) {
+						this.formData.sourceType = params
+					},
+					//单击确定按钮 将数据返回
+					myConfirm: function() {
+						//通过ID获取对象
+						var parent = plus.webview.getWebviewById(search.parentId);
+						mui.fire(parent, 'getFormData', this.formData);
+					},
+					//重置按钮
+					myReset: function() {
+						//通过ID获取对象
+						var parent = plus.webview.getWebviewById(search.parentId);
+						mui.fire(parent, 'resetFormData');
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>
