@@ -70,13 +70,26 @@
 			processData: true, //data 数据不转换 key=value&key=value形式,		
 			success: function(data) {
 				//服务器返回响应，根据响应结果，分析是否登录成功；
-				suc(data)
-				console.log(JSON.stringify(data))
+				if(data.code === '1c01') {
+					suc(data)
+					console.log(JSON.stringify(data))
+				} else if(data.code === '0e00') {
+					err(data)
+					mui.toast(data.msg, {
+						duration: 1500,
+						type: 'div'
+					})
+					console.log(JSON.stringify(data))
+				}
 			},
 			error: function(xhr, type, errorThrown) {
 				console.log(JSON.stringify(errorThrown))
 				//异常处理；
 				err(JSON.stringify(type))
+				mui.toast(JSON.stringify(type) + JSON.stringify(errorThrown), {
+					duration: 1500,
+					type: 'div'
+				})
 			}
 		});
 
@@ -112,9 +125,9 @@
 	common.filterFormData = function(params) {
 		if(params && typeof params == 'object') {
 			var obj = {};
-			for(var key in params){
+			for(var key in params) {
 				if(params[key] || params[key] === 0 || params[key] === false) obj[key] = params[key];
-			}			
+			}
 			return obj;
 		} else {
 			return params;
@@ -261,9 +274,9 @@
 				el.addEventListener('tap', function(e) {
 					if(typeof binding.value.func === 'function') {
 						if(binding.value.params !== undefined) {
-							binding.value.func.call(_self,binding.value.params,e);
+							binding.value.func.call(_self, binding.value.params, e);
 						} else {
-							binding.value.func.call(_self,e);
+							binding.value.func.call(_self, e);
 						}
 					} else {
 						return console.error('The param of directive "v-tap" must be a Object!');
@@ -281,13 +294,13 @@
 	};
 	window.i18n = new window.VueI18n({
 		locale: 'zh',
-		messages:messages
+		messages: messages
 	})
 
-	//表单校验
+	//表单校验 参数是一个数组
 	common.validate = function(params) {
 		var flag = true;
-		if(params && typeof params === 'object') {
+		if(params !== undefined && params instanceof Array) {
 			for(var i = 0; i < params.length; i++) {
 				for(var key in params[i]) {
 					if(params[i].required) {
@@ -345,6 +358,20 @@
 				data: data,
 				required: true,
 				msg: window.i18n.t('message.empty_password')
+			}
+		},
+		//校验开始时间和结束时间
+		startEnd: function(startTime, endTime) {
+			startTime = new Date(startTime).getTime();
+			endTime = new Date(endTime).getTime();
+			if(endTime - startTime <= 0) {
+				mui.toast('结束时间必须大于开始时间', {
+					duration: 'short',
+					type: 'div'
+				})
+				return false
+			} else {
+				return true;
 			}
 		}
 

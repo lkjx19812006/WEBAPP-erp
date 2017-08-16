@@ -171,7 +171,11 @@
 		if(time === undefined || time === '' || time === 0) {
 			return '1970-01-01 00:00:00';
 		} else {
+			//兼容IOS时间显示问题
+			time = time.replace(/\-/g, "/").split('.')[0];
+			console.log(time)
 			var date = new Date(time);
+			console.log(date)
 			var y = date.getFullYear();
 			var M = date.getMonth() + 1;
 			var d = date.getDate();

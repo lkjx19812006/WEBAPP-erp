@@ -74,6 +74,18 @@
 				flex: 1;
 				font-size: 14px;
 			}
+			
+			#search .search-item .date-wrap {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+			}
+			
+			#search .search-item .date-wrap span {
+				border-left: 2px solid #007AFF;
+				text-indent: 10px;
+				margin-bottom: 10px;
+			}
 			/*底部按钮开始*/
 			
 			#search .mui-bar {
@@ -161,9 +173,11 @@
 					<span>收货人手机</span>
 					<input v-model="formData.consigneePhone" type="text" placeholder="请输入收货人手机">
 				</div>
-				<div class="mui-input-row">
+				<div class="date-wrap">
 					<span>日期筛选</span>
-					<input type="text" placeholder="请输入日期筛选">
+					<input type="date" @change="dateChange" v-model="formData.startTime" placeholder="开始时间">
+					<input v-if="!formData.startTime" type="text" disabled placeholder="先选开始时间">
+					<input v-if="formData.startTime" v-model="formData.endTime" type="date">
 				</div>
 			</div>
 			<nav class="mui-bar mui-bar-tab ">
@@ -193,6 +207,7 @@
 			var vm = new Vue({
 				el: '#search',
 				data: {
+					startTime: '',
 					formData: {}
 				},
 				methods: {
@@ -212,9 +227,16 @@
 					changeSource: function(params) {
 						this.formData.sourceType = params
 					},
+					dateChange: function(e) {
+						startTime = e.target.value;
+					},
 					//单击确定按钮 将数据返回
 					myConfirm: function() {
 						//通过ID获取对象
+						//校验结束时间大于开始时间
+						if(this.formData.startTime !== undefined && this.formData.startTime !== undefined && !common.ruls.startEnd(this.formData.startTime, this.formData.endTime)) {
+							return
+						}
 						var parent = plus.webview.getWebviewById(search.parentId);
 						mui.fire(parent, 'getFormData', this.formData);
 					},

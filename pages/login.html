@@ -135,48 +135,36 @@
 							}
 							var _self = this;
 							common.commonPost(common.commonUrl + common.apiUrl.login, obj, function(suc) {
-								if(suc.code === '1c01') {
-									common.setItem('KEY', suc.biz_result.KEY)
-									common.setItem('SID', suc.biz_result.SID)
-									window.localStorage.KEY = suc.biz_result.KEY
-									window.localStorage.SID = suc.biz_result.SID;
-									common.KEY = suc.biz_result.KEY;
-									common.SID = suc.biz_result.SID;
-									//自动登录 记录账号密码
-									if(vm.autoLogin === 'on') {
-										common.setItem('no', _self.no)
-										common.setItem('password', _self.password)
-									} else {
-										common.setItem('no', '')
-										common.setItem('password', '')
-									}
-									mui(_self.$refs.submit).button('reset')
-									//打开新的窗口
-									mui.openWindow({
-										url: 'home.html',
-										id: 'home',
-										createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-										waiting: {
-											autoShow: true, //自动显示等待框，默认为true
-											title: 'loading...', //等待对话框上显示的提示内容
-										}
-									})
-									//获取用户信息
-									_self.getUserInfo()
-								} else if(suc.code === '0e00') {
-									mui.toast(suc.msg, {
-										duration: 'short',
-										type: 'div'
-									})
-									mui(_self.$refs.submit).button('reset')
+								common.setItem('KEY', suc.biz_result.KEY)
+								common.setItem('SID', suc.biz_result.SID)
+								window.localStorage.KEY = suc.biz_result.KEY
+								window.localStorage.SID = suc.biz_result.SID;
+								common.KEY = suc.biz_result.KEY;
+								common.SID = suc.biz_result.SID;
+								//自动登录 记录账号密码
+								if(vm.autoLogin === 'on') {
+									common.setItem('no', _self.no)
+									common.setItem('password', _self.password)
+								} else {
+									common.setItem('no', '')
+									common.setItem('password', '')
 								}
-
+								mui(_self.$refs.submit).button('reset')
+								//打开新的窗口
+								mui.openWindow({
+									url: 'home.html',
+									id: 'home',
+									createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+									waiting: {
+										autoShow: true, //自动显示等待框，默认为true
+										title: 'loading...', //等待对话框上显示的提示内容
+									}
+								})
+								//获取用户信息
+								_self.getUserInfo()
+								mui(_self.$refs.submit).button('reset');
 							}, function(err) {
 								mui(_self.$refs.submit).button('reset');
-								mui.toast(err, {
-									duration: 'long',
-									type: 'div'
-								})
 							})
 						}
 					},
