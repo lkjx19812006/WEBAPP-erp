@@ -5,21 +5,17 @@
 		<meta charset="utf-8">
 		<title>Hello MUI</title>
 		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../css/mui.min.css">
 		<!--国际化引入-->
 		<script src="../i18n/en.js"></script>
 		<script src="../i18n/zh_CN.js"></script>
 		<style>
-			body,
 			.mui-content {
-				background-color: #e0e0e0;
-				color: #fff;
+				background-color: #333;
 			}
 			
-			#menu {
-				color: #333
+			#menu .mui-table-view {
+				margin-top: 0;
 			}
 			
 			#menu .mui-navigate-right {
@@ -40,15 +36,15 @@
 	<body>
 		<div class="mui-content" id="menu">
 			<ul class="mui-table-view">
-				<li class="mui-table-view-cell mui-collapse">
+				<li class="mui-table-view-cell mui-collapse mui-active">
 					<a class="mui-navigate-right" href="#">订单管理</a>
 					<div v-tap="{'func': openWindow, params: {'url':'./orderMg/myOrder.html','id': 'myOder'}}" class="mui-collapse-content">
 						<p>我的订单</p>
 					</div>
-					<div class="mui-collapse-content">
+					<div v-tap="{'func': openWindow, params: {'url':'./orderMg/departmentOrder.html','id': 'departmentOrder'}}" class="mui-collapse-content">
 						<p>部门订单</p>
 					</div>
-					<div class="mui-collapse-content">
+					<div v-tap="{'func': openWindow, params: {'url':'./orderMg/allOrder.html','id': 'allOrder'}}" class="mui-collapse-content">
 						<p>全部订单</p>
 					</div>
 					<div class="mui-collapse-content">
@@ -73,7 +69,7 @@
 						<p>需要我采购</p>
 					</div>
 				</li>
-				<li class="mui-table-view-cell mui-collapse">
+				<li class="mui-table-view-cell mui-collapse  mui-active">
 					<a class="mui-navigate-right" href="#">采购单管理</a>
 					<div class="mui-collapse-content">
 						<p>我的订单</p>
@@ -105,7 +101,7 @@
 					<div class="mui-collapse-content">
 						<p>需要我采购</p>
 					</div>
-				</li>				
+				</li>
 			</ul>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -121,13 +117,11 @@
 					menubutton: false
 				},
 			});
-			var home;
+			var menu;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
 				menu = plus.webview.currentWebview();
-				//获取首页的webViewID
-				home = plus.webview.getWebviewById('home');
-
+				menu.setStyle({});
 				//解决android 4.4以下版本webview移动时，导致fixed定位元素错乱的bug;
 				if(mui.os.android && parseFloat(mui.os.version) < 4.4) {
 					document.querySelector("header.mui-bar").style.position = "static";
@@ -135,36 +129,32 @@
 					document.querySelector(".mui-bar-nav~.mui-content").style.paddingTop = "0px";
 				}
 			})
-
+			//menu切换页面不能正常关闭的问题
 			var vm = new Vue({
 				el: '#menu',
 				data: {},
 				methods: {
 					openWindow: function(params) {
-						mui.openWindow({
+						//先预加载页面
+						var nowPage = mui.preload({
 							url: params.url,
-							id: params.id,
-							createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-							waiting: {
-								autoShow: true, //自动显示等待框，默认为true
-								title: 'loading...', //等待对话框上显示的提示内容
-							}
-						})
+							id: params.id, //默认使用当前页面的url作为id							
+							createNew: false //禁止重复创建
+						});
+						//200毫秒后显示
+						//必须先让当前页面还原 才能打开下级页面
+
+						//						//获取当前页面ID
+						//						var nowPageId = common.getItem('nowPageId');
+						//						//通知当前页面关闭菜单	再打开新页面						
+						//						var nowWebView = plus.webview.getWebviewById(nowPageId);
+						//						mui.fire(nowWebView, 'closeMenu');
 						setTimeout(function() {
-							mui.fire(home, 'closeMask');
-						}, 200)
+							nowPage.show('slide-in-right', 300)
+						}, 300)
 					}
 				}
 			})
-			//
-			//			//缓存老的 old_back 重新back
-			//			var old_back = mui.back;
-			//			mui.back = function() {
-			//				console.log(JSON.stringify(home))
-			//				old_back()
-			//				mui.fire(home, 'closeMask');
-			//				return true;
-			//			}
 		</script>
 	</body>
 

@@ -221,30 +221,12 @@
 	 * position 方向位置 left 或者 right
 	 * width 盒子宽度 根据盒子设置的大小设置 否则会遮盖头部
 	 * **/
-	common.closeWebViewById = function closeWebViewById(webViewId, position) {
+	common.hideWebViewById = function(webViewId, position) {
 		var webView = plus.webview.getWebviewById(webViewId);
 		if(position === 'right') {
-			webView.setStyle({
-				right: '-85%',
-				zindex: 9999,
-				transition: {
-					duration: 250
-				}
-			})
-			setTimeout(function() {
-				webView.close()
-			}, 300)
+			webView.hide('slide-out-right', 300)
 		} else {
-			webView.setStyle({
-				left: '-70%',
-				zindex: 9999,
-				transition: {
-					duration: 250
-				}
-			})
-			setTimeout(function() {
-				webView.close()
-			}, 300)
+			webView.hide('slide-out-left', 300)
 		}
 
 	}

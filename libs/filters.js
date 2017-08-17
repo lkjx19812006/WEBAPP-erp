@@ -118,6 +118,18 @@
 		}
 		return val;
 	}
+
+	//过滤获取一批商品总价 array待过滤数组 params总价字段为字符串
+	filters.priceTotal = function(array, params) {
+		var total = 0;
+		if(array !== undefined && params !== undefined && array instanceof Array) {
+			for(var i = 0; i < array.length; i++) {
+				total = total - (-array[i][params]);
+			}
+		}
+		return total
+	}
+
 	//过滤文字长度
 	filters.filterTxt = function(txt, num) {
 		if(txt && txt.length > num && num && num != 0) {
@@ -165,8 +177,8 @@
 		}
 		return str;
 	}
-	//过滤时间
-	//消息的时间过滤
+
+	//时间过滤
 	filters.getYMD = function(time, type) {
 		if(time === undefined || time === '' || time === 0) {
 			return '1970-01-01 00:00:00';

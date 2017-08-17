@@ -151,18 +151,17 @@
 								}
 								mui(_self.$refs.submit).button('reset')
 								//打开新的窗口
-								mui.openWindow({
+								var home = mui.preload({
 									url: 'home.html',
 									id: 'home',
-									createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-									waiting: {
-										autoShow: true, //自动显示等待框，默认为true
-										title: 'loading...', //等待对话框上显示的提示内容
-									}
+									createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示	
 								})
+								setTimeout(function() {
+									home.show('slide-in-right', 300);
+									mui(_self.$refs.submit).button('reset');
+								}, 200)
 								//获取用户信息
 								_self.getUserInfo()
-								mui(_self.$refs.submit).button('reset');
 							}, function(err) {
 								mui(_self.$refs.submit).button('reset');
 							})
@@ -211,7 +210,6 @@
 			})
 			//缓存老的 old_back 重新back
 			var old_back = mui.back;
-			console.log()
 			mui.back = function() {
 				mui.confirm(vm.$t('message.Determine_exit_application'), vm.$t('message.friendly_warning'), [vm.$t('message.confirm'), vm.$t('message.cancel')], function(e) {
 					if(e.index === 0) {

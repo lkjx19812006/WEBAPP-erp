@@ -149,17 +149,39 @@
 				flex: 0 0 auto;
 				width: 30%;
 			}
+			/*底部导航开始*/
 			
-			/*底部导航开始*/			
-			#myOrderDetail .mui-bar-tab a:nth-child(1) {
+			#myOrderDetail .my-nav-tab {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				position: fixed;
+				width: 100%;
+				left: 0;
+				bottom: 0;
+				border-top: 1px solid #d0d0d0;
+			}
+			
+			#myOrderDetail .my-nav-tab a {
+				flex: 0 0 auto;
+				width: 33.3333%;
+				color: #fff;
+				text-align: center;
+				height: 50px;
+				line-height: 50px;
+			}
+			
+			#myOrderDetail .my-nav-tab a:nth-child(1) {
 				background-color: #007AFF;
 				color: #fff;
 			}
-			#myOrderDetail .mui-bar-tab a:nth-child(2) {
+			
+			#myOrderDetail .my-nav-tab a:nth-child(2) {
 				background-color: #fff;
 				color: #333;
 			}
-			#myOrderDetail .mui-bar-tab a:nth-child(3){
+			
+			#myOrderDetail .my-nav-tab a:nth-child(3) {
 				border: none;
 				background-color: #8A6DE9;
 				color: #fff;
@@ -174,7 +196,7 @@
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 				<h1 class="mui-title">订单详情</h1>
 			</header>
-			<ul class="list-wrap" v-show="!detailData.id">
+			<ul class="list-wrap" v-show="detailData">
 				<!--基本信息-->
 				<li class="list-item">
 					<div class="title">
@@ -184,39 +206,45 @@
 					<div class="base-info">
 						<div class="item-info">
 							<span class="tit">创建时间</span>
-							<span class="txt">2017-08-11</span>
+							<span class="txt">{{detailData.ctime, 'YYYY-MM-DD' | getYMD}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">订单ID：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">{{detailData.id}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">订单状态：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">{{detailData.orderStatus}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">订单类型：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">{{detailData.type | orderType}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">客户名称：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">{{detailData.customerName}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">联系电话：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">{{detailData.customerPhone}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">收货人姓名：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">{{detailData.consignee}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">收货人电话：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">{{detailData.consigneePhone}}</span>
 						</div>
 						<div class="item-info">
 							<span class="tit">收货地址：</span>
-							<span class="txt">12121212121</span>
+							<span class="txt">
+								{{detailData.countryName}}
+								{{detailData.provinceName}}
+								{{detailData.cityName}}
+								{{detailData.districtName}}
+								{{detailData.consigneeAddr}}
+							</span>
 						</div>
 					</div>
 				</li>
@@ -232,26 +260,15 @@
 						<span>销量</span>
 						<span>合计金额</span>
 					</div>
-					<div class="product-table-td">
-						<span class="name">藏红花</span>
-						<span class="price">13元/g</span>
-						<span class="num">1kg</span>
-						<span class="total">1kg</span>
+					<div class="product-table-td" v-for="product in detailData.goods" :key="product.id">
+						<span class="name">{{product.breedName}}</span>
+						<span class="price">{{product.price}}元/{{product.unit | idToUnit}}</span>
+						<span class="num">{{product.number}}{{product.unit | idToUnit}}</span>
+						<span class="total">{{product.amount}}元</span>
 					</div>
-					<div class="product-table-td">
-						<span class="name">藏红花</span>
-						<span class="price">13元/g</span>
-						<span class="num">1kg</span>
-						<span class="total">1kg</span>
-					</div>
-					<div class="product-table-td">
-						<span class="name">藏红花</span>
-						<span class="price">13元/g</span>
-						<span class="num">1kg</span>
-						<span class="total">1kg</span>
-					</div>
+
 					<div class="product-table-total">
-						<h4 class="totalNum">3900</h4 >
+						<h4 class="totalNum"> {{detailData.goods, 'amount' | priceTotal}}元</h4>
 					</div>
 				</li>
 
@@ -302,15 +319,15 @@
 				</li>
 			</ul>
 			<!--底部按钮-->
-			<nav class="mui-bar mui-bar-tab">
-				<a class="mui-tab-item">
-					<span class="mui-tab-label">申请收款</span>
+			<nav class="my-nav-tab">
+				<a class="nav-tab-item">
+					<span class="nav-tab-label">申请收款</span>
 				</a>
-				<a class="mui-tab-item">
-					<span class="mui-tab-label">售后申请</span>
+				<a class="nav-tab-item">
+					<span class="nav-tab-label">售后申请</span>
 				</a>
-				<a class="mui-tab-item">
-					<span class="mui-tab-label">验收合格</span>
+				<a class="nav-tab-item">
+					<span class="nav-tab-label">验收合格</span>
 				</a>
 			</nav>
 		</div>
@@ -322,7 +339,7 @@
 		<script src="../../libs/httpService.js"></script>
 		<script>
 			mui.init();
-			var myOrderDetail, detailData;
+			var myOrderDetail;
 			mui.plusReady(function() {
 				myOrderDetail = plus.webview.currentWebview();
 
@@ -331,16 +348,50 @@
 				el: '#myOrderDetail',
 				i18n: window.i18n,
 				data: {
+					id: '',
 					detailData: {}
 				},
 				methods: {
-
+					//重置数据
+					resetData: function() {
+						this.detailData = {}
+					},
+					//通过传入ID 获取订单详情数据
+					getDetailHttp() {
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'erpOrderService',
+							biz_method: 'getOrderDetail',
+							biz_param: {
+								id: this.id,
+							}
+						}
+						var _self = this;
+						plus.nativeUI.showWaiting('loading...');
+						common.commonPost(url, body, function(suc) {
+							this.detailData = suc.biz_result;
+							plus.nativeUI.closeWaiting();
+						}, function(err) {
+							plus.nativeUI.closeWaiting();
+						})
+					}
 				}
 			})
 			//注册一个时间用来监听ID变化请求数据
-			window.addEventListener('getDetail', function(event) {
-				vm.detailData = event.detail;
+			window.addEventListener('getDetailId', function(event) {
+				vm.id = event.detail;
+				vm.getDetailHttp()
 			})
+
+			//重写返回逻辑
+			mui.back = function() {
+				plus.webview.currentWebview().hide("auto", 200);
+				//动画结束后，恢复默认值
+				setTimeout(function() {
+					window.scrollTo(0, 0);
+					vm.resetData();
+				}, 200);
+			}
 		</script>
 	</body>
 

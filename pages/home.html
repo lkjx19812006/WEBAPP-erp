@@ -9,16 +9,26 @@
 		<!--国际化引入-->
 		<script src="../i18n/en.js"></script>
 		<script src="../i18n/zh_CN.js"></script>
+		<style>
+			#offCanvasWrapper .mui-off-canvas-left {
+				background-color: #f0f0f0;
+			}
+		</style>
 	</head>
 
 	<body>
-		<!-- 主页面标题 -->
-		<div class="mui-content" id="home">
+		<div class="mui-content" id="myOrder">
+			<!--头部导航-->
 			<my-header v-on:show="showMenu" title="移动ERP">
 			</my-header>
+			<div>
+
+			</div>
+			<!--底部-->
 			<my-navbar>
 			</my-navbar>
 		</div>
+
 		<script src="../js/mui.min.js"></script>
 		<script src="../libs/vue.min.js"></script>
 		<script src="../libs/vue-i18n.min.js"></script>
@@ -30,84 +40,89 @@
 			mui.init({
 				beforeback: back
 			});
-			var home, menu, mask, userInfo, isshowMenu;
 
 			function back() {
-				if(isshowMenu) {
-					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
-					common.closeWebViewById('menu', 'left');
-					mask.close();
-					isshowMenu = false;
+				if(isShowMenu) {
+					mask.close()
 					return false;
-				} else {
-					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
-					if(menu) menu.close('none');
-					return true;
 				}
+				return true;
 			}
+			var home, menu, isShowMenu, mask;
 			mask = mui.createMask(function() {
-				isshowMenu = false;
-				menu.close();
-			});
+				closeView()
+			})
+
+			//打开菜单
+			function openView() {
+				menu.show('none', 0, function() {
+					home.setStyle({
+						left: '70%',
+						transition: {
+							duration: 200
+						}
+					});
+					setTimeout(function() {
+						mask.show()
+					}, 200)
+					isShowMenu = true;
+				})
+			}
+			//关闭菜单
+			function closeView() {
+				home.setStyle({
+					left: 0,
+					transition: {
+						duration: 200
+					},
+				});
+
+				setTimeout(function() {
+					menu.hide();
+				}, 250);
+				//改变标志位
+				isShowMenu = false;
+			}
+
 			var vm = new Vue({
-				el: '#home',
+				el: '#myOrder',
 				data: {
 					msgNum: 0,
 				},
 				methods: {
-					clickUser: function() {
-						console.log(this)
-					},
 					showMenu: function() {
-						isshowMenu = true
-						//显示菜单							
-						menu = mui.openWindow({
-							url: 'menu.html',
-							id: 'menu',
-							show: {
-								aniShow: 'slide-in-left',
-							},
-							createNew: false,
-							styles: {
-								left: '0',
-								width: '70%',
-								zindex: 9999
-							},
-							waiting: {
-								autoShow: false, //自动显示等待框，默认为true
-								title: '正在加载...', //等待对话框上显示的提示内容
-							}
-						})
-						mask.show()
-					},
-					showUserInfo: function() {
-						userInfo = mui.openWindow({
-							url: 'userInfo.html',
-							id: 'userInfo',
-							show: {
-								aniShow: 'slide-in-right',
-							},
-							createNew: false,
-							waiting: {
-								autoShow: false, //自动显示等待框，默认为true
-							}
-						})
+						openView()
+						//设置当前移动页面的ID
+						//common.setItem('nowPageId', 'home');
 					}
 				}
 			})
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
-				//校验登录状态
-				//				if(!common.validateLogin()) {
-				//					setTimeout(function() {
-				//						home.close();
-				//					}, 0)
-				//				}
+				home.setStyle({
+					zindex: 99
+				})
+				setTimeout(function() {
+					//侧滑菜单默认隐藏，这样可以节省内存；
+					isShowMenu = false;
+					menu = mui.preload({
+						url: './menu.html',
+						id: 'home-menu',
+						styles: {
+							left: 0,
+							width: '70%',
+							zindex: 97,
+							scrollIndicator: 'none',
+						}
+					});
+				}, 300);
 			})
-			//添加自定义事件监听
-			window.addEventListener('closeMask', function(event) {
-				mask.close()
-			});
+
+			window.addEventListener('closeMenu', function(event) {
+				
+				
+				
+			})
 		</script>
 	</body>
 

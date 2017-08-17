@@ -10,13 +10,13 @@
 		<script src="../../i18n/en.js"></script>
 		<script src="../../i18n/zh_CN.js"></script>
 		<style>
-			#myOrder {
+			#allOrder {
 				padding-top: 45px;
 				padding-bottom: 60px;
 			}
 			/*头部搜索开始*/
 			
-			#myOrder .my-search {
+			#allOrder .my-search {
 				padding: 0 10px;
 				padding-top: 5px;
 				border-bottom: 1px solid #d0d0d0;
@@ -27,22 +27,22 @@
 				color: #007AFF
 			}
 			
-			#myOrder .my-search .mui-input-clear {
+			#allOrder .my-search .mui-input-clear {
 				background-color: #fff;
 				color: #333
 			}
 			/*头部筛选开始*/
 			
-			#myOrder .header-filter {
+			#allOrder .header-filter {
 				background-color: #fff;
 				padding-top: 12px;
 			}
 			
-			#myOrder .mui-table-view-cell {
+			#allOrder .mui-table-view-cell {
 				overflow: hidden;
 			}
 			
-			#myOrder .header-filter-wrap {
+			#allOrder .header-filter-wrap {
 				display: flex;
 				padding: 5px;
 				flex-direction: row;
@@ -52,33 +52,33 @@
 				border-top: 1px solid #ccc;
 			}
 			
-			#myOrder .header-filter-wrap a {
+			#allOrder .header-filter-wrap a {
 				color: #666;
 				font-size: 14px;
 			}
 			
-			#myOrder .header-filter-wrap .mui-icon {
+			#allOrder .header-filter-wrap .mui-icon {
 				font-size: 12px;
 			}
 			
-			#myOrder .mui-popover {
+			#allOrder .mui-popover {
 				width: 120px;
 				font-size: 14px;
 				color: #666;
 			}
 			
-			#myOrder .mui-popover .mui-table-view {
+			#allOrder .mui-popover .mui-table-view {
 				max-width: 120px;
 			}
 			
-			#myOrder .more:active {
+			#allOrder .more:active {
 				color: #007AFF
 			}
 			/*订单列表开始*/
 			
-			#myOrder .list-wrap {}
+			#allOrder .list-wrap {}
 			
-			#myOrder .list-wrap .item {
+			#allOrder .list-wrap .item {
 				display: flex;
 				flex-direction: column;
 				justify-content: flex-start;
@@ -88,32 +88,32 @@
 				color: #333;
 			}
 			
-			#myOrder .list-wrap .item:active {
+			#allOrder .list-wrap .item:active {
 				background-color: #f0f0f0;
 			}
 			
-			#myOrder .list-wrap .detail {
+			#allOrder .list-wrap .detail {
 				display: flex;
 				flex-direction: row;
 				justify-content: flex-start;
 				padding: 2px 0;
 			}
 			
-			#myOrder .list-wrap .detail .tit {
+			#allOrder .list-wrap .detail .tit {
 				flex: 0 0 auto;
 			}
 			
-			#myOrder .list-wrap .detail .info {
+			#allOrder .list-wrap .detail .info {
 				flex: 1;
 			}
 			
-			#myOrder .list-wrap .detail .validate {
+			#allOrder .list-wrap .detail .validate {
 				flex: 0 0 auto;
 				align-self: flex-end;
 				color: orangered;
 			}
 			
-			#myOrder .my-active {
+			#allOrder .my-active {
 				background-color: #e0e0e0;
 				color: #007AFF;
 			}
@@ -121,7 +121,7 @@
 	</head>
 
 	<body>
-		<div class="mui-content" id="myOrder">
+		<div class="mui-content" id="allOrder">
 			<!--头部组件-->
 			<my-header ref="header" v-on:show="showMenu" v-on:mysrolltop="goToTop" title="我的订单">
 			</my-header>
@@ -285,21 +285,19 @@
 					return false;
 				}
 				if(isshowSearch) {
-					mask.close()
 					return false;
 				}
 				return true;
 			}
 
-			var myOrder, mask, menu, isshowMenu, searchView, isshowSearch, orderDetail;
+			var allOrder, mask, menu, isshowMenu, searchView, isshowSearch, orderDetail;
 			mask = mui.createMask(function() {
 				closeView()
-				console.log('sadfasdfsad')
 			})
 			//打开菜单
 			function openView() {
 				menu.show('none', 0, function() {
-					myOrder.setStyle({
+					allOrder.setStyle({
 						left: '70%',
 						transition: {
 							duration: 200
@@ -313,23 +311,18 @@
 			}
 			//关闭菜单
 			function closeView() {
-				myOrder.setStyle({
+				allOrder.setStyle({
 					left: 0,
 					transition: {
 						duration: 200
 					},
 				});
-				if(isshowSearch) {
-					common.hideWebViewById('myOrder-searchView', 'right')
-				}
-				if(isshowMenu) {
-					setTimeout(function() {
-						menu.hide();
-					}, 250);
-				}
+
+				setTimeout(function() {
+					menu.hide();
+				}, 250);
 				//改变标志位
 				isshowMenu = false;
-				isshowSearch = false;
 			}
 
 			mask = mui.createMask(function() {
@@ -337,8 +330,8 @@
 			});
 
 			mui.plusReady(function() {
-				myOrder = plus.webview.currentWebview();
-				myOrder.setStyle({
+				allOrder = plus.webview.currentWebview();
+				allOrder.setStyle({
 					zindex: 99
 				})
 
@@ -346,15 +339,15 @@
 				vm.getHttp();
 				//预加载详情页
 				orderDetail = mui.preload({
-					url: './myOrderDetail.html',
-					id: 'myOrderDetail', //默认使用当前页面的url作为id
+					url: './allOrderDetail.html',
+					id: 'allOrderDetail', //默认使用当前页面的url作为id
 				});
 				setTimeout(function() {
 					//侧滑菜单默认隐藏，这样可以节省内存；
 					isShowMenu = false;
 					menu = mui.preload({
 						url: '../menu.html',
-						id: 'myOrder-menu',
+						id: 'allOrder-menu',
 						styles: {
 							left: 0,
 							width: '70%',
@@ -366,7 +359,7 @@
 			})
 			//以上动画显示与窗口加载
 			var vm = new Vue({
-				el: '#myOrder',
+				el: '#allOrder',
 				i18n: window.i18n,
 				data: {
 					listData: {
@@ -376,7 +369,7 @@
 				methods: {
 					showMenu: function() {
 						openView()
-						//common.setItem('nowPageId', 'myOrder');
+						//common.setItem('nowPageId', 'allOrder');
 					},
 					//获取列表是数据
 					getHttp: function(fn) {
@@ -437,10 +430,10 @@
 						isshowSearch = true
 						searchView = mui.openWindow({
 							url: './searchView.html',
-							id: 'myOrder-searchView',
+							id: 'searchView',
 							extras: {
 								formData: this.formData, //扩展参数表单参数
-								parentId: myOrder.id
+								parentId: allOrder.id
 							},
 							show: {
 								aniShow: 'slide-in-right',
@@ -449,7 +442,7 @@
 							styles: {
 								right: '0',
 								width: '85%',
-								zindex: 100
+								zindex: 98
 							},
 							waiting: {
 								autoShow: false, //自动显示等待框，默认为true								
@@ -506,6 +499,8 @@
 					vm.getHttp();
 				}
 				setTimeout(function() {
+					if(searchView) common.closeWebViewById('searchView', 'right');
+					searchView = '';
 					mask.close()
 				}, 100)
 			});
@@ -519,6 +514,8 @@
 				vm.formData.type = -1;
 				vm.getHttp();
 				setTimeout(function() {
+					if(searchView) common.closeWebViewById('searchView', 'right');
+					searchView = '';
 					mask.close()
 				}, 100)
 			})
