@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../../i18n/en.js"></script>
+		<script src="../../i18n/zh_CN.js"></script>
+		<style>
+			ul,
+			li {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			body{
+				background-color: #fff;
+			}
+			.mui-content {
+				padding-top: 45px;
+				padding-bottom: 50px;
+				background-color: #fff;
+			}
+			/*信息列表开始*/
+			
+			#purchase .list-wrap {}
+			
+			#purchase .list-wrap .title {
+				padding: 10px;
+				border-bottom: 1px solid #d0d0d0;
+			}
+			
+			#purchase .list-wrap .list-item-title {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 10px;
+				padding-left: 40px;
+				border-bottom: 1px solid #d0d0d0;
+			}
+			
+			#purchase .list-wrap .list-item-title span:nth-child(1) {
+				flex: 0 0 auto;
+				text-align: center;
+				width: 40%;
+			}
+			
+			#purchase .list-wrap .list-item-title span:nth-child(2) {
+				flex: 0 0 auto;
+				text-align: center;
+				width: 30%;
+			}
+			
+			#purchase .list-wrap .list-item-title span:nth-child(3) {
+				flex: 0 0 auto;
+				text-align: center;
+				width: 30%;
+			}
+			
+			#purchase .list-wrap li {
+				border-bottom: 1px solid #d0d0d0;
+				padding: 10px;
+				padding-left: 40px;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				position: relative;
+			}
+			
+			#purchase .list-wrap .mui-checkbox .checkbox {
+				position: absolute;
+				left: 15px;
+				top: 50%;
+				margin-top: -14px;
+			}
+			
+			#purchase .list-wrap .mui-checkbox span:nth-child(2) {
+				flex: 0 0 auto;
+				text-align: center;
+				width: 40%;
+			}
+			
+			#purchase .list-wrap .mui-checkbox span:nth-child(3) {
+				flex: 0 0 auto;
+				text-align: center;
+				width: 30%;
+			}
+			
+			#purchase .list-wrap .mui-checkbox span:nth-child(4) {
+				flex: 0 0 auto;
+				text-align: center;
+				width: 30%;
+			}
+			/*采购人列表开始*/
+			
+			#purchase .purchase-man-list {
+				padding-top: 15px;
+				background-color: #e0e0e0;
+			}
+			
+			#purchase .purchase-man-list div {
+				background-color: #f0f0f0;
+			}
+			
+			#purchase .purchase-man-list .purchase-item-title {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 10px;
+				padding-right: 60px;
+				border-bottom: 1px solid #d0d0d0;
+				border-top: 1px solid #d0d0d0;
+			}
+			
+			#purchase .purchase-man-list .purchase-item-title span:nth-child(1) {
+				flex: 0 0 30%;
+				text-align: center;
+			}
+			
+			#purchase .purchase-man-list .purchase-item-title span:nth-child(2) {
+				flex: 0 0 40%;
+				text-align: center;
+			}
+			
+			#purchase .purchase-man-list .purchase-item-title span:nth-child(3) {
+				flex: 0 0 30%;
+				text-align: center;
+			}
+			
+			#purchase .purchase-man-list .list-item {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				padding: 10px;
+				padding-right: 60px;
+				align-items: center;
+				position: relative;
+				border-bottom: 1px solid #d0d0d0;
+			}
+			
+			#purchase .purchase-man-list .list-item span:nth-child(1) {
+				flex: 0 0 30%;
+				text-align: center;
+			}
+			
+			#purchase .purchase-man-list .list-item span:nth-child(2) {
+				flex: 0 0 40%;
+				text-align: center;
+			}
+			
+			#purchase .purchase-man-list .list-item span:nth-child(3) {
+				flex: 0 0 30%;
+				text-align: center;
+			}
+			#purchase .purchase-man-list .list-item input {
+				margin: 0;
+			}
+			#purchase .purchase-man-list .list-item .btn-delete {
+				position: absolute;
+				top: 50%;
+				right: 15px;
+				font-size: 30px;
+				margin-top: -15px;
+			}
+			#purchase .purchase-man-list .list-item .btn-delete:active{
+				color: #007AFF;
+			}
+			/*底部添加按鈕*/
+			
+			#purchase .button-wrap {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			
+			#purchase .button-wrap .btn-item:nth-child(1) {
+				flex: 1;
+				background-color: #007AFF;
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="purchase">
+			<!--头部-->
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">编辑采销对应</h1>
+				<spa class=" mui-pull-right" style="line-height: 44px">下一步</span>
+			</header>
+			<!--信息列表-->
+			<ul class="list-wrap" v-show="detailData">
+				<div class="title">
+					<h4>采销对应</h4>
+				</div>
+				<div class="list-item-title">
+					<span>品种</span>
+					<span>合计数量</span>
+					<span>剩余数量</span>
+				</div>
+				<li class="mui-checkbox mui-left">
+					<input class="checkbox" name="checkbox" type="checkbox">
+					<span class="breedName">品种名称</span>
+					<span class="breedName">2500g</span>
+					<span class="breedName">700g</span>
+				</li>
+				<li class="mui-checkbox mui-left">
+					<input class="checkbox" name="checkbox" type="checkbox">
+					<span class="breedName">品种名称</span>
+					<span class="breedName">2500g</span>
+					<span class="breedName">700g</span>
+				</li>
+				<li class="mui-checkbox mui-left">
+					<input class="checkbox" name="checkbox" type="checkbox">
+					<span class="breedName">品种名称</span>
+					<span class="breedName">2500g</span>
+					<span class="breedName">700g</span>
+				</li>
+			</ul>
+			<!--采购人列表-->
+			<div class="purchase-man-list">
+				<div class="purchase-item-title">
+					<span>采购人</span>
+					<span>采购品种</span>
+					<span>采购数量</span>
+				</div>
+				<div class="list-item">
+					<span>叶欢</span>
+					<span>藏红花</span>
+					<span>
+						<input readonly type="number" />
+					</span>
+					<span class="btn-delete mui-icon mui-icon-trash">
+					</span>
+				</div>
+			</div>
+			<!--底部按钮-->
+			<div class="button-wrap">
+				<div class="btn-item">
+					选择采购人
+				</div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/filters.js"></script>
+		<script src="../../libs/crypto-js.js"></script>
+		<script src="../../libs/httpService.js"></script>
+		<script>
+			mui.init();
+			var purchase;
+			mui.plusReady(function() {
+				purchase = plus.webview.currentWebview()
+			})
+			var vm = new Vue({
+				el: '#purchase',
+				i18n: window.i18n,
+				data: {
+					selected: '',
+					detailData: {},
+					options: [{
+						label: '合同签订后',
+						value: 1
+					}, {
+						label: '发货后',
+						value: 2
+					}, {
+						label: '确认收货后',
+						value: 3
+					}, {
+						label: '验收合格后',
+						value: 4
+					}]
+				},
+				methods: {
+					changeSelected: function(value) {
+						console.log(value, this.selected)
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

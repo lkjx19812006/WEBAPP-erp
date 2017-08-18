@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../../i18n/en.js"></script>
+		<script src="../../i18n/zh_CN.js"></script>
+		<style>
+			ul,
+			li {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			
+			.mui-content {
+				padding-top: 45px;
+				padding-bottom: 50px;
+				background-color: #fff;
+			}
+			/*信息列表开始*/
+			#product .list-wrap .title {
+				padding: 10px;
+				border-bottom: 1px solid #d0d0d0;
+			}
+			#product .list-wrap .list-item {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				padding: 10px;
+				border-bottom: 1px solid #d0d0d0;
+			}
+			
+			#product .list-wrap .list-item .tit {
+				flex: 0 0 auto;
+				width: 80px;
+			}
+			
+			#product .list-wrap .list-item input {
+				margin: 0;
+			}
+			/*底部添加按鈕*/
+			
+			#product .button-wrap {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			
+			#product .button-wrap .btn-item:nth-child(1) {
+				flex: 1;
+				background-color: #e0e0e0;
+				color: #666;
+			}
+			
+			#product .button-wrap .btn-item:nth-child(2) {
+				flex: 1;
+				background-color: #007AFF;
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="product">
+			<!--头部-->
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">编辑商品信息</h1>
+				<spa class=" mui-pull-right" style="line-height: 44px">下一步</span>
+			</header>
+			<!--信息列表-->
+			<ul class="list-wrap" v-show="detailData">
+				<div class="title">
+					<h4>商品新建</h4>
+				</div>
+				<li class="list-item">
+					<span class="tit">品种</span>
+					<input readonly type="text" placeholder="请输入品种">
+				</li>
+				<li class="list-item">
+					<span class="tit">规格</span>
+					<input readonly type="text" placeholder="请输入规格">
+				</li>
+				<li class="list-item">
+					<span class="tit">产地</span>
+					<input readonly type="text" placeholder="请输入产地">
+				</li>
+				<li class="list-item">
+					<span class="tit">发货地</span>
+					<input readonly type="text" placeholder="请输入发货地">
+				</li>
+				<li class="list-item">
+					<span class="tit">数量</span>
+					<div class="mui-numbox" style="width:100%;height: 40px;">
+						<button class="mui-btn-numbox-minus" type="button">-</button>
+						<input class="mui-input-numbox" type="number" />
+						<button class="mui-btn-numbox-plus" type="button">+</button>
+					</div>
+				</li>
+				<li class="list-item">
+					<span class="tit">单位</span>
+					<input readonly type="text" placeholder="请选择单位">
+				</li>
+				<li class="list-item">
+					<span class="tit">价格</span>
+					<div class="mui-numbox" style="width:100%;height: 40px;">
+						<button class="mui-btn-numbox-minus" type="button">-</button>
+						<input class="mui-input-numbox" type="number" />
+						<button class="mui-btn-numbox-plus" type="button">+</button>
+					</div>
+				</li>
+				<li class="list-item">
+					<span class="tit">成本</span>
+					<div class="mui-numbox" style="width:100%;height: 40px;">
+						<button class="mui-btn-numbox-minus" type="button">-</button>
+						<input class="mui-input-numbox" type="number" />
+						<button class="mui-btn-numbox-plus" type="button">+</button>
+					</div>
+				</li>
+			</ul>
+			<div class="button-wrap">
+				<div class="btn-item">
+					保存并新增
+				</div>
+				<div class="btn-item">
+					完成
+				</div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/filters.js"></script>
+		<script src="../../libs/crypto-js.js"></script>
+		<script src="../../libs/httpService.js"></script>
+		<script>
+			mui.init();
+			var product;
+			mui.plusReady(function() {
+				product = plus.webview.currentWebview()
+			})
+			var vm = new Vue({
+				el: '#product',
+				i18n: window.i18n,
+				data: {
+					selected: '',
+					detailData: {},
+					options: [{
+						label: '合同签订后',
+						value: 1
+					}, {
+						label: '发货后',
+						value: 2
+					}, {
+						label: '确认收货后',
+						value: 3
+					}, {
+						label: '验收合格后',
+						value: 4
+					}]
+				},
+				methods: {
+					changeSelected: function(value) {
+						console.log(value, this.selected)
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

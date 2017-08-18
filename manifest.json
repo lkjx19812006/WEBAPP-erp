@@ -291,7 +291,8 @@
 					"i18n/en.js",
 					"libs/vue.min.js",
 					"libs/httpService.js",
-					"i18n/zh_CN.js"
+					"i18n/zh_CN.js",
+					"libs/vueComponents.js"
 				],
 				"refer": [
 					"pages/orderMg/myOder.html",
@@ -390,7 +391,12 @@
 					"libs/httpService.js",
 					"i18n/zh_CN.js"
 				],
-				"refer": [],
+				"refer": [
+					"pages/orderMg/baseInfo.html",
+					"pages/orderMg/playPrice.html",
+					"pages/orderMg/newProduct.html",
+					"pages/orderMg/purchase.html"
+				],
 				"priority": 0
 			},
 			"pages/orderMg/departmentOrder.html": {
@@ -432,6 +438,73 @@
 				"refer": [
 					"pages/menu.html"
 				],
+				"priority": 0
+			},
+			"pages/orderMg/baseInfo.html": {
+				"resources": [
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/orderMg/playPrice.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/orderMg/newProduct.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/orderMg/purchase.html": {
+				"resources": [
+					"fonts/mui.ttf",
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
 				"priority": 0
 			}
 		},

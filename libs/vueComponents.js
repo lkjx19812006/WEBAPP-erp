@@ -25,7 +25,7 @@
 			}
 		}
 	})
-	//注册底部banner组件
+	//注册底部tabbar组件
 	Vue.component('my-navbar', {
 		template: '<nav class="mui-bar mui-bar-tab">' +
 			'<a class="mui-tab-item mui-active" href="#tabbar">' +
@@ -49,80 +49,53 @@
 
 		}
 	})
-
-	//注册弹出菜单组件内容
-	Vue.component('my-menu', {
-		template: '<ul class="mui-table-view">' +
-			'<li class="mui-table-view-cell mui-collapse mui-active" style="border-bottom:1px solid #d0d0d0" v-for="item in menuList">' +
-			'<a class="mui-navigate-right" href="#">{{item.title}}</a>' +
-			'<div class="mui-collapse-content" v-for="subItem in item.list" v-tap="{func:openWindow, params:subItem}">' +
-			'<p style="font-size:16px; padding: 5px;">{{subItem.title}}</p>' +
+	//注册全局select组件
+	Vue.component('my-select', {
+		template: '<div style="display: flex; flex-direction: column;justify-content: flex-start; position:relative; width: 100%; height: 100%;">' +
+			'<input readonly :placeholder="placeholder" ref="input" v-on:change="change" v-on:focus="showList = true" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px; margin-bottom: 5px;" />' +
+			'<span style="position: absolute; right: 8px;top:50%; margin-top: -6px; height: 0; width: 0; border: 8px solid transparent; border-top-color: #666;"></span>' +
+			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 99;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;">' +
+			'<div v-tap="{func: selected, params:item}" style="padding:10px;background-color: #fff; color: #333;border-bottom: 1px solid #d0d0d0" v-for="item in options">' +
+			'{{item.label}}' +
 			'</div>' +
-			'</li>' +
-			'</ul>',
+			'</div>' +
+			'</div>',
 		data: function() {
 			return {
-				menuList: [{
-					title: '订单管理',
-					list: [{
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '我的订单'
-					}, {
-						url: '../pages/orderMg/departmentOrder.html',
-						id: 'departmentOrder',
-						title: '部门订单'
-					}, {
-						url: '../pages/orderMg/allOrder.html',
-						id: 'allOrder',
-						title: '全部订单'
-					}, {
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '我的收付款'
-					}, {
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '部门收付款'
-					}, {
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '我的补充合同'
-					}, {
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '部门补充合同'
-					}, {
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '我的售后单'
-					}, {
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '部门售后单'
-					}, {
-						url: '../pages/orderMg/myOrder.html',
-						id: 'myOrder',
-						title: '需要我采购'
-					}]
-				}]
+				showList: false,
+				nowSelectData: {},
 			}
 		},
-		props: {},
+		props: {	
+			placeholder: {
+				type: String,
+				default: '请选择！！！'
+			},
+			options: {
+				type: Array,
+				default: function() {
+					return []
+				}
+			}
+		},
 		methods: {
-			openWindow: function(params) {
-				nowPage = mui.preload({
-					url: params.url,
-					id: params.id,
-					createNew: false,
-					styles: {
-						"render": "always",
-						"popGesture": "hide",
-					}
-				});
+			selected: function(params) {
+				//选中项目
+				this.nowSelectData = params;
+				this.$refs.input.value = params.label;
+				//双向绑定
+				this.$emit('input', params.value);
+				this.change();
+			},
+			change: function() {
+				//change事件传值
+				this.$emit('change', this.nowSelectData)
+			},
+			blur: function() {
+				var _self = this;
 				setTimeout(function() {
-					nowPage.show("slide-in-right", 300)
-				}, 200)
+					_self.showList = false
+				}, 100)
 			}
 		}
 	})

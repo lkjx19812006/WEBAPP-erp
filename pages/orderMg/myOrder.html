@@ -117,6 +117,13 @@
 				background-color: #e0e0e0;
 				color: #007AFF;
 			}
+			/*控制单行溢出效果*/
+			/*单行溢出*/			
+			.one_txt_cut {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
 		</style>
 	</head>
 
@@ -232,11 +239,11 @@
 						</div>
 						<div class="detail">
 							<span class="tit">客户名称：</span>
-							<span class="info">{{item.customerName,14 | filterTxt}}</span>
+							<span class="info one_txt_cut">{{item.customerName}}</span>
 						</div>
 						<div class="detail">
 							<span class="tit">成交品种：</span>
-							<span class="info">{{item.goodsDesc, 14 | filterTxt}}</span>
+							<span class="info one_txt_cut">{{item.goodsDesc}}</span>
 						</div>
 						<div class="detail">
 							<span class="tit">成交金额：</span>
@@ -280,89 +287,54 @@
 			});
 
 			function back() {
-				if(isshowMenu) {
-					mask.close()
-					return false;
-				}
 				if(isshowSearch) {
 					mask.close()
+					isshowSearch = false;
 					return false;
 				}
 				return true;
 			}
-
-			var myOrder, mask, menu, isshowMenu, searchView, isshowSearch, orderDetail;
 			mask = mui.createMask(function() {
-				closeView()
-				console.log('sadfasdfsad')
+				common.hideWebViewById('myOrder-searchView', 'right')
 			})
-			//打开菜单
-			function openView() {
-				menu.show('none', 0, function() {
-					myOrder.setStyle({
-						left: '70%',
-						transition: {
-							duration: 200
-						}
-					});
-					setTimeout(function() {
-						mask.show()
-					}, 200)
-					isshowMenu = true;
-				})
-			}
-			//关闭菜单
-			function closeView() {
-				myOrder.setStyle({
-					left: 0,
-					transition: {
-						duration: 200
-					},
-				});
-				if(isshowSearch) {
-					common.hideWebViewById('myOrder-searchView', 'right')
-				}
-				if(isshowMenu) {
-					setTimeout(function() {
-						menu.hide();
-					}, 250);
-				}
-				//改变标志位
-				isshowMenu = false;
-				isshowSearch = false;
-			}
-
-			mask = mui.createMask(function() {
-				closeView();
-			});
+			var myOrder, mask, menu, searchView, isshowSearch, orderDetail;
 
 			mui.plusReady(function() {
 				myOrder = plus.webview.currentWebview();
-				myOrder.setStyle({
-					zindex: 99
-				})
-
 				vm.formData = formData;
 				vm.getHttp();
-				//预加载详情页
-				orderDetail = mui.preload({
-					url: './myOrderDetail.html',
-					id: 'myOrderDetail', //默认使用当前页面的url作为id
-				});
 				setTimeout(function() {
-					//侧滑菜单默认隐藏，这样可以节省内存；
+					//预加载详情页
+					orderDetail = mui.preload({
+						url: './myOrderDetail.html',
+						id: 'myOrderDetail', //默认使用当前页面的url作为id
+					});
+
+					//侧滑菜单默认隐藏
 					isShowMenu = false;
-					menu = mui.preload({
-						url: '../menu.html',
-						id: 'myOrder-menu',
+
+					//预加载搜索扩展页
+					searchView = mui.preload({
+						url: './searchView.html',
+						id: 'myOrder-searchView',
 						styles: {
-							left: 0,
-							width: '70%',
-							zindex: 97,
-							scrollIndicator: 'none',
+							right: '0',
+							width: '85%',
+							scrollIndicator: 'none'
 						}
 					});
-				}, 300);
+
+					//预加载菜单页
+					menu = mui.preload({
+						url: '../menu.html',
+						id: 'menu',
+						styles: {
+							scrollIndicator: 'none',
+							zIndex: 2
+						}
+					});
+				}, 500);
+
 			})
 			//以上动画显示与窗口加载
 			var vm = new Vue({
@@ -375,8 +347,7 @@
 				},
 				methods: {
 					showMenu: function() {
-						openView()
-						//common.setItem('nowPageId', 'myOrder');
+						menu.show('slide-in-left', 300)
 					},
 					//获取列表是数据
 					getHttp: function(fn) {
@@ -435,27 +406,16 @@
 					showMore: function() {
 						//显示侧边搜索	
 						isshowSearch = true
-						searchView = mui.openWindow({
-							url: './searchView.html',
-							id: 'myOrder-searchView',
-							extras: {
-								formData: this.formData, //扩展参数表单参数
-								parentId: myOrder.id
-							},
-							show: {
-								aniShow: 'slide-in-right',
-							},
-							createNew: false,
-							styles: {
-								right: '0',
-								width: '85%',
-								zindex: 100
-							},
-							waiting: {
-								autoShow: false, //自动显示等待框，默认为true								
-							}
+						//通知搜索菜单更新搜索条件
+						mui.fire(plus.webview.getWebviewById('myOrder-searchView'), 'updateFormData', {
+							formData: this.formData,
+							parentId: myOrder.id
 						})
-						mask.show()
+						setTimeout(function() {
+							searchView.show('slide-in-right', 300, function() {
+								mask.show()
+							})
+						}, 200)
 					},
 					//快速回到頂部
 					goToTop: function() {
@@ -463,8 +423,12 @@
 					},
 					//打开详情页面
 					openDetail: function(params) {
-						mui.fire(orderDetail, 'getDetailId', params.id)
-						orderDetail.show('slide-in-right', 300)
+						//先获取数据
+						mui.fire(orderDetail, 'getDetailId', params.id);
+						//再显示页面
+						setTimeout(function() {
+							orderDetail.show('slide-in-right', 300)
+						}, 300)
 					}
 				}
 			})

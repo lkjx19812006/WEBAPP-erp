@@ -37,52 +37,8 @@
 		<script src="../libs/filters.js"></script>
 		<script src="../libs/vueComponents.js"></script>
 		<script>
-			mui.init({
-				beforeback: back
-			});
-
-			function back() {
-				if(isShowMenu) {
-					mask.close()
-					return false;
-				}
-				return true;
-			}
-			var home, menu, isShowMenu, mask;
-			mask = mui.createMask(function() {
-				closeView()
-			})
-
-			//打开菜单
-			function openView() {
-				menu.show('none', 0, function() {
-					home.setStyle({
-						left: '70%',
-						transition: {
-							duration: 200
-						}
-					});
-					setTimeout(function() {
-						mask.show()
-					}, 200)
-					isShowMenu = true;
-				})
-			}
-			//关闭菜单
-			function closeView() {
-				home.setStyle({
-					left: 0,
-					transition: {
-						duration: 200
-					},
-				});
-
-				setTimeout(function() {
-					menu.hide();
-				}, 250);
-				//改变标志位
-				isShowMenu = false;
-			}
+			mui.init();
+			var home;
 
 			var vm = new Vue({
 				el: '#myOrder',
@@ -91,27 +47,18 @@
 				},
 				methods: {
 					showMenu: function() {
-						openView()
-						//设置当前移动页面的ID
-						//common.setItem('nowPageId', 'home');
+						menu.show('slide-in-left', 300)
 					}
 				}
 			})
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
-				home.setStyle({
-					zindex: 99
-				})
 				setTimeout(function() {
 					//侧滑菜单默认隐藏，这样可以节省内存；
-					isShowMenu = false;
 					menu = mui.preload({
 						url: './menu.html',
-						id: 'home-menu',
+						id: 'menu',
 						styles: {
-							left: 0,
-							width: '70%',
-							zindex: 97,
 							scrollIndicator: 'none',
 						}
 					});
@@ -119,9 +66,7 @@
 			})
 
 			window.addEventListener('closeMenu', function(event) {
-				
-				
-				
+				mask.close()
 			})
 		</script>
 	</body>

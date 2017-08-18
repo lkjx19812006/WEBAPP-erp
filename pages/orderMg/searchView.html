@@ -94,8 +94,7 @@
 			}
 			
 			#search .mui-bar .reset {
-				border-color: #fff;
-				border-right: 1px solid #ccc;
+				border-color: #fff;				
 			}
 			
 			#search .mui-bar .confirm {
@@ -203,13 +202,13 @@
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
 				search = plus.webview.currentWebview();
-				vm.formData = search.formData;
 			})
 			var vm = new Vue({
 				el: '#search',
 				data: {
-					startTime: '',
-					formData: {}
+					startTime: '', //开始时间用来判断结束时间的
+					formData: {},
+					parentId: ''
 				},
 				methods: {
 					//改变类型
@@ -238,16 +237,23 @@
 						if(this.formData.startTime !== undefined && this.formData.startTime !== undefined && !common.ruls.startEnd(this.formData.startTime, this.formData.endTime)) {
 							return
 						}
-						var parent = plus.webview.getWebviewById(search.parentId);
-						mui.fire(parent, 'getFormData', this.formData);
+						var parent = plus.webview.getWebviewById(this.parentId);
+						if(parent) mui.fire(parent, 'getFormData', this.formData);
+
 					},
 					//重置按钮
 					myReset: function() {
 						//通过ID获取对象
-						var parent = plus.webview.getWebviewById(search.parentId);
-						mui.fire(parent, 'resetFormData');
+						var parent = plus.webview.getWebviewById(this.parentId);
+						if(parent) mui.fire(parent, 'resetFormData');
+
 					}
 				}
+			})
+			//更新搜索数据			
+			window.addEventListener('updateFormData', function(event) {
+				vm.formData = event.detail.formData; //拿到数据
+				vm.parentId = event.detail.parentId; //拿到要更新数据页面的ID
 			})
 		</script>
 	</body>

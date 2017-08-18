@@ -11,98 +11,66 @@
 		<script src="../i18n/zh_CN.js"></script>
 		<style>
 			.mui-content {
-				background-color: #333;
+				padding-top: 45px;
+			}
+			/*菜单栏开始*/
+			
+			#menu .menu-wrap .list-title {
+				text-indent: 10px;
+				border-left: 2px solid #007AFF;
+				margin: 20px;
+				margin-bottom: 0;
+				padding-top: 2px;
 			}
 			
-			#menu .mui-table-view {
-				margin-top: 0;
+			#menu .menu-wrap .list-item {
+				padding: 20px 15px;
+				padding-top: 10px;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				flex-wrap: wrap;
+				border-bottom: 1px solid #ccc;
 			}
 			
-			#menu .mui-navigate-right {
-				background-color: #f0f0f0;
+			#menu .menu-wrap .list-item .list-subItem {
+				flex: 0 0 auto;
+				height: 36px;
+				line-height: 36px;
+				margin: 5px;
+				border: 1px solid #ccc;
+				padding: 0 12px;
+				border-radius: 18px 18px;
+				background-color: #e0e0e0;
 			}
 			
-			#menu .mui-collapse-content {
-				padding: 15px;
-				border-bottom: 1px solid #d0d0d0;
-			}
-			
-			#menu .mui-collapse-content p {
-				font-size: 16px !important;
+			#menu .menu-wrap .list-item .list-subItem:active {
+				background-color: #007AFF;
+				color: #fff;
+				border-color: #0062CC;
 			}
 		</style>
 	</head>
 
 	<body>
 		<div class="mui-content" id="menu">
-			<ul class="mui-table-view">
-				<li class="mui-table-view-cell mui-collapse mui-active">
-					<a class="mui-navigate-right" href="#">订单管理</a>
-					<div v-tap="{'func': openWindow, params: {'url':'./orderMg/myOrder.html','id': 'myOder'}}" class="mui-collapse-content">
-						<p>我的订单</p>
+			<!--页面头部-->
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">菜单导航</h1>
+			</header>
+			<div class="menu-wrap">
+				<div class="list-menu" v-for="item in menuList">
+					<h4 class="list-title">
+						{{item.title}}
+					</h4 >
+					<div class="list-item">
+						<div class="list-subItem" v-for="subItem in item.subList" v-tap="{func:openWindow,params:subItem}">
+							{{subItem.title}}
+						</div>
 					</div>
-					<div v-tap="{'func': openWindow, params: {'url':'./orderMg/departmentOrder.html','id': 'departmentOrder'}}" class="mui-collapse-content">
-						<p>部门订单</p>
-					</div>
-					<div v-tap="{'func': openWindow, params: {'url':'./orderMg/allOrder.html','id': 'allOrder'}}" class="mui-collapse-content">
-						<p>全部订单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>我的收付款</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>部门收付款</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>我的补充合同</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>部门补充合同</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>我的售后单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>部门售后单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>需要我采购</p>
-					</div>
-				</li>
-				<li class="mui-table-view-cell mui-collapse  mui-active">
-					<a class="mui-navigate-right" href="#">采购单管理</a>
-					<div class="mui-collapse-content">
-						<p>我的订单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>部门订单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>全部订单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>我的收付款</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>部门收付款</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>我的补充合同</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>部门补充合同</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>我的售后单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>部门售后单</p>
-					</div>
-					<div class="mui-collapse-content">
-						<p>需要我采购</p>
-					</div>
-				</li>
-			</ul>
+				</div>
+			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
 		<script src="../libs/vue.min.js"></script>
@@ -110,51 +78,135 @@
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
-			mui.init({
-				keyEventBind: {
-					backbutton: false,
-					menubutton: false
-				},
-			});
+			mui.init();
+			
+			var oldBack = mui.back;			
+			mui.back = function (){
+				menu.hide('slide-out-left', 300, function(){
+					oldBack()
+				})			
+			}			
 			var menu;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
 				menu = plus.webview.currentWebview();
-				menu.setStyle({});
-				//解决android 4.4以下版本webview移动时，导致fixed定位元素错乱的bug;
-				if(mui.os.android && parseFloat(mui.os.version) < 4.4) {
-					document.querySelector("header.mui-bar").style.position = "static";
-					//同时需要修改以下.mui-contnt的padding-top，否则会多出空白；
-					document.querySelector(".mui-bar-nav~.mui-content").style.paddingTop = "0px";
-				}
-			})
+
+			})		
+			
 			//menu切换页面不能正常关闭的问题
 			var vm = new Vue({
 				el: '#menu',
-				data: {},
+				data: {
+					menuList: [{
+						title: '订单管理',
+						subList: [{
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的订单'
+						}, {
+							url: '../pages/orderMg/departmentOrder.html',
+							id: 'departmentOrder',
+							title: '部门订单'
+						}, {
+							url: '../pages/orderMg/allOrder.html',
+							id: 'allOrder',
+							title: '全部订单'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的收付款'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '部门收付款'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的补充合同'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '部门补充合同'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的售后单'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '部门售后单'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '需要我采购'
+						}]
+					},{
+						title: '采购单管理',
+						subList: [{
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的订单'
+						}, {
+							url: '../pages/orderMg/departmentOrder.html',
+							id: 'departmentOrder',
+							title: '部门订单'
+						}, {
+							url: '../pages/orderMg/allOrder.html',
+							id: 'allOrder',
+							title: '全部订单'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的收付款'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '部门收付款'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的补充合同'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '部门补充合同'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '我的售后单'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '部门售后单'
+						}, {
+							url: '../pages/orderMg/myOrder.html',
+							id: 'myOrder',
+							title: '需要我采购'
+						}]
+					}]
+				},
 				methods: {
 					openWindow: function(params) {
 						//先预加载页面
 						var nowPage = mui.preload({
 							url: params.url,
 							id: params.id, //默认使用当前页面的url作为id							
-							createNew: false //禁止重复创建
+							createNew: false, //禁止重复创建
+							styles:{
+								zIndex: 1//为所有新开页面设置层级值 防止 菜单被覆盖
+							}
 						});
-						//200毫秒后显示
-						//必须先让当前页面还原 才能打开下级页面
-
-						//						//获取当前页面ID
-						//						var nowPageId = common.getItem('nowPageId');
-						//						//通知当前页面关闭菜单	再打开新页面						
-						//						var nowWebView = plus.webview.getWebviewById(nowPageId);
-						//						mui.fire(nowWebView, 'closeMenu');
-						setTimeout(function() {
-							nowPage.show('slide-in-right', 300)
+						setTimeout(function() {							
+							nowPage.show('slide-in-right', 300, function(){
+								plus.webview.getWebviewById('menu').hide('none', 0)
+							})
 						}, 300)
 					}
 				}
 			})
+			
+			
+			
 		</script>
 	</body>
 

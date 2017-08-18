@@ -123,7 +123,7 @@
 	<body>
 		<div class="mui-content" id="departmentOrder">
 			<!--头部组件-->
-			<my-header ref="header" v-on:show="showMenu" v-on:mysrolltop="goToTop" title="我的订单">
+			<my-header ref="header" v-on:show="showMenu" v-on:mysrolltop="goToTop" title="部门订单">
 			</my-header>
 			<!--搜索框-->
 			<div class="my-search">
@@ -285,6 +285,7 @@
 					return false;
 				}
 				if(isshowSearch) {
+					mask.close()
 					return false;
 				}
 				return true;
@@ -293,6 +294,7 @@
 			var departmentOrder, mask, menu, isshowMenu, searchView, isshowSearch, orderDetail;
 			mask = mui.createMask(function() {
 				closeView()
+				console.log('sadfasdfsad')
 			})
 			//打开菜单
 			function openView() {
@@ -316,13 +318,18 @@
 					transition: {
 						duration: 200
 					},
-				});				
-
-				setTimeout(function() {
-					menu.hide();
-				}, 250);
+				});
+				if(isshowSearch) {
+					common.hideWebViewById('departmentOrder-searchView', 'right')
+				}
+				if(isshowMenu) {
+					setTimeout(function() {
+						menu.hide();
+					}, 250);
+				}
 				//改变标志位
 				isshowMenu = false;
+				isshowSearch = false;
 			}
 
 			mask = mui.createMask(function() {
@@ -430,7 +437,7 @@
 						isshowSearch = true
 						searchView = mui.openWindow({
 							url: './searchView.html',
-							id: 'searchView',
+							id: 'departmentOrder-searchView',
 							extras: {
 								formData: this.formData, //扩展参数表单参数
 								parentId: departmentOrder.id
@@ -442,7 +449,7 @@
 							styles: {
 								right: '0',
 								width: '85%',
-								zindex: 98
+								zindex: 100
 							},
 							waiting: {
 								autoShow: false, //自动显示等待框，默认为true								
@@ -499,8 +506,6 @@
 					vm.getHttp();
 				}
 				setTimeout(function() {
-					if(searchView) common.closeWebViewById('searchView', 'right');
-					searchView = '';
 					mask.close()
 				}, 100)
 			});
@@ -514,8 +519,6 @@
 				vm.formData.type = -1;
 				vm.getHttp();
 				setTimeout(function() {
-					if(searchView) common.closeWebViewById('searchView', 'right');
-					searchView = '';
 					mask.close()
 				}, 100)
 			})

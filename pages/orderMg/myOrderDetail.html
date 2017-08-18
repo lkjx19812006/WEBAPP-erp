@@ -46,6 +46,11 @@
 				justify-content: space-between;
 				padding: 8px 15px;
 				border-bottom: 1px solid #d0d0d0;
+				align-items: flex-start;
+			}
+			
+			#myOrderDetail ul .list-item .base-info .item-info .tit {
+				flex: 0 0 auto;
 			}
 			/*商品信息开始*/
 			
@@ -201,7 +206,7 @@
 				<li class="list-item">
 					<div class="title">
 						<h4>基本信息</h4>
-						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+						<button v-tap="{func: openBaseInfo}" type="button" class="mui-btn mui-btn-primary">编辑</button>
 					</div>
 					<div class="base-info">
 						<div class="item-info">
@@ -252,7 +257,7 @@
 				<li class="list-item">
 					<div class="title">
 						<h4>商品信息</h4>
-						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+						<button v-tap="{func:openProduct}" type="button" class="mui-btn mui-btn-primary">编辑</button>
 					</div>
 					<div class="product-table-title">
 						<span>品名</span>
@@ -276,22 +281,12 @@
 				<li class="list-item">
 					<div class="title">
 						<h4>付款方式</h4>
-						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+						<button v-tap="{func:openPlayPrice}" type="button" class="mui-btn mui-btn-primary">编辑</button>
 					</div>
 					<div class="price-table-title">
 						<span>收/付款类型</span>
 						<span>收/付款节点</span>
 						<span>收/付款金额</span>
-					</div>
-					<div class="price-table-td">
-						<span class="name">藏红花</span>
-						<span class="price">合同签订后立即</span>
-						<span class="num">900元</span>
-					</div>
-					<div class="price-table-td">
-						<span class="name">藏红花</span>
-						<span class="price">合同签订后立即</span>
-						<span class="num">900元</span>
 					</div>
 				</li>
 
@@ -299,7 +294,7 @@
 				<li class="list-item">
 					<div class="title">
 						<h4>采销对应</h4>
-						<button type="button" class="mui-btn mui-btn-primary">编辑</button>
+						<button v-tap="{func:openPurchase}" type="button" class="mui-btn mui-btn-primary">编辑</button>
 					</div>
 					<div class="purchase-table-title">
 						<span>采购人</span>
@@ -339,10 +334,36 @@
 		<script src="../../libs/httpService.js"></script>
 		<script>
 			mui.init();
-			var myOrderDetail;
+			var myOrderDetail, baseInfo, product, playPrice, purchase;
 			mui.plusReady(function() {
 				myOrderDetail = plus.webview.currentWebview();
+				//预加载页面
+				setTimeout(function() {
+					//基本信息编辑页
+					baseInfo = mui.preload({
+						id: 'baseInfo',
+						url: './baseInfo.html',
+					})
 
+					//添加商品信息
+					product = mui.preload({
+						id: 'product',
+						url: './newProduct.html',
+					})
+
+					//付款方式
+					playPrice = mui.preload({
+						id: 'playPrice',
+						url: './playPrice.html',
+					})
+
+					//采销对应
+					purchase = mui.preload({
+						id: 'purchase',
+						url: './purchase.html',
+					})
+
+				}, 500)
 			})
 			var vm = new Vue({
 				el: '#myOrderDetail',
@@ -357,7 +378,7 @@
 						this.detailData = {}
 					},
 					//通过传入ID 获取订单详情数据
-					getDetailHttp() {
+					getDetailHttp: function() {
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
 							biz_module: 'erpOrderService',
@@ -369,11 +390,27 @@
 						var _self = this;
 						plus.nativeUI.showWaiting('loading...');
 						common.commonPost(url, body, function(suc) {
-							this.detailData = suc.biz_result;
+							_self.detailData = suc.biz_result;
 							plus.nativeUI.closeWaiting();
 						}, function(err) {
 							plus.nativeUI.closeWaiting();
 						})
+					},
+					//打开基础页面
+					openBaseInfo: function() {
+						baseInfo.show('slide-in-right', 300)
+					},
+					//打开商品信息
+					openProduct: function() {
+						product.show('slide-in-right', 300)
+					},
+					//打开付款方式
+					openPlayPrice: function() {
+						playPrice.show('slide-in-right', 300)
+					},
+					//打开采销对应
+					openPurchase: function() {
+						purchase.show('slide-in-right', 300)
 					}
 				}
 			})

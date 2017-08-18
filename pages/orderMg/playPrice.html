@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<!--国际化引入-->
+		<script src="../../i18n/en.js"></script>
+		<script src="../../i18n/zh_CN.js"></script>
+		<style>
+			ul,
+			li {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			
+			#playPrice {
+				padding-top: 45px;
+				padding-bottom: 51px;
+				background-color: #fff;
+			}
+			
+			#playPrice ul li {
+				margin-top: 10px;
+				border-top: 1px solid #d0d0d0;
+				background-color: #fff;
+			}
+			
+			#playPrice ul .list-item>.title {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+				padding: 8px 15px;
+			}
+			/*付款方式开始*/
+			
+			#playPrice ul .list-item .price-table-title,
+			#playPrice ul .list-item .price-table-td {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 8px 15px;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+				padding-right: 60px;
+				position: relative;
+			}
+			
+			#playPrice ul .list-item .price-table-td .btn-delete {
+				position: absolute;
+				top: 50%;
+				right: 15px;
+				font-size: 30px;
+				margin-top: -15px;
+			}
+			
+			#playPrice ul .list-item .price-table-td .btn-delete:active {
+				color: #007AFF;
+			}
+			
+			#playPrice ul .list-item .price-table-title span,
+			#playPrice ul .list-item .price-table-td span {
+				text-align: center;
+			}
+			
+			#playPrice ul .list-item .price-table-title span:nth-child(1),
+			#playPrice ul .list-item .price-table-td span:nth-child(1) {
+				flex: 0 0 auto;
+				width: 25%;
+			}
+			
+			#playPrice ul .list-item .price-table-title span:nth-child(2),
+			#playPrice ul .list-item .price-table-td span:nth-child(2) {
+				flex: 0 0 auto;
+				width: 40%;
+			}
+			
+			#playPrice ul .list-item .price-table-title span:nth-child(3),
+			#playPrice ul .list-item .price-table-td span:nth-child(3) {
+				flex: 0 0 auto;
+				width: 25%;
+			}
+			
+			#playPrice ul .list-item .price-table-title span:nth-child(4),
+			#playPrice ul .list-item .price-table-td span:nth-child(4) {
+				flex: 0 0 auto;
+				width: 10%;
+			}
+			/*添加付款方式*/
+			
+			#playPrice ul .list-item .price-add-item {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				padding: 10px 15px;
+				border-bottom: 1px solid #d0d0d0;
+				align-items: center;
+			}
+			
+			#playPrice ul .list-item .price-add-item .tit {
+				flex: 0 0 auto;
+				width: 100px;
+			}
+			
+			#playPrice ul .list-item .price-add-item .tips {
+				flex: 0 0 auto;
+				width: 30px;
+				text-align: center;
+			}
+			
+			#playPrice ul .list-item .price-add-item .content {
+				margin-right: 30px;
+				height: 45px;
+			}
+			/*底部添加按鈕*/
+			/*底部添加按鈕*/
+			
+			#playPrice .button-wrap {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+				background-color: #007AFF;
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="playPrice">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">编辑付款方式</h1>
+				<spa class=" mui-pull-right" style="line-height: 44px">下一步</span>
+			</header>
+			<ul class="list-wrap" v-show="detailData">
+				<!--付款方式-->
+				<li class="list-item">
+					<div class="title">
+						<h4>付款方式</h4>
+					</div>
+					<div class="price-table-title">
+						<span>类型</span>
+						<span>节点</span>
+						<span>金额</span>
+					</div>
+					<div class="price-table-td">
+						<span>收款</span>
+						<span>合同签订后</span>
+						<span>20000</span>
+						<span class="btn-delete mui-icon mui-icon-trash">
+						</span>
+					</div>
+				</li>
+
+				<!--付款方式添加-->
+				<li class="list-item">
+					<div class="title">
+						<h4>付款方式</h4>
+					</div>
+					<div class="price-add">
+						<div class="price-add-item">
+							<span class="tit">分期节点</span>
+							<div class="content">
+								<my-select placeholder="请选择分期节点" v-on:change="changeSelected" v-model="selected" :options="options"></my-select>
+							</div>
+						</div>
+						<div class="price-add-item">
+							<span class="tit">额外时间</span>
+							<div>
+								<div class="mui-numbox" style="width: 100%;height: 40px;">
+									<button class="mui-btn-numbox-minus" type="button">-</button>
+									<input class="mui-input-numbox" type="number" />
+									<button class="mui-btn-numbox-plus" type="button">+</button>
+								</div>
+							</div>
+							<span class="tips">天</span>
+						</div>
+						<div class="price-add-item">
+							<span class="tit">分期金额</span>
+							<div>
+								<div class="mui-numbox" style="width:100%;height: 40px;">
+									<button class="mui-btn-numbox-minus" type="button">-</button>
+									<input class="mui-input-numbox" type="number" />
+									<button class="mui-btn-numbox-plus" type="button">+</button>
+								</div>
+							</div>
+							<span class="tips">元</span>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<div class="button-wrap">
+				保存信息
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../libs/vue-i18n.min.js"></script>
+		<script src="../../libs/filters.js"></script>
+		<script src="../../libs/crypto-js.js"></script>
+		<script src="../../libs/httpService.js"></script>
+		<script src="../../libs/vueComponents.js"></script>
+		<script>
+			mui.init();
+			var playPrice;
+			mui.plusReady(function() {
+				playPrice = plus.webview.currentWebview()
+			})
+			var vm = new Vue({
+				el: '#playPrice',
+				i18n: window.i18n,
+				data: {
+					selected: '',
+					detailData: {},
+					options: [{
+						label: '合同签订后',
+						value: 1
+					}, {
+						label: '发货后',
+						value: 2
+					}, {
+						label: '确认收货后',
+						value: 3
+					}, {
+						label: '验收合格后',
+						value: 4
+					}]
+				},
+				methods: {
+					changeSelected: function(value) {
+						console.log(value, this.selected)
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>
