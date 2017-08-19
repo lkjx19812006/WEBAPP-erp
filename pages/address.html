@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--国际化引入-->
+		<script src="../i18n/en.js"></script>
+		<script src="../i18n/zh_CN.js"></script>
+		<style>
+			.mui-content {
+				padding-top: 95px;
+				position: relative;
+			}
+			/*头部开始*/
+			
+			#address header {
+				height: 45px;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+			}
+			/*头部搜索开始*/
+			
+			#address .search {
+				padding: 5px;
+				position: fixed;
+				background-color: #e0e0e0;
+				border-bottom: 1px solid #d0d0d0;
+				width: 100%;
+				top: 45px;
+				left: 0;
+				z-index: 1;
+			}
+			
+			#address .search input {
+				margin: 0;
+				text-indent: 30px;
+			}
+			
+			#address .search .mui-icon {
+				position: absolute;
+				top: 50%;
+				left: 18px;
+				margin-top: -12px;
+				font-size: 24px;
+				color: #007AFF;				
+			}
+			
+			#address .mui-table-view-cell {
+				padding-top: 15px;
+				padding-bottom: 15px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="address">
+			<!--页面头部-->
+			<header class="mui-bar mui-bar-nav">
+				<h1 class="mui-title">地址选择</h1>
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			</header>
+			<!--搜索框 过滤搜索条件-->
+			<div class="search">
+				<input v-model="keyword" type="text" placeholder="请输入搜索名称"/>				
+				<span class="mui-icon mui-icon-search"></span>
+			</div>
+			<!--列表模式的单选-->
+			<ul class="mui-table-view">
+				<li v-tap="{func: nextStep, params: item}" class="mui-table-view-cell" v-for="item in filterDataList" :key="item.id">
+					<span>{{item.cname}}</span>
+					<span v-if="item.nameEn">({{item.nameEn}})</span>
+				</li>
+			</ul>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../libs/vue.min.js"></script>
+		<script src="../libs/vue-i18n.min.js"></script>
+		<script src="../libs/crypto-js.js"></script>
+		<script src="../libs/httpService.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+
+			var oldBack = mui.back;
+			mui.back = function() {
+				if(vm.stepArr.length > 1) {
+					vm.listData = vm.stepArr[vm.stepArr.length - 2];
+					//从后删除已选中的name 和ID 实现回退功能
+					vm.sendDataArr.pop();
+					vm.stepArr.pop();
+					return false;
+				} else {
+					oldBack()
+				}
+			}
+			var address;
+			mui.plusReady(function() {
+				//获取当前窗口的WebviewObject对象
+				address = plus.webview.currentWebview();
+				vm.getHttpCountry()
+			})
+
+			var vm = new Vue({
+				el: '#address',
+				data: {
+					keyword: '', //过滤筛选的关键字
+					sendDataArr: [], //返回的数据
+					listData: [], //http得到的数据
+					stepArr: [], //记录当前步骤。列表的数据
+
+				},
+				computed: {
+					filterDataList: function() {
+						var newArr = [];
+						if(this.keyword === '') {
+							return this.listData;
+						} else {
+							for(var i = 0; i < this.listData.length; i++) {
+								var nowArr = this.listData[i];
+								if(nowArr.cname.indexOf(this.keyword) > -1 || nowArr.nameEn.toUpperCase().indexOf(this.keyword.toUpperCase()) > -1) {
+									newArr.push(nowArr);
+								}
+							}
+						}
+						return newArr;
+					}
+				},
+				methods: {
+					//输入框输入事件 过滤搜索到的数据
+
+					//清楚输入框中内容
+					clear: function() {
+						this.addressName = '';
+						this.listData = [];
+					},
+					//点击列表获取下一步的数据
+					nextStep: function(params) {
+						//记录当前选中的国家名称和ID
+						var obj = {
+							cname: params.cname,
+							id: params.id,
+							nameEn: params.nameEn
+						};
+						if(params.childList.length > 0 || this.stepArr.length <= 1) {
+							this.getHttpLocation(params);
+							//有下级数据							
+							this.sendDataArr[this.stepArr.length - 1] = obj;
+						} else {
+							//没有下级数据看 最后一个的ID值 是不是和传入的相等
+							if(params.id !== this.sendDataArr[this.sendDataArr.length - 1].id) {
+								//不相等加入数组
+								this.sendDataArr[this.stepArr.length - 1] = obj;
+							}
+							this.sendData(this.sendDataArr);
+						}
+
+					},
+					//发送数据到指定的页面
+					sendData: function(params) {
+						var strArr = [];
+						for(var i = 0; i < params.length; i++) {
+							strArr.push(params[i].cname);
+						}
+						console.log(JSON.stringify(strArr))
+					},
+					//获取地址数据
+					getHttpCountry: function() {
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'locationService',
+							biz_method: 'queryLocationCountry'
+						}
+						var _self = this;
+						plus.nativeUI.showWaiting();
+						common.commonPost(url, body, function(suc) {
+							_self.listData = suc.biz_result.list;
+							_self.stepArr.push(_self.listData);
+							plus.nativeUI.closeWaiting();
+						}, function(err) {
+							plus.nativeUI.closeWaiting();
+						})
+					},
+					//获取下一级的地址数据
+					getHttpLocation: function(params) {
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'locationService',
+							biz_method: 'queryLocationList',
+							biz_param: {
+								pid: params.id
+							}
+						}
+						var _self = this;
+						plus.nativeUI.showWaiting();
+						common.commonPost(url, body, function(suc) {
+							_self.listData = suc.biz_result.list;
+							_self.stepArr.push(_self.listData);
+							plus.nativeUI.closeWaiting();
+						}, function(err) {
+							plus.nativeUI.closeWaiting();
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

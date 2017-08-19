@@ -55,7 +55,7 @@
 			</header>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">
-				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item in listData" :key="item.breedId">
+				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item in listData" :key="item.id">
 					{{item.name}}({{item.eName}})
 				</li>
 			</ul>
@@ -95,6 +95,8 @@
 					//清楚输入框中内容
 					clear: function() {
 						this.searchName = '';
+						this.listData = [];
+						
 					},
 					//获取药材数据
 					getHttp: function() {

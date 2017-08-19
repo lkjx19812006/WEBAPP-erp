@@ -53,11 +53,9 @@
 				<span v-tap="{func: clear}" class="mui-icon mui-icon-close"></span>
 			</header>
 			<!--列表模式的单选-->
-			<ul class="mui-table-view mui-table-view-radio">
-				<li class="mui-table-view-cell" v-for="item in listData">
-					<a class="mui-navigate-right">
-						Item 1
-					</a>
+			<ul class="mui-table-view">
+				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item in listData" :key="item.id">
+					{{item.name}}
 				</li>
 			</ul>
 
@@ -72,9 +70,7 @@
 
 			var oldBack = mui.back;
 			mui.back = function() {
-				customer.hide('slide-out-left', 300, function() {
-					oldBack()
-				})
+				oldBack()
 			}
 			var customer;
 			mui.plusReady(function() {
@@ -97,21 +93,34 @@
 					//清楚输入框中内容
 					clear: function() {
 						this.customerName = '';
+						this.listData = [];
 					},
-					//获取药材数据
+					//获取客户数据
 					getHttp: function() {
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
-							biz_module: 'breedService',
-							biz_method: 'queryErpBreedList',
+							biz_module: 'erpCustomerService',
+							biz_method: 'queryCustomerList',
 							biz_param: {
-								name: this.customerName
+								name: this.customerName,
+								pSize: 50,
+								page: 1,
+								blacklist: 0
 							}
 						}
 						var _self = this;
+						plus.nativeUI.showWaiting()
 						common.commonPost(url, body, function(suc) {
-							_self.listData = suc.biz_result
-						}, function(err) {})
+							_self.listData = suc.biz_result.list
+							plus.nativeUI.closeWaiting()
+						}, function(err) {
+							plus.nativeUI.closeWaiting()
+						})
+					},
+					//发送客户数据
+					sendData: function(params){
+						console.log(params.name)
+						console.log(params.id)
 					}
 				}
 			})

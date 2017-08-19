@@ -296,5 +296,31 @@
       "libs/httpService.js",
       "i18n/zh_CN.js"
     ]
+  },
+  "pages/customer.html": {
+    "resources": [
+      "libs/crypto-js.js",
+      "js/mui.min.js",
+      "libs/vue-i18n.min.js",
+      "i18n/en.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "libs/vue.min.js",
+      "libs/httpService.js",
+      "i18n/zh_CN.js"
+    ]
+  },
+  "pages/address.html": {
+    "resources": [
+      "libs/crypto-js.js",
+      "js/mui.min.js",
+      "libs/vue-i18n.min.js",
+      "i18n/en.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "libs/vue.min.js",
+      "libs/httpService.js",
+      "i18n/zh_CN.js"
+    ]
   }
 }
