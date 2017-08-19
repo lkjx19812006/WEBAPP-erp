@@ -46,7 +46,7 @@
 				left: 18px;
 				margin-top: -12px;
 				font-size: 24px;
-				color: #007AFF;				
+				color: #007AFF;
 			}
 			
 			#address .mui-table-view-cell {
@@ -65,14 +65,14 @@
 			</header>
 			<!--搜索框 过滤搜索条件-->
 			<div class="search">
-				<input v-model="keyword" type="text" placeholder="请输入搜索名称"/>				
+				<input v-model="keyword" type="text" placeholder="请输入搜索名称" />
 				<span class="mui-icon mui-icon-search"></span>
 			</div>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">
 				<li v-tap="{func: nextStep, params: item}" class="mui-table-view-cell" v-for="item in filterDataList" :key="item.id">
 					<span>{{item.cname}}</span>
-					<span v-if="item.nameEn">({{item.nameEn}})</span>
+					<span v-if="item.nameEn && item.nameEn !=='NaN'">({{item.nameEn}})</span>
 				</li>
 			</ul>
 
@@ -84,7 +84,6 @@
 		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-
 			var oldBack = mui.back;
 			mui.back = function() {
 				if(vm.stepArr.length > 1) {
@@ -140,30 +139,13 @@
 					//点击列表获取下一步的数据
 					nextStep: function(params) {
 						//记录当前选中的国家名称和ID
-						var obj = {
-							cname: params.cname,
-							id: params.id,
-							nameEn: params.nameEn
-						};
-						if(params.childList.length > 0 || this.stepArr.length <= 1) {
-							this.getHttpLocation(params);
-							//有下级数据							
-							this.sendDataArr[this.stepArr.length - 1] = obj;
-						} else {
-							//没有下级数据看 最后一个的ID值 是不是和传入的相等
-							if(params.id !== this.sendDataArr[this.sendDataArr.length - 1].id) {
-								//不相等加入数组
-								this.sendDataArr[this.stepArr.length - 1] = obj;
-							}
-							this.sendData(this.sendDataArr);
-						}
-
+						this.getHttpLocation(params);
 					},
 					//发送数据到指定的页面
-					sendData: function(params) {
+					sendData: function() {
 						var strArr = [];
-						for(var i = 0; i < params.length; i++) {
-							strArr.push(params[i].cname);
+						for(var i = 0; i < this.sendDataArr.length; i++) {
+							strArr.push(this.sendDataArr[i].cname);
 						}
 						console.log(JSON.stringify(strArr))
 					},
@@ -189,20 +171,35 @@
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
 							biz_module: 'locationService',
-							biz_method: 'queryLocationList',
+							biz_method: 'queryLocationByPid',
 							biz_param: {
 								pid: params.id
 							}
 						}
 						var _self = this;
-						plus.nativeUI.showWaiting();
 						common.commonPost(url, body, function(suc) {
-							_self.listData = suc.biz_result.list;
-							_self.stepArr.push(_self.listData);
-							plus.nativeUI.closeWaiting();
-						}, function(err) {
-							plus.nativeUI.closeWaiting();
-						})
+							//请求后台数据判断是否还有下一级
+							var obj = {
+								cname: params.cname,
+								id: params.id,
+								nameEn: params.nameEn
+							};
+							if(suc.biz_result.list.length > 0 || _self.stepArr.length <= 1) {
+								_self.sendDataArr[_self.stepArr.length - 1] = obj;
+								_self.listData = suc.biz_result.list;
+								_self.stepArr.push(_self.listData);
+								console.log(JSON.stringify(_self.sendDataArr))
+							} else {
+								//没有下级数据看 最后一个的ID值 是不是和传入的相等
+								if(params.id !== _self.sendDataArr[_self.sendDataArr.length - 1].id) {
+									//不相等加入数组
+									_self.sendDataArr[_self.stepArr.length - 1] = obj;
+								}
+								//没有下一级 发送数据
+								_self.sendData();
+							}
+
+						}, function(err) {})
 					}
 				}
 			})
