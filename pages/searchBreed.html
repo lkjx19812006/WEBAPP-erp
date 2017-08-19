@@ -54,11 +54,9 @@
 				<span v-tap="{func: clear}" class="mui-icon mui-icon-close"></span>
 			</header>
 			<!--列表模式的单选-->
-			<ul class="mui-table-view mui-table-view-radio">
-				<li class="mui-table-view-cell" v-for="item in listData" :key="item.breedId">
-					<a class="mui-navigate-right">
-						Item 1
-					</a>
+			<ul class="mui-table-view">
+				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item in listData" :key="item.breedId">
+					{{item.name}}({{item.eName}})
 				</li>
 			</ul>
 
@@ -73,9 +71,8 @@
 
 			var oldBack = mui.back;
 			mui.back = function() {
-				menu.hide('slide-out-left', 300, function() {
-					oldBack()
-				})
+				//还不知道该页面的返回逻辑 先执行原来的返回功能
+				oldBack()
 			}
 			var menu;
 			mui.plusReady(function() {
@@ -101,6 +98,7 @@
 					},
 					//获取药材数据
 					getHttp: function() {
+						console.log('sdfsdfds')
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
 							biz_module: 'breedService',
@@ -111,8 +109,12 @@
 						}
 						var _self = this;
 						common.commonPost(url, body, function(suc) {
-							_self.listData = suc.biz_result
+							console.log(JSON.stringify(suc.biz_result.list))
+							_self.listData = suc.biz_result.list
 						}, function(err) {})
+					},
+					sendData: function(params) {
+						console.log(params.name)
 					}
 				}
 			})

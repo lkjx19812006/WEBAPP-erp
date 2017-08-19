@@ -68,6 +68,7 @@
 				border-top: 1px solid #d0d0d0;
 				color: #007AFF
 			}
+			
 			#department .items-wrap .subItem:active,
 			#department .items-wrap .orgManager:active {
 				background-color: #e0e0e0;
@@ -81,7 +82,7 @@
 			<header class="mui-bar mui-bar-nav">
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 				<input v-model="departmentName" v-on:input="inputValue" type="text" placeholder="请输入员工名称" />
-				<span v-tap="{func: inputValue}" class="mui-icon mui-icon-close"></span>
+				<span v-tap="{func: clear}" class="mui-icon mui-icon-close"></span>
 			</header>
 			<!--列表模式的单选-->
 			<ul class="items-wrap">
@@ -143,6 +144,7 @@
 					//清楚输入框中内容
 					clear: function() {
 						this.departmentName = '';
+						this.getHttp();
 					},
 					//获取药材数据
 					getHttp: function() {
@@ -152,10 +154,14 @@
 							biz_method: 'queryOrgList'
 						}
 						var _self = this;
+						plus.nativeUI.showWaiting();
 						common.commonPost(url, body, function(suc) {
 							_self.listData = suc.biz_result.list[0].lowerList
 							_self.stepArr.push(_self.listData);
-						}, function(err) {})
+							plus.nativeUI.closeWaiting()
+						}, function(err) {
+							plus.nativeUI.closeWaiting()
+						})
 					},
 					//点击列表展开下一步
 					nextStep: function(params) {
