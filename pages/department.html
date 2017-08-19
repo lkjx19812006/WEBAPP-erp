@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--国际化引入-->
+		<script src="../i18n/en.js"></script>
+		<script src="../i18n/zh_CN.js"></script>
+		<style>
+			ul,
+			li {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			
+			.mui-content {
+				padding-top: 55px;
+				background-color: #fff;
+			}
+			
+			#department header {
+				height: 55px;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+			}
+			
+			#department header input {
+				margin: 0;
+				margin-left: 15px;
+				padding-right: 15px;
+				color: #333;
+			}
+			
+			#department header span {
+				font-size: 30px;
+				position: absolute;
+				right: 15px;
+				top: 50%;
+				margin-top: -25px;
+				color: #007AFF;
+			}
+			/*列表目录开始*/
+			
+			#department .items-wrap {
+				padding: 10px 0;
+				background-color: #fff;
+			}
+			
+			#department .items-wrap .item-list {
+				border-bottom: 1px solid #d0d0d0;
+			}
+			
+			#department .items-wrap .subItem {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				padding: 15px;
+			}
+			
+			#department .items-wrap .orgManager {
+				padding: 15px;
+				border-top: 1px solid #d0d0d0;
+				color: #007AFF
+			}
+			#department .items-wrap .subItem:active,
+			#department .items-wrap .orgManager:active {
+				background-color: #e0e0e0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="department">
+			<!--页面头部-->
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<input v-model="departmentName" v-on:input="inputValue" type="text" placeholder="请输入员工名称" />
+				<span v-tap="{func: inputValue}" class="mui-icon mui-icon-close"></span>
+			</header>
+			<!--列表模式的单选-->
+			<ul class="items-wrap">
+				<li class="item-list" v-for="item in listData" :key="item.id">
+					<!--mui-navigate-right-->
+					<!--还有的子选项-->
+					<div class="subItem" v-tap="{func:nextStep, params: item}">
+						<span>{{item.name}}</span>
+						<span v-show="(item.lowerList && item.lowerList.length > 0) || (item.orgEmployeeList && item.orgEmployeeList.length > 0)">
+							<i class="mui-icon mui-icon-arrowright" style="color: #666"></i>
+						</span>
+					</div>
+					<!--部门主管选项-->
+					<div class="orgManager" v-tap="{func: sendData, params: mgItem}" v-for="mgItem in item.orgManagerList">
+						<span>{{mgItem.name}}</span>
+					</div>
+
+				</li>
+			</ul>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../libs/vue.min.js"></script>
+		<script src="../libs/vue-i18n.min.js"></script>
+		<script src="../libs/crypto-js.js"></script>
+		<script src="../libs/httpService.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+
+			var oldBack = mui.back;
+			mui.back = function() {
+				if(vm.stepArr.length > 1) {
+					vm.listData = vm.stepArr[vm.stepArr.length - 2];
+					vm.stepArr.pop()
+					return false;
+				} else {
+					oldBack()
+				}
+			}
+			var department;
+			mui.plusReady(function() {
+				//获取当前窗口的WebviewObject对象
+				department = plus.webview.currentWebview();
+
+			})
+
+			var vm = new Vue({
+				el: '#department',
+				data: {
+					departmentName: '',
+					listData: [], //列表的数据
+					stepArr: [] //记录当前步骤。列表的数据
+				},
+				methods: {
+					//输入框输入事件
+					inputValue: function() {
+						this.getHttp();
+					},
+					//清楚输入框中内容
+					clear: function() {
+						this.departmentName = '';
+					},
+					//获取药材数据
+					getHttp: function() {
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'orgService',
+							biz_method: 'queryOrgList'
+						}
+						var _self = this;
+						common.commonPost(url, body, function(suc) {
+							_self.listData = suc.biz_result.list[0].lowerList
+							_self.stepArr.push(_self.listData);
+						}, function(err) {})
+					},
+					//点击列表展开下一步
+					nextStep: function(params) {
+						//当前项还有子项的时候 需要进入下一个子项
+						console.log()
+						if((params.lowerList && params.lowerList.length > 0) || (params.orgEmployeeList && params.orgEmployeeList.length > 0)) {
+							if(params.lowerList.length > 0) {
+								this.listData = params.lowerList;
+								this.stepArr.push(this.listData);
+							} else if(params.orgEmployeeList.length > 0) {
+								this.listData = params.orgEmployeeList;
+								this.stepArr.push(this.listData);
+							}
+
+						} else {
+							//没有子项 点击的时候就需要将数据返回回去了
+							this.sendData(params)
+						}
+					},
+					//发数据出去
+					sendData: function(params) {
+						console.log(JSON.stringify(params.name))
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

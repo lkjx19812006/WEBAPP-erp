@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--国际化引入-->
+		<script src="../i18n/en.js"></script>
+		<script src="../i18n/zh_CN.js"></script>
+		<style>
+			.mui-content {
+				padding-top: 55px;
+			}
+			
+			#searchBreed header {
+				height: 55px;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+			}
+			
+			#searchBreed header input {
+				margin: 0;
+				margin-left: 15px;
+				padding-right: 15px;
+				color: #333;
+			}
+			
+			#searchBreed header span {
+				font-size: 30px;
+				position: absolute;
+				right: 15px;
+				top: 50%;
+				margin-top: -25px;
+				color: #007AFF;
+			}
+			
+			#searchBreed .mui-table-view-cell {
+				padding-top: 15px;
+				padding-bottom: 15px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="searchBreed">
+			<!--页面头部-->
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<input v-model="searchName" v-on:input="inputValue" type="text" placeholder="请输入药材名称" />
+				<span v-tap="{func: clear}" class="mui-icon mui-icon-close"></span>
+			</header>
+			<!--列表模式的单选-->
+			<ul class="mui-table-view mui-table-view-radio">
+				<li class="mui-table-view-cell" v-for="item in listData" :key="item.breedId">
+					<a class="mui-navigate-right">
+						Item 1
+					</a>
+				</li>
+			</ul>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../libs/vue.min.js"></script>
+		<script src="../libs/vue-i18n.min.js"></script>
+		<script src="../libs/crypto-js.js"></script>
+		<script src="../libs/httpService.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+
+			var oldBack = mui.back;
+			mui.back = function() {
+				menu.hide('slide-out-left', 300, function() {
+					oldBack()
+				})
+			}
+			var menu;
+			mui.plusReady(function() {
+				//获取当前窗口的WebviewObject对象
+				menu = plus.webview.currentWebview();
+
+			})
+
+			var vm = new Vue({
+				el: '#searchBreed',
+				data: {
+					searchName: '',
+					listData: []
+				},
+				methods: {
+					//输入框输入事件
+					inputValue: function() {
+						this.getHttp();
+					},
+					//清楚输入框中内容
+					clear: function() {
+						this.searchName = '';
+					},
+					//获取药材数据
+					getHttp: function() {
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'breedService',
+							biz_method: 'queryErpBreedList',
+							biz_param: {
+								name: this.searchName
+							}
+						}
+						var _self = this;
+						common.commonPost(url, body, function(suc) {
+							_self.listData = suc.biz_result
+						}, function(err) {})
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>
