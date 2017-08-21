@@ -42,13 +42,17 @@
 			
 			#address .search .mui-icon {
 				position: absolute;
-				top: 50%;
-				left: 18px;
+				top: 50%;				
 				margin-top: -12px;
 				font-size: 24px;
 				color: #007AFF;
 			}
-			
+			#address .search  .mui-icon-search {
+				left: 18px;
+			}
+			#address .search .mui-icon-close {
+				right: 18px;
+			}
 			#address .mui-table-view-cell {
 				padding-top: 15px;
 				padding-bottom: 15px;
@@ -67,6 +71,7 @@
 			<div class="search">
 				<input v-model="keyword" type="text" placeholder="请输入搜索名称" />
 				<span class="mui-icon mui-icon-search"></span>
+				<span v-tap="{func: clearKeyword}" v-show="keyword !== ''" class="mui-icon mui-icon-close"></span>
 			</div>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">
@@ -129,8 +134,10 @@
 					}
 				},
 				methods: {
-					//输入框输入事件 过滤搜索到的数据
-
+					//搜索头清楚关键字
+					clearKeyword: function(){
+						this.keyword = '';
+					},
 					//清楚输入框中内容
 					clear: function() {
 						this.addressName = '';
