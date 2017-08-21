@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<!--国际化引入-->
+	<script src="../../i18n/en.js"></script>
+	<script src="../../i18n/zh_CN.js"></script>
+	<style>
+		#offerPrice {
+			padding-top: 45px;
+			padding-bottom: 50px;
+		}
+		/*表单列表开始*/
+		
+		#offerPrice .offerList .detail {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px 15px;
+			border-bottom: 1px dashed #d0d0d0;
+			padding-bottom: 15px;
+		}
+		
+		#offerPrice .offerList .detail .tit {
+			flex: 0 0 auto;
+			width: 110px;
+		}
+		
+		#offerPrice .offerList .detail input {
+			margin: 0;
+		}
+		/*底部项目 块级标题*/
+		
+		#offerPrice .offerList .block {
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+		}
+		
+		#offerPrice .offerList .block .tit {
+			padding: 10px 0;
+		}
+		
+		#offerPrice .offerList .block .item-quality {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+		}
+		
+		#offerPrice .offerList .block .item-quality .item {
+			padding: 8px 12px;
+			background-color: #F0F0F0;
+			color: 666;
+			margin-right: 10px;
+			margin-bottom: 10px;
+			margin-left: 0;
+			border: 1px solid #d0d0d0;
+		}
+		
+		#offerPrice .offerList .block textarea {
+			margin: 0;
+		}
+		/*底部报价按钮*/
+		
+		#offerPrice .button-wrap {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 50px;
+			line-height: 50px;
+			text-align: center;
+			background-color: #007AFF;
+			color: #fff;
+			font-size: 18px;
+		}	
+	</style>
+</head>
+
+<body>
+	<div class="mui-content" id="offerPrice">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">报价</h1>
+		</header>
+		<!--表单列表-->
+		<div class="offerList">
+			<!--输入项目开始-->
+			<div class="detail">
+				<span class="tit">品种：</span>
+				<input type="text" readonly placeholder="请选择品种" />
+			</div>
+			<div class="detail">
+				<span class="tit">数量：</span>
+				<input class="mui-input-numbox" type="number" placeholder="请输入数量" />
+				<div class="unit-selected" style="height: 40px; width: 100%">
+					<my-select placeholder="单位"></my-select>
+				</div>
+			</div>
+			<div class="detail">
+				<span class="tit">单价：</span>
+				<input class="mui-input-numbox" type="number" placeholder="请输入单价" />
+				<div class="unit-selected" style="height: 40px; width: 100%">
+					<my-select placeholder="单位"></my-select>
+				</div>
+			</div>
+			<div class="detail">
+				<span class="tit">产地：</span>
+				<div class="unit-selected" style="height: 40px; width: 100%">
+					<my-select placeholder="请选择产地"></my-select>
+				</div>
+			</div>
+			<div class="detail">
+				<span class="tit">规格：</span>
+				<div class="unit-selected" style="height: 40px; width: 100%">
+					<my-select placeholder="请选择规格"></my-select>
+				</div>
+			</div>
+			<div class="detail">
+				<span class="tit">有效时间：</span>
+				<input type="date" placeholder="请选择日期" />
+			</div>
+			<div class="detail">
+				<span class="tit">供应商名称：</span>
+				<input type="text" readonly placeholder="请选择供应商" />
+
+			</div>
+			<!--质量说明-->
+			<div class="detail block">
+				<span class="tit">质量说明：</span>
+				<div class="item-quality">
+					<span class="item">标签1</span>
+					<span class="item">标签1</span>
+					<span class="item">标签1</span>
+					<span class="item">标签1</span>
+					<span class="item">标签1</span>
+					<span class="item">标签1</span>
+				</div>
+				<textarea rows="4" placeholder="其余质量说明，可在此填写！！！"></textarea>
+			</div>
+			<!--药材图片-->
+			<div class="detail block">
+				<span class="tit">药材图片：</span>
+				<my-updateimg></my-updateimg>
+			</div>
+			<!--报价备注-->
+			<div class="detail block" style="border: none">
+				<span class="tit">报价备注：</span>
+				<textarea rows="4" placeholder="请填写报价备注信息"></textarea>
+			</div>
+		</div>
+
+		<!--提交按钮-->
+		<div class="button-wrap">
+			提交报价
+		</div>
+	</div>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../libs/vue.min.js"></script>
+	<script src="../../libs/vue-i18n.min.js"></script>
+	<script src="../../libs/filters.js"></script>
+	<script src="../../libs/crypto-js.js"></script>
+	<script src="../../libs/httpService.js"></script>
+	<script src="../../libs/vueComponents.js"></script>
+	<script>
+		//初始化
+		mui.init();
+		//加载完毕
+		var offerPrice;
+		mui.plusReady(function() {
+			offerPrice = plus.webview.currentWebview()
+			//预加载品种
+
+		})
+		var vm = new Vue({
+			el: '#offerPrice',
+			i18n: window.i18n,
+			data: {},
+			methods: {
+
+			}
+		})
+	</script>
+</body>
+
+</html>

@@ -25,9 +25,7 @@
 			<!--头部导航-->
 			<my-header v-on:show="showMenu" title="移动ERP">
 			</my-header>
-			<div>
-				<my-updateimg v-on:getimgurl="getimgurl"></my-updateimg>
-			</div>
+			
 			<!--底部-->
 			<my-navbar>
 			</my-navbar>
@@ -55,9 +53,7 @@
 					showMenu: function() {
 						menu.show('slide-in-left', 300)
 					},
-					getimgurl: function(parmas){
-						console.log(JSON.stringify(parmas))
-					}
+				
 				}
 			})
 			mui.plusReady(function() {

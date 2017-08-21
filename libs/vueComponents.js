@@ -51,10 +51,10 @@
 	//注册全局select组件
 	Vue.component('my-select', {
 		template: '<div style="display: flex; flex-direction: column;justify-content: flex-start; position:relative; width: 100%; height: 100%;">' +
-			'<input readonly :placeholder="placeholder" ref="input" v-on:change="change" v-on:focus="showList = true" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px; margin-bottom: 5px;" />' +
+			'<input readonly :placeholder="placeholder" ref="input" v-on:change="change" v-on:focus="showList = true" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px;" />' +
 			'<span style="position: absolute; right: 8px;top:50%; margin-top: -6px; height: 0; width: 0; border: 8px solid transparent; border-top-color: #666;"></span>' +
-			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 99;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;">' +
-			'<div v-tap="{func: selected, params:item}" style="padding:10px;background-color: #fff; color: #333;border-bottom: 1px solid #d0d0d0" v-for="item in options">' +
+			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 99;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;margin-top: 5px;">' +
+			'<div v-tap="{func: selected, params:item}" style="padding:10px;background-color: #fff; color: #333;border-bottom: 1px solid #d0d0d0;" v-for="item in options">' +
 			'{{item.label}}' +
 			'</div>' +
 			'</div>' +
@@ -68,7 +68,7 @@
 		props: {
 			placeholder: {
 				type: String,
-				default: '请选择！！！'
+				default: '请选择！'
 			},
 			options: {
 				type: Array,
@@ -101,27 +101,37 @@
 
 	//注册全局的图片上传
 	Vue.component('my-updateimg', {
-		template: '<div class="img_up" style="display: flex; flex-direction: row; justify-content: space-between; padding: 15px;flex-wrap: wrap;">' +
+		template: '<div class="img_up" style="display: flex; flex-direction: row; justify-content: space-between; padding: 0;flex-wrap: wrap;">' +
 			'<div v-for="item,index in imgList" :key="index" style="position: relative; margin: 5px; border:2px solid #d0d0d0;border-radius: 10px; padding:5px;display: flex;flex-direction: row; justify-content: center;align-items: center;height: 120px; width: 120px;">' +
 			'<div class="img-wrap" style="flex: 0 0 auto;height: 100%; width: 100%; overflow: hidden;display: flex;flex-direction: row; justify-content: center;align-items: center;">' +
 			'<img style="max-width: 100%;" :src="item" />' +
 			'</div>' +
 			'<span v-tap="{func:deleteImg, params:index}" class="mui-icon mui-icon-close" style="position: absolute; right: -10px; top:-10px; color: red; font-weight: 700;border-radius: 12px;"></span>' +
 			'</div>' +
-			'<button style="margin: 5px;flex: 0 0 auto; height: 120px; width: 120px; border: 0 none; background: url(' + "../images/iconfont-tianjia.png" + ') no-repeat center;" v-tap="{func: getImgFile}">' +
+			'<button v-show="imgList.length < maxImgNum" style="margin: 5px;flex: 0 0 auto; height: 120px; width: 120px; border: 2px solid #d0d0d0; border-radius: 10px; background-color: #f0f0f0" v-tap="{func: getImgFile}">' +
+			'<span class="mui-icon mui-icon-image"  style="font-size: 80px; color: #b0b0b0"></span>' +
 			'</button>' +
 			'</div>',
 		data: function() {
 			return {
-				keyName: 'intention',//七牛图片地址
+				keyName: 'intention', //七牛图片地址
 				token: '',
 				url: '',
 				imgList: []
 			}
 		},
+		props: {
+			maxImgNum: {
+				type: Number,
+				default: 4
+			}
+		},
 		methods: {
 			//获取图片文件路径
 			getImgFile: function() {
+				if(this.imgList.length >= this.maxImgNum) {
+					return ;
+				}
 				//获取token
 				var _self = this;
 				this.getToken(function() {
