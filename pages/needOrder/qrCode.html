@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<!--国际化引入-->
+	<script src="../../i18n/en.js"></script>
+	<script src="../../i18n/zh_CN.js"></script>
+	<style>
+		#qrCode {
+			padding-top: 45px;
+			padding-bottom: 50px;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+		/*显示二维码区域*/
+		
+		#qrCode .qrCode-img-wrap {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			margin-top: 50px;
+			padding: 20px;
+			background-color: #fff;
+		}
+		
+		.#qrCode .qrCode-img-wrap img {
+			width: 100%;
+		}
+		/*底部操作按钮*/
+		
+		#qrCode .button-wrap {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 50px;
+			font-size: 18px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+		
+		#qrCode .button-wrap div {
+			flex: 0 0 50%;
+			height: 100%;
+			line-height: 50px;
+			text-align: center;
+		}
+		
+		#qrCode .button-wrap div:nth-child(1) {
+			background-color: #c0c0c0;
+			color: #f0f0f0;
+		}
+		
+		#qrCode .button-wrap div:nth-child(2) {
+			background-color: #007AFF;
+			color: #fff;
+		}
+	</style>
+	</style>
+</head>
+
+<body>
+	<div class="mui-content" id="qrCode">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">二维码</h1>
+		</header>
+		<!--表单列表-->
+		<div class="qrCode-img-wrap">
+			<canvas id="qr"></canvas>
+		</div>
+
+		<!--提交按钮-->
+		<div class="button-wrap">
+			<div>
+				返回
+			</div>
+			<div>
+				分享
+			</div>
+		</div>
+	</div>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/qrious.min.js"></script>
+	<script src="../../libs/vue.min.js"></script>
+	<script src="../../libs/vue-i18n.min.js"></script>
+	<script src="../../libs/filters.js"></script>
+	<script src="../../libs/crypto-js.js"></script>
+	<script src="../../libs/httpService.js"></script>
+	<script src="../../libs/vueComponents.js"></script>
+	<script>
+		//初始化
+		mui.init();
+		//加载完毕
+		var offerPrice;
+		mui.plusReady(function() {
+			offerPrice = plus.webview.currentWebview()
+
+		})
+		var vm = new Vue({
+			el: '#qrCode',
+			i18n: window.i18n,
+			data: {},
+			methods: {
+
+			}
+		})
+		//二维码
+		const qr = new QRious({
+			element: document.getElementById('qr'),
+			size: 265,
+			level: 'L',
+			mime: 'image/png',
+			padding: 0,
+			value: 'http://apps.yaocaimaimai.com/htm5/#/needDetails/a1a1a1a1a1a1a1a1a1a1a1a'
+		});
+	</script>
+</body>
+
+</html>
