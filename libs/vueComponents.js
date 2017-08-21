@@ -1,5 +1,4 @@
-;
-(function(Vue, mui) {
+(function(Vue, mui, common) {
 	// 注册 头部组件
 	Vue.component('my-header', {
 		template: '<header class="mui-bar mui-bar-nav">' +
@@ -66,7 +65,7 @@
 				nowSelectData: {},
 			}
 		},
-		props: {	
+		props: {
 			placeholder: {
 				type: String,
 				default: '请选择！！！'
@@ -100,4 +99,125 @@
 		}
 	})
 
-})(Vue, mui)
+	//注册全局的图片上传
+	Vue.component('my-updateimg', {
+		template: '<div class="img_up" style="display: flex; flex-direction: row; justify-content: space-between; padding: 15px;flex-wrap: wrap;">' +
+			'<div v-for="item,index in imgList" :key="index" style="position: relative; margin: 5px; border:2px solid #d0d0d0;border-radius: 10px; padding:5px;display: flex;flex-direction: row; justify-content: center;align-items: center;height: 120px; width: 120px;">' +
+			'<div class="img-wrap" style="flex: 0 0 auto;height: 100%; width: 100%; overflow: hidden;display: flex;flex-direction: row; justify-content: center;align-items: center;">' +
+			'<img style="max-width: 100%;" :src="item" />' +
+			'</div>' +
+			'<span v-tap="{func:deleteImg, params:index}" class="mui-icon mui-icon-close" style="position: absolute; right: -10px; top:-10px; color: red; font-weight: 700;border-radius: 12px;"></span>' +
+			'</div>' +
+			'<button style="margin: 5px;flex: 0 0 auto; height: 120px; width: 120px; border: 0 none; background: url(' + "../images/iconfont-tianjia.png" + ') no-repeat center;" v-tap="{func: getImgFile}">' +
+			'</button>' +
+			'</div>',
+		data: function() {
+			return {
+				keyName: 'intention',//七牛图片地址
+				token: '',
+				url: '',
+				imgList: []
+			}
+		},
+		methods: {
+			//获取图片文件路径
+			getImgFile: function() {
+				//获取token
+				var _self = this;
+				this.getToken(function() {
+					//选取文件对象 事件回调里面的是文件的路径
+					plus.gallery.pick(function(event) {
+						_self.createUpload(event)
+					})
+				})
+
+			},
+			//删除图片
+			deleteImg: function(index) {
+				this.imgList.splice(index, 1);
+				//删除图片后 告诉引用页面 更新数据
+				this.$emit('getImgUrl', this.imgList);
+			},
+			//获取七牛token
+			getToken: function(success) {
+				//先从本地获取有没有七牛token 没有 再从服务器获取
+				if(common.getItem("qnToken") && common.getItem('qnImgUrl')) {
+					this.token = common.getItem("qnToken");
+					this.url = common.getItem('qnImgUrl');
+					if(typeof success === 'function') {
+						success()
+					}
+					return
+				};
+				var url = common.commonUrl + common.apiUrl.most;
+				var body = {
+					biz_module: 'filesService',
+					biz_method: 'getQiNiuToken',
+					biz_param: {
+						bucketName: this.keyName
+					}
+				};
+				var _self = this;
+				common.commonPost(url, body, function(suc) {
+					_self.token = suc.biz_result.token;
+					_self.url = suc.biz_result.url;
+					common.setItem('qnToken', _self.token);
+					common.setItem('qnImgUrl', _self.url);
+					if(typeof success === 'function') {
+						success()
+					}
+				}, function(err) {
+
+				})
+			},
+			//创建上传任务
+			createUpload: function(event) {
+				// file:///storage/emulated/0/tencent/MicroMsg/1501133375877_0209ef0e.jpg 获取的地址类似于这样
+				//从后往前找 截取文件名称
+				var _self = this;
+				var name = event.substr(event.lastIndexOf('/') + 1);
+
+				var task = plus.uploader.createUpload("http://upload.qiniu.com", {
+						method: "POST",
+					},
+					function(t, status) {
+						//获取结果
+						var result = JSON.parse(t.responseText);
+						var url = _self.url + '/' + result.key;
+						_self.imgList.push(url);
+						//成功后告诉应用页面 更新数据
+						_self.$emit('getimgurl', _self.imgList);
+					}
+				);
+				//压缩图片
+				var newUrl = '_doc/' + name;
+				plus.zip.compressImage({
+					src: event, //原图片路径
+					dst: newUrl, //现图片路径
+					overwrite: true, //覆盖生产新文件
+					quality: 50, //压缩质量
+				}, function(zip) {
+					//添加文件
+					task.addFile(zip.target, {
+						key: "file"
+					});
+
+					//设置文件名
+					var keyName = new Date().getTime() + Math.floor(Math.random() * 100000000000).toString() + '.' + name.split('.')[1];
+					task.addData('key', keyName)
+
+					//添加token
+					task.addData("token", _self.token);
+
+					task.start();
+				}, function(zipe) {
+					mui.toast('压缩失败！')
+				});
+
+			}
+
+		}
+
+	})
+
+})(Vue, mui, common)

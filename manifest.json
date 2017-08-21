@@ -271,7 +271,8 @@
 					"pages/orderMg/order.js",
 					"libs/filters.js",
 					"libs/vueComponents.js",
-					"pages/menu.html"
+					"pages/menu.html",
+					"images/iconfont-tianjia.png"
 				],
 				"refer": [
 					"pages/userInfo.html",

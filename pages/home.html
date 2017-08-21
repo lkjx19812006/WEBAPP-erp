@@ -10,6 +10,10 @@
 		<script src="../i18n/en.js"></script>
 		<script src="../i18n/zh_CN.js"></script>
 		<style>
+			.mui-content {
+				padding-top: 45px;
+			}
+			
 			#offCanvasWrapper .mui-off-canvas-left {
 				background-color: #f0f0f0;
 			}
@@ -22,7 +26,7 @@
 			<my-header v-on:show="showMenu" title="移动ERP">
 			</my-header>
 			<div>
-
+				<my-updateimg v-on:getimgurl="getimgurl"></my-updateimg>
 			</div>
 			<!--底部-->
 			<my-navbar>
@@ -44,10 +48,15 @@
 				el: '#myOrder',
 				data: {
 					msgNum: 0,
+					
 				},
-				methods: {
+				methods: {	
+					//显示菜单
 					showMenu: function() {
 						menu.show('slide-in-left', 300)
+					},
+					getimgurl: function(parmas){
+						console.log(JSON.stringify(parmas))
 					}
 				}
 			})
@@ -64,7 +73,6 @@
 					});
 				}, 300);
 			})
-
 			window.addEventListener('closeMenu', function(event) {
 				mask.close()
 			})
