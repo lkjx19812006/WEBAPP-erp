@@ -51,9 +51,9 @@
 	//注册全局select组件
 	Vue.component('my-select', {
 		template: '<div style="display: flex; flex-direction: column;justify-content: flex-start; position:relative; width: 100%; height: 100%;">' +
-			'<input readonly :placeholder="placeholder" ref="input" v-on:change="change" v-on:focus="showList = true" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px;" />' +
-			'<span style="position: absolute; right: 8px;top:50%; margin-top: -6px; height: 0; width: 0; border: 8px solid transparent; border-top-color: #666;"></span>' +
-			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 99;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;margin-top: 5px;">' +
+			'<input readonly :placeholder="placeholder" ref="input" v-on:change="change" v-on:focus="focus" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px;" />' +
+			'<span style="position: absolute; right: 8px;top:50%; margin-top: -4px; height: 0; width: 0; border: 6px solid transparent; border-top-color: #aaa;"></span>' +
+			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 1;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;margin-top: 5px;">' +
 			'<div v-tap="{func: selected, params:item}" style="padding:10px;background-color: #fff; color: #333;border-bottom: 1px solid #d0d0d0;" v-for="item in options">' +
 			'{{item.label}}' +
 			'</div>' +
@@ -69,6 +69,10 @@
 			placeholder: {
 				type: String,
 				default: '请选择！'
+			},
+			desabled: {
+				type: Boolean,
+				default: false
 			},
 			options: {
 				type: Array,
@@ -89,6 +93,9 @@
 			change: function() {
 				//change事件传值
 				this.$emit('change', this.nowSelectData)
+			},
+			focus: function() {
+				this.showList = true && !this.desabled;
 			},
 			blur: function() {
 				var _self = this;
@@ -130,7 +137,7 @@
 			//获取图片文件路径
 			getImgFile: function() {
 				if(this.imgList.length >= this.maxImgNum) {
-					return ;
+					return;
 				}
 				//获取token
 				var _self = this;

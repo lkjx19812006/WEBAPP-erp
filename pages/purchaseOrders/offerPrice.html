@@ -33,6 +33,10 @@
 		#offerPrice .offerList .detail input {
 			margin: 0;
 		}
+		
+		#offerPrice .offerList .detail .breedName:active {
+			border-color: #007AFF;
+		}
 		/*底部项目 块级标题*/
 		
 		#offerPrice .offerList .block {
@@ -78,7 +82,7 @@
 			background-color: #007AFF;
 			color: #fff;
 			font-size: 18px;
-		}	
+		}
 	</style>
 </head>
 
@@ -93,20 +97,20 @@
 			<!--输入项目开始-->
 			<div class="detail">
 				<span class="tit">品种：</span>
-				<input type="text" readonly placeholder="请选择品种" />
+				<input class="breedName" v-model="formData.breedName" v-tap="{func: showSearchBreed}" type="text" readonly placeholder="请选择品种" />
 			</div>
 			<div class="detail">
 				<span class="tit">数量：</span>
 				<input class="mui-input-numbox" type="number" placeholder="请输入数量" />
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<my-select placeholder="单位"></my-select>
+					<my-select v-on:change="changUnit" v-model="formData.unitId" :options="unitList" placeholder="单位"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">单价：</span>
 				<input class="mui-input-numbox" type="number" placeholder="请输入单价" />
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<my-select placeholder="单位"></my-select>
+					<input type="text" readonly v-model="unitName" placeholder="单位"></input>
 				</div>
 			</div>
 			<div class="detail">
@@ -127,19 +131,18 @@
 			</div>
 			<div class="detail">
 				<span class="tit">供应商名称：</span>
-				<input type="text" readonly placeholder="请选择供应商" />
+				<input type="text" placeholder="请选择供应商" />
 
 			</div>
 			<!--质量说明-->
 			<div class="detail block">
 				<span class="tit">质量说明：</span>
 				<div class="item-quality">
-					<span class="item">标签1</span>
-					<span class="item">标签1</span>
-					<span class="item">标签1</span>
-					<span class="item">标签1</span>
-					<span class="item">标签1</span>
-					<span class="item">标签1</span>
+					<span class="item">产品包交</span>
+					<span class="item">质量优质</span>
+					<span class="item">一手货源</span>
+					<span class="item">含量较高</span>
+					<span class="item">可以加工</span>
 				</div>
 				<textarea rows="4" placeholder="其余质量说明，可在此填写！！！"></textarea>
 			</div>
@@ -171,18 +174,82 @@
 		//初始化
 		mui.init();
 		//加载完毕
-		var offerPrice;
+		var offerPrice, searchBreed;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview()
-			//预加载品种
+			vm.getUnitHttp()
+			setTimeout(function() {
+				//预加载品种
+				searchBreed = mui.preload({
+					url: '../searchBreed.html',
+					id: 'searchBreed'
+				})
+				//预加载客户选项
+
+			}, 300)
 
 		})
 		var vm = new Vue({
 			el: '#offerPrice',
 			i18n: window.i18n,
-			data: {},
+			data: {
+				formData: {
+					breedName: '',
+					breedId: '',
+					unitId: '',
+				},
+				unitName: '',
+				unitList: []
+			},
 			methods: {
+				//显示搜索列表
+				showSearchBreed: function() {
+					//传值自己的ID给列表页面
+					mui.fire(searchBreed, 'updateFormData', {
+						id: offerPrice.id
+					})
+					setTimeout(function() {
+						searchBreed.show('slide-in-right', 300)
+					}, 300)
+				},
+				//获取单位列表
+				getUnitHttp: function() {
+					var url = common.commonUrl + common.apiUrl.most;
+					var body = {
+						biz_module: 'enumService',
+						biz_method: 'queryEnumList',
+						biz_param: {
+							type: 'MU'
+						}
+					};
+					var _self = this;
+					common.commonPost(url, body, function(suc) {
+						var list = []
+						for(var i = 0; i < suc.biz_result.list.length; i++) {
+							var obj = suc.biz_result.list[i];
+							list.push({
+								label: obj.name + '(' + obj.nameEn + ')',
+								value: obj.id
+							})
+						}
+						_self.unitList = list;
+					}, function(err) {
 
+					})
+				},
+				//单位改变
+				changUnit: function(event) {
+					this.unitName = event.label;
+					console.log(JSON.stringify(event))
+				}
+			}
+		})
+
+		//获取品种页面返回的值
+		window.addEventListener("backBreedName", function(event) {
+			if(event.detail && typeof event.detail === 'object') {
+				vm.formData.breedName = event.detail.name;
+				vm.formData.breedId = event.detail.id;
 			}
 		})
 	</script>
