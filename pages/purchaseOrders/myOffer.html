@@ -13,6 +13,7 @@
 			padding-top: 45px;
 			padding-bottom: 50px;
 			background-color: #f0f0f0;
+			font-size: 14px;
 		}
 		
 		#myOffer .header-filter {
@@ -78,8 +79,10 @@
 			justify-content: space-between;
 			padding: 5px 0;
 		}
-		
-		#myOffer .list-item .list-item-row > div {
+		#myOffer .list-item .list-item-row.last{
+			justify-content: flex-start;
+		}
+		#myOffer .list-item .list-item-row>div {
 			display: flex;
 			flex-direction: row;
 			justify-content: flex-start;
@@ -87,14 +90,16 @@
 		
 		#myOffer .list-item .list-item-row .detail-left {
 			flex: 0 0 auto;
-			width: 60%;
+			width: 50%;
 		}
+		
 		#myOffer .list-item .list-item-row .tit {
 			flex: 0 0 auto;
 		}
+		
 		#myOffer .list-item .list-item-row .detail-right {
 			flex: 0 0 auto;
-			width: 40%;
+			width: 50%;
 		}
 		/*底部操作按钮*/
 		
@@ -172,30 +177,25 @@
 						<span class="tit">报价时间：</span>
 						<span class="info">2017-08-21</span>
 					</div>
-					<div class="detail-right">
-						<span class="tit">价格：</span>
-						<span class="info">2000元/公斤</span>
+					<div class="detail-left">
+						<span class="tit">有效时间：</span>
+						<span class="info">2017-09-20</span>
 					</div>
 				</div>
 				<div class="list-item-row">
-					<div class="detail-left">
-						<span class="tit">有效期：</span>
-						<span class="info">2017-09-20</span>
+
+					<div class="detail-right">
+						<span class="tit">价格：</span>
+						<span class="info">2000元/公斤</span>
 					</div>
 					<div class="detail-right">
 						<span class="tit">数量：</span>
 						<span class="info">5000000</span>
 					</div>
 				</div>
-				<div class="list-item-row">
-					<div class="detail-left">
-						<span class="tit">供应商名称：</span>
-						<span class="info">上海啊啊hi啊啊哈啊啊啊</span>
-					</div>
-					<div class="detail-right">
-						<span class="tit">单位：</span>
-						<span class="info">公斤</span>
-					</div>
+				<div class="list-item-row last">
+					<span class="tit">供应商名称：</span>
+					<span class="info">上海啊啊hi啊啊哈啊啊啊</span>
 				</div>
 			</div>
 		</div>
