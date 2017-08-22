@@ -85,7 +85,8 @@
 				el: '#searchBreed',
 				data: {
 					searchName: '',
-					listData: []
+					listData: [],
+					comeFrom: ''
 				},
 				methods: {
 					//输入框输入事件
@@ -96,7 +97,7 @@
 					clear: function() {
 						this.searchName = '';
 						this.listData = [];
-						
+
 					},
 					//获取药材数据
 					getHttp: function() {
@@ -116,9 +117,29 @@
 						}, function(err) {})
 					},
 					sendData: function(params) {
-						console.log(params.name)
+						var _self = this;
+						if(_self.comeFrom) {
+							//获取跳转过来的页面的对象
+							console.log(JSON.stringify(params.id))
+							var comeFromPage = plus.webview.getWebviewById(_self.comeFrom);
+							//给过来页面传值过去
+							mui.fire(comeFromPage, 'backBreedName', {
+								id: params.id,
+								name:params.name
+							})
+							_self.searchName = ''
+							setTimeout(function() {
+								comeFromPage.show('slide-in-right', 300);
+							}, 200);
+						}
 					}
 				}
+			})
+
+			//更新搜索数据			
+			window.addEventListener('updateFormData', function(event) {
+				//console.log(JSON.stringify(event.detail.id))
+				vm.comeFrom = event.detail.id; //拿到跳转过来页面的id
 			})
 		</script>
 	</body>
