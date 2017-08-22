@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<!--国际化引入-->
+	<script src="../../i18n/en.js"></script>
+	<script src="../../i18n/zh_CN.js"></script>
+	<style>
+		#needIntention {
+			padding-top: 45px;
+			padding-bottom: 50px;
+			background-color: #f0f0f0;
+		}
+		/*列表内容显示区域*/
+		
+		#needIntention .intention-list {
+			padding: 0 15px;
+		}
+		
+		#needIntention .intention-list .detail {
+			padding: 15px 10px;
+			border-bottom: 1px dashed #2196F3;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+		
+		#needIntention .intention-list .block {
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+		}
+		
+		#needIntention .intention-list .block .item-wrap {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+			
+		}
+		#needIntention .intention-list .block .item-wrap span {
+			flex: 0 0 auto;
+ 			padding: 8px 15px;
+			margin-right: 10px;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			border: 1px solid #d0d0d0;
+		}
+		/*底部操作按钮*/
+		
+		#needIntention .button-wrap {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 50px;
+			font-size: 18px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+		
+		#needIntention .button-wrap div {
+			flex: 1;
+			height: 100%;
+			line-height: 50px;
+			text-align: center;
+			background-color: #2196f3;
+			color: #fff;
+		}
+		
+		#needIntention .button-wrap div:nth-child(1) {
+			background-color: #42a5f5;
+			color: #f0f0f0;
+		}
+		
+		#needIntention .button-wrap div:nth-child(2) {
+			background-color: #bdbdbd;
+			color: #fff;
+		}
+	</style>
+	</style>
+</head>
+
+<body>
+	<div class="mui-content" id="needIntention">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">求购意向信息</h1>
+		</header>
+		<!--表单列表-->
+		<div class="intention-list">
+			<!--输入项目开始-->
+			<div class="detail">
+				<span class="tit">品种：</span>
+				<span class="info">百步</span>
+			</div>
+			<div class="detail">
+				<span class="tit">数量：</span>
+				<span class="info">1005瓶（Bottle）</span>
+			</div>
+			<div class="detail">
+				<span class="tit">单价：</span>
+				<span class="info">27元/瓶（Bottle）</span>
+			</div>
+			<div class="detail">
+				<span class="tit">产地：</span>
+				<span class="info">江西</span>
+			</div>
+			<div class="detail">
+				<span class="tit">上架状态：</span>
+				<span class="info">已上架</span>
+			</div>
+			<div class="detail">
+				<span class="tit">报价人数：</span>
+				<span class="info">6</span>
+			</div>
+			<div class="detail block">
+				<span class="tit">备注：</span>
+				<div class="item-wrap">
+					<span class="item">标签</span>
+					<span class="item">标签</span>
+					<span class="item">标签</span>
+					<span class="item">标签</span>
+					<span class="item">标签</span>
+				</div>
+			</div>
+		</div>
+
+		<!--提交按钮-->
+		<div class="button-wrap">
+			<div>
+				二维码
+			</div>
+			<div>
+				我的报价
+			</div>
+			<div>
+				立即报价
+			</div>
+		</div>
+	</div>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../libs/vue.min.js"></script>
+	<script src="../../libs/vue-i18n.min.js"></script>
+	<script src="../../libs/filters.js"></script>
+	<script src="../../libs/crypto-js.js"></script>
+	<script src="../../libs/httpService.js"></script>
+	<script src="../../libs/vueComponents.js"></script>
+	<script>
+		//初始化
+		mui.init({
+			gestureConfig: {
+				tap: true, //默认为true
+				doubletap: true, //默认为false
+				longtap: true, //默认为false			
+			}
+		});
+		//加载完毕
+		var offerPrice;
+		//分享操作
+		var shares = {};
+		mui.plusReady(function() {
+			offerPrice = plus.webview.currentWebview()
+			plus.share.getServices(function(s) {
+				if(s && s.length > 0) {
+					for(var i = 0; i < s.length; i++) {
+						var t = s[i];
+						shares[t.id] = t;
+					}
+				}
+			}, function() {
+				console.log("获取分享服务列表失败");
+			});
+		})
+		var vm = new Vue({
+			el: '#needIntention',
+			i18n: window.i18n,
+			data: {},
+			methods: {
+
+			}
+		})
+	</script>
+</body>
+
+</html>
