@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<!--国际化引入-->
+	<script src="../../i18n/en.js"></script>
+	<script src="../../i18n/zh_CN.js"></script>
+	<style>
+		#offerSuc {
+			background-color: #f0f0f0;
+		}
+		
+		#offerSuc .mask {
+			display: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background-color: rgba(0, 0, 0, .3);
+			z-index: 9999;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+		
+		#offerSuc .mask .mask-content {
+			width: 300px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			border: 1px solid #2196F3;
+			background-color: #fff;
+			border-radius: 10px;
+			overflow: hidden;
+		}
+		
+		#offerSuc .mask .mask-content h4 {
+			width: 100%;
+			margin: 0;
+			padding: 15px 0;
+			text-align: center;
+			background-color: #2196F3;
+			color: #fff;
+		}
+		
+		#offerSuc .mask .mask-content .mask-content-text {
+			margin-top: 30px;
+			margin-bottom: 20px;
+			padding: 15px;
+			font-size: 16px;
+			font-weight: 700;
+		}
+		
+		#offerSuc .mask .mask-content .btn-wrap {
+			flex: 0 0 auto;
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			padding: 15px;
+		}
+		
+		#offerSuc .mask .mask-content .btn-left {
+			flex: 0 0 auto;
+			padding: 8px 5px;
+			border: 1px dashed #2196F3;
+			border-radius: 5px;
+		}
+		
+		#offerSuc .mask .mask-content .btn-right {
+			flex: 1;
+			margin-left: 15px;
+			text-align: center;
+			padding: 8px 5px;
+			background-color: #2196F3;
+			color: #fff;
+			border-radius: 5px;
+		}
+	</style>
+	</style>
+</head>
+
+<body>
+	<div class="mui-content" id="offerSuc">
+		<!--遮罩蒙层-->
+		<div class="mask">
+			<!--遮罩内容-->
+			<div class="mask-content">
+				<h4>恭喜，报价已完成</h4>
+				<div class="mask-content-text">
+					可在我的供应商报价中查看报价结果
+				</div>
+				<div class="btn-wrap">
+					<div class="btn-left">前往我的供应商报价</div>
+					<div class="btn-right">
+						完成
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../libs/vue.min.js"></script>
+	<script src="../../libs/vue-i18n.min.js"></script>
+	<script src="../../libs/filters.js"></script>
+	<script src="../../libs/crypto-js.js"></script>
+	<script src="../../libs/httpService.js"></script>
+	<script src="../../libs/vueComponents.js"></script>
+	<script>
+		//初始化
+		mui.init({
+			gestureConfig: {
+				tap: true, //默认为true
+				doubletap: true, //默认为false
+				longtap: true, //默认为false			
+			}
+		});
+		//加载完毕
+		var offerPrice;
+		//分享操作
+		var shares = {};
+		mui.plusReady(function() {
+			offerPrice = plus.webview.currentWebview()
+			plus.share.getServices(function(s) {
+				if(s && s.length > 0) {
+					for(var i = 0; i < s.length; i++) {
+						var t = s[i];
+						shares[t.id] = t;
+					}
+				}
+			}, function() {
+				console.log("获取分享服务列表失败");
+			});
+		})
+		var vm = new Vue({
+			el: '#offerSuc',
+			i18n: window.i18n,
+			data: {},
+			methods: {
+
+			}
+		})
+	</script>
+</body>
+
+</html>

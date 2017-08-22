@@ -73,7 +73,7 @@
 		</header>
 		<!--表单列表-->
 		<div class="qrCode-img-wrap">
-			<canvas id="qr"></canvas>
+			<img id="qr"></img>
 		</div>
 
 		<!--提交按钮-->
@@ -96,12 +96,29 @@
 	<script src="../../libs/vueComponents.js"></script>
 	<script>
 		//初始化
-		mui.init();
+		mui.init({
+			gestureConfig: {
+				tap: true, //默认为true
+				doubletap: true, //默认为false
+				longtap: true, //默认为false			
+			}
+		});
 		//加载完毕
 		var offerPrice;
+		//分享操作
+		var shares = {};
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview()
-
+			plus.share.getServices(function(s) {
+				if(s && s.length > 0) {
+					for(var i = 0; i < s.length; i++) {
+						var t = s[i];
+						shares[t.id] = t;
+					}
+				}
+			}, function() {
+				console.log("获取分享服务列表失败");
+			});
 		})
 		var vm = new Vue({
 			el: '#qrCode',
@@ -120,6 +137,93 @@
 			padding: 0,
 			value: 'http://apps.yaocaimaimai.com/htm5/#/needDetails/a1a1a1a1a1a1a1a1a1a1a1a'
 		});
+		var btn = document.getElementById("qr");
+		btn.addEventListener('longtap', function(e) {
+			plus.nativeUI.actionSheet({
+				cancel: "取消",
+				buttons: [{
+					title: "识别图中二维码"
+				}, {
+					title: "分享该链接"
+				}]
+			}, function(e) {
+				switch(e.index) {
+					case 1:
+						//使用默认浏览器打开
+						plus.runtime.openURL('http://apps.yaocaimaimai.com/htm5/#/needDetails/a1a1a1a1a1a1a1a1a1a1a1a');
+						break;
+					case 2:
+						share();
+						break;
+					default:
+						break;
+				}
+			});
+		})
+		//分享功能
+		//分享链接点击事件
+		function share() {
+			var ids = [{
+					id: "weixin",
+					ex: "WXSceneSession"
+				}, {
+					id: "weixin",
+					ex: "WXSceneTimeline"
+				}, {
+					id: "qq"
+				}],
+				bts = [{
+					title: "发送给微信好友"
+				}, {
+					title: "分享到微信朋友圈"
+				}, {
+					title: "分享到QQ"
+				}];
+			plus.nativeUI.actionSheet({
+				cancel: "取消",
+				buttons: bts
+			}, function(e) {
+				var i = e.index;
+				if(i > 0) {
+					var s_id = ids[i - 1].id;
+					var share = shares[s_id];
+					if(share) {
+						if(share.authenticated) {
+							shareMessage(share, ids[i - 1].ex);
+						} else {
+							share.authorize(function() {
+								shareMessage(share, ids[i - 1].ex);
+							}, function(e) {
+								console.log("认证授权失败：" + e.code + " - " + e.message);
+							});
+						}
+					} else {
+						mui.toast("无法获取分享服务，请检查manifest.json中分享插件参数配置，并重新打包")
+					}
+				}
+			});
+		}
+		//分享标题
+		function shareMessage(share, ex) {
+			var msg = {
+				extra: {
+					scene: ex
+				}
+			};
+			msg.href = "http://www.baidu.com";
+			msg.title = "测试分享标题";
+			msg.content = "测试分享内容";
+			//			if(~share.id.indexOf('weibo')) {
+			//				msg.content += "；体验地址：http://www.dcloud.io/hellomui/";
+			//			}
+			msg.thumbs = ["../../images/256x256.png"];
+			share.send(msg, function() {
+				console.log("分享到\"" + share.description + "\"成功！ ");
+			}, function(e) {
+				console.log("分享到\"" + share.description + "\"失败: " + e.code + " - " + e.message);
+			});
+		}
+		console.log(btn);
 	</script>
 </body>
 
