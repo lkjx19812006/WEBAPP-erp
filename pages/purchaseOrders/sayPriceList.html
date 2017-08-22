@@ -70,6 +70,7 @@
 				color: #007AFF;
 				padding: 12px 0;
 				border-radius: 5px;
+				border: 1px solid #007AFF;				
 			}
 			
 			#sayPriceList .nav .active {
@@ -184,7 +185,7 @@
 			</div>
 			<!--筛选-->
 			<div class="nav">
-				<div class="nav-item" v-bind:class="{active:!show}" v-tap="{func:select, params: 0}">未报价</div>
+				<div class="nav-item" style="margin-right: 15px;" v-bind:class="{active:!show}" v-tap="{func:select, params: 0}">未报价</div>
 				<div class="nav-item" v-bind:class="{active:show}" v-tap="{func:select, params: 1}">已报价</div>
 			</div>
 			<!--上拉下拉-->

@@ -78,10 +78,10 @@
 
 		<!--提交按钮-->
 		<div class="button-wrap">
-			<div>
+			<div v-tap="{func: back}">
 				返回
 			</div>
-			<div>
+			<div v-tap="{func: share}">
 				分享
 			</div>
 		</div>
@@ -107,6 +107,8 @@
 		var offerPrice;
 		//分享操作
 		var shares = {};
+
+		//加载完毕
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview()
 			plus.share.getServices(function(s) {
@@ -120,12 +122,27 @@
 				console.log("获取分享服务列表失败");
 			});
 		})
+		//实例化Vue对象
 		var vm = new Vue({
 			el: '#qrCode',
 			i18n: window.i18n,
-			data: {},
+			data: {
+				intentionInfo: {},
+				href: '',
+			},
 			methods: {
-
+				//清除数据
+				resetData: function() {
+					this.intentionInfo = {}
+				},
+				//返回
+				back: function() {
+					mui.back();
+				},
+				//分享
+				share: function() {
+					share()
+				}
 			}
 		})
 		//二维码
@@ -135,7 +152,7 @@
 			level: 'L',
 			mime: 'image/png',
 			padding: 0,
-			value: 'http://apps.yaocaimaimai.com/htm5/#/needDetails/a1a1a1a1a1a1a1a1a1a1a1a'
+			value: 'http://apps.yaocaimaimai.com/htm5'
 		});
 		var btn = document.getElementById("qr");
 		btn.addEventListener('longtap', function(e) {
@@ -150,7 +167,7 @@
 				switch(e.index) {
 					case 1:
 						//使用默认浏览器打开
-						plus.runtime.openURL('http://apps.yaocaimaimai.com/htm5/#/needDetails/a1a1a1a1a1a1a1a1a1a1a1a');
+						plus.runtime.openURL(vm.href);
 						break;
 					case 2:
 						share();
@@ -204,18 +221,20 @@
 			});
 		}
 		//分享标题
+		//		 "【紧急求购】" + result.breedName + "-上【药材买卖网】你报价我就要了！";
+		//       shareData.desc = result.breedName + ',规格:' + result.spec + ',需要' + result.number + result.unit + '要求：' + result.quality + '。--买卖药材就上药材买卖网！';
+		//       shareData.link = window.location.href;
+
 		function shareMessage(share, ex) {
 			var msg = {
 				extra: {
 					scene: ex
 				}
 			};
-			msg.href = "http://www.baidu.com";
-			msg.title = "测试分享标题";
-			msg.content = "测试分享内容";
-			//			if(~share.id.indexOf('weibo')) {
-			//				msg.content += "；体验地址：http://www.dcloud.io/hellomui/";
-			//			}
+			msg.href = vm.href;
+			msg.title = "【紧急求购】" + vm.intentionInfo.breedName + "-上【药材买卖网】你报价我就要了！";
+			msg.content = vm.intentionInfo.breedName + ',规格:' + vm.intentionInfo.spec + ',需要' + vm.intentionInfo.number + filters.idToUnit(vm.intentionInfo.unit) + '要求：' + vm.intentionInfo.quality + '。--买卖药材就上药材买卖网！';
+			//图标
 			msg.thumbs = ["../../images/256x256.png"];
 			share.send(msg, function() {
 				console.log("分享到\"" + share.description + "\"成功！ ");
@@ -223,7 +242,26 @@
 				console.log("分享到\"" + share.description + "\"失败: " + e.code + " - " + e.message);
 			});
 		}
-		console.log(btn);
+
+		//监听一个事件 接受传过来的数据
+		window.addEventListener("getIntentionInfo", function(event) {
+			if(event.detail !== undefined && typeof event.detail === 'object') {
+				vm.intentionInfo = event.detail.intentionInfo;
+				vm.href = "http://192.168.1.142:81/htm5/#/needDetails/" + vm.intentionInfo.id; //http://apps.yaocaimaimai.com/htm5/#/needDetails/
+				qr.value = vm.href;
+			} else {
+				vm.intentionInfo = {};
+			}
+		})
+		//重写返回逻辑
+		mui.back = function() {
+			plus.webview.currentWebview().hide("auto", 200);
+			//动画结束后，恢复默认值
+			setTimeout(function() {
+				window.scrollTo(0, 0);
+				vm.resetData();
+			}, 200);
+		}
 	</script>
 </body>
 

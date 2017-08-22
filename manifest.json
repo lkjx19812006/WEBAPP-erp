@@ -292,7 +292,8 @@
 			"pages/home.html": {
 				"resources": [
 					"libs/vueComponents.js",
-					"libs/filters.js"
+					"libs/filters.js",
+					"fonts/mui.ttf"
 				],
 				"refer": [
 					"pages/menu.html"
@@ -351,7 +352,17 @@
 			"pages/purchaseOrders/qrCode.html": {
 				"resources": [
 					"js/qrious.min.js",
-					"fonts/mui.ttf"
+					"fonts/mui.ttf",
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
 				],
 				"refer": [],
 				"priority": 0

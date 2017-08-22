@@ -252,4 +252,5 @@
 	for(var key in filters) {
 		Vue.filter(key, filters[key])
 	}
+	window.filters = filters;
 })(window, Vue)
