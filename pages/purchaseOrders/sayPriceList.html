@@ -11,16 +11,18 @@
 		<script src="../../i18n/zh_CN.js"></script>
 		<style>
 			#sayPriceList {
-				padding-top: 45px;
-				height: 100vh;
-				overflow: hidden;
+				padding-top: 145px;
 			}
+			/*搜索头开始*/
 			
 			#sayPriceList .search {
-				border: 1px solid #007AFF;
-				margin: 5px 10px;
 				border-radius: 4px;
-				position:relative;
+				padding: 5px 10px;
+				position: fixed;
+				width: 100%;
+				top: 45px;
+				left: 0;
+				background-color: #fff;
 			}
 			
 			#sayPriceList .search input {
@@ -32,17 +34,27 @@
 				height: 40px;
 				padding: 0;
 				margin: 0;
+				border: 1px solid #007AFF;
 			}
-			#sayPriceList .search .close{
-				position:absolute;
-				right:10px;
-				top:8px;
+			
+			#sayPriceList .search .close {
+				position: absolute;
+				right: 10px;
+				top: 8px;
 			}
+			/*导航切换开始*/
+			
 			#sayPriceList .nav {
+				position: fixed;
+				top: 90px;
+				left: 0;
+				width: 100%;
+				padding: 5px 10px;
+				background-color: #fff;
 				display: flex;
 				flex-direction: row;
 				align-items: center;
-				margin: 0 10px 10px 10px;
+				border-bottom: 1px dashed #007AFF;
 			}
 			
 			#sayPriceList .nav {
@@ -57,17 +69,17 @@
 				font-size: 20px;
 				color: #007AFF;
 				padding: 12px 0;
+				border-radius: 5px;
 			}
 			
 			#sayPriceList .nav .active {
 				background-color: #007AFF;
 				color: #fff;
 			}
+			/*列表内容开始*/
 			
 			#sayPriceList .list {
 				padding-top: 10px;
-				overflow-y: scroll;
-				border-top: 1px dashed #007AFF;
 				margin: 0 10px;
 			}
 			
@@ -153,9 +165,9 @@
 				<h1 class="mui-title">采购单报价专区</h1>
 			</header>
 			<!--搜索-->
-			<div class="search" >
-				<input type="text" placeholder="输入采购品种" v-model="formData.breedName" readonly="readonly"v-tap="{func:jumpSearch}" />
-				<div class="mui-icon mui-icon-close close" v-tap="{func:clearSearch}"></div>
+			<div class="search">
+				<input type="text" placeholder="输入采购品种" v-model="formData.breedName" readonly="readonly" v-tap="{func:jumpSearch}" />
+				<div v-show="formData.breedName" class="mui-icon mui-icon-close close" v-tap="{func:clearSearch}"></div>
 			</div>
 			<!--筛选-->
 			<div class="nav">
@@ -164,7 +176,7 @@
 			</div>
 			<!--上拉下拉-->
 			<div id="pullrefresh">
-				<div class="list" ref="pullrefresh" :style="{ height: wrapperHeight + 'px' }">
+				<div class="list" ref="pullrefresh">
 					<div class="box" v-for="(todo,index) in listData.list">
 						<div class="top">
 							<div class="breed">{{todo.breedName}}</div>
@@ -193,7 +205,7 @@
 		<script src="../../libs/vueComponents.js"></script>
 		<script src="./purchase.js"></script>
 		<script>
-//			初始化上拉下拉
+			//			初始化上拉下拉
 			mui.init({
 				pullRefresh: {
 					container: '#pullrefresh',
@@ -232,8 +244,7 @@
 					listData: {
 						list: []
 					},
-					show: 0,
-					wrapperHeight: 0
+					show: 0
 				},
 				methods: {
 					//跳转搜索页面
@@ -283,8 +294,11 @@
 					},
 					//筛选未报价和已报价
 					select: function(param) {
-						this.show = param;
-						this.getHttp();
+						if(param !== this.show) {
+							this.initGetHttp();
+							this.show = param;
+							this.getHttp();
+						}
 					},
 					//跳转到详情页
 					jumpDetail: function(id) {
@@ -301,15 +315,12 @@
 						mui('#pullrefresh').pullRefresh().refresh(true);
 					},
 					//清除搜索
-					clearSearch:function(){
+					clearSearch: function() {
 						this.initGetHttp();
 						this.formData.breedId = '';
 						this.formData.breedName = '';
 						this.getHttp();
 					}
-				},
-				mounted() {
-					this.wrapperHeight = document.documentElement.clientHeight - this.$refs.pullrefresh.getBoundingClientRect().top;
 				}
 			})
 			//上拉加载数据
@@ -336,9 +347,9 @@
 			window.addEventListener('backBreedName', function(event) {
 				console.log(JSON.stringify(event.detail.id))
 				vm.formData.breedId = event.detail.id; //拿到从搜索页面选中的产品id
-				vm.formData.breedName = event.detail.name;//拿到从搜索页面选中的产品名字
-				vm.initGetHttp();//确定要搜索的商品后，重置一下数据请求
-				vm.getHttp();//重新拉取数据
+				vm.formData.breedName = event.detail.name; //拿到从搜索页面选中的产品名字
+				vm.initGetHttp(); //确定要搜索的商品后，重置一下数据请求
+				vm.getHttp(); //重新拉取数据
 			})
 		</script>
 	</body>

@@ -10,7 +10,7 @@
     "icons": {
         "72": "icon.png"
     },
-    "launch_path": "pages/needOrder/offerSuc.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
+    "launch_path": "pages/login.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
     "developer": {
         "name": "",/*开发者名称*/
         "email": "",/*开发者邮箱地址*/
@@ -271,12 +271,65 @@
 				],
 				"refer": [],
 				"priority": 0
+			},
+			"pages/login.html": {
+				"resources": [
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [
+					"pages/home.html"
+				],
+				"priority": 0
+			},
+			"pages/home.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/filters.js"
+				],
+				"refer": [
+					"pages/menu.html"
+				],
+				"priority": 0
+			},
+			"pages/menu.html": {
+				"resources": [],
+				"refer": [
+					"pages/purchaseOrders/sayPriceList.html"
+				],
+				"priority": 0
+			},
+			"pages/purchaseOrders/sayPriceList.html": {
+				"resources": [
+					"pages/purchaseOrders/purchase.js",
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [
+					"pages/searchBreed.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {
 			"resources": [
 				"images/cbd.jpg",
-				"pages/menu.html",
 				"update.js",
 				"images/muwu.jpg",
 				"pages/address.html",
@@ -290,7 +343,6 @@
 				"libs/validate.js",
 				"images/60x60.gif",
 				"pages/orderMg/playPrice.html",
-				"pages/home.html",
 				"js/mui.js",
 				"images/login-1.png",
 				"pages/orderMg/purchase.html",
@@ -299,7 +351,6 @@
 				"pages/orderMg/baseInfo.html",
 				"pages/orderMg/newProduct.html",
 				"css/mui.css",
-				"pages/login.html",
 				"pages/orderMg/myOrder.html",
 				"images/back.png",
 				"pages/userInfo.html",
@@ -309,7 +360,6 @@
 				"images/yuantiao.jpg",
 				"pages/orderMg/model.html",
 				"pages/orderMg/searchView.html",
-				"pages/searchBreed.html",
 				"pages/customer.html"
 			]
 		}
