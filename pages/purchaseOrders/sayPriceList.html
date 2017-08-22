@@ -20,7 +20,7 @@
 				padding: 5px 10px;
 				position: fixed;
 				width: 100%;
-				top: 45px;
+				top: 44px;
 				left: 0;
 				background-color: #fff;
 			}
@@ -89,6 +89,10 @@
 				margin-bottom: 10px;
 			}
 			
+			#sayPriceList .list .box:active {
+				background-color: #d0d0d0;
+			}
+			
 			#sayPriceList .list .box .top {
 				display: flex;
 				flex-direction: row;
@@ -125,12 +129,20 @@
 				flex: 1;
 				text-align: left;
 				padding-left: 8px;
-				height: 96px;
+				padding-top: 15px;
+				padding-bottom: 15px;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 			}
-			
+			#sayPriceList .list .box .bottom .left .type {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+			}
+			#sayPriceList .list .box .bottom .left .type .tit{
+				flex: 0 0 auto;
+			}
 			#sayPriceList .list .box .bottom .origin {
 				margin-top: 6px;
 			}
@@ -152,8 +164,6 @@
 				margin-left: 40%;
 				background-color: #007AFF;
 			}
-			
-			@media only screen and (max-width: 320px) {}
 		</style>
 	</head>
 
@@ -167,7 +177,7 @@
 			<!--搜索-->
 			<div class="search">
 				<input type="text" placeholder="输入采购品种" v-model="formData.breedName" readonly="readonly" v-tap="{func:jumpSearch}" />
-				<div v-show="formData.breedName" class="mui-icon mui-icon-close close" v-tap="{func:clearSearch}"></div>
+				<div v-show="formData.breedName" style="margin-top:5px;margin-right:10px;color:#007AFF" class="mui-icon mui-icon-close close" v-tap="{func:clearSearch}"></div>
 			</div>
 			<!--筛选-->
 			<div class="nav">
@@ -176,16 +186,22 @@
 			</div>
 			<!--上拉下拉-->
 			<div id="pullrefresh">
-				<div class="list" ref="pullrefresh">
-					<div class="box" v-for="(todo,index) in listData.list">
+				<div class="list">
+					<div class="box" v-for="(todo,index) in listData.list" :key="todo.id" v-tap="{func:jumpDetail,params:todo.id}">
 						<div class="top">
 							<div class="breed">{{todo.breedName}}</div>
 							<div class="pubdate">发布日期: {{todo.pubdate,'YYYY-MM-DD' | getYMD}}</div>
 						</div>
 						<div class="bottom">
 							<div class="left">
-								<div class="type">采购单类型: {{todo.indentTypeDesc}}</div>
-								<div class="origin">采购单来源: {{todo.inTypeDesc}}</div>
+								<div class="type">
+									<span class="tit">采购单类型:</span>
+									<span>{{todo.indentTypeDesc}}</span>
+								</div>
+								<div class="origin type">
+									<span class="tit">采购单来源:</span>
+									<span>{{todo.inTypeDesc}}</span>
+								</div>
 							</div>
 							<div class="right">
 								<div class="overTime">过期日期: {{todo.duedate,'YYYY-MM-DD' | getYMD}}</div>
@@ -195,6 +211,7 @@
 					</div>
 				</div>
 			</div>
+
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../libs/vue.min.js"></script>
@@ -226,16 +243,25 @@
 				},
 			});
 
-			var searchBreed;
+			var searchBreed, needIntention;
 			mui.plusReady(function() {
 				//获取当前页面对象
 				sayPriceList = plus.webview.currentWebview();
 				vm.formData = formData;
 				vm.getHttp();
-				searchBreed = mui.preload({
-					url: '../searchBreed.html',
-					id: 'searchBreed', //默认使用当前页面的url作为id
-				});
+				setTimeout(function() {
+					//预加载品种搜索
+					searchBreed = mui.preload({
+						url: '../searchBreed.html',
+						id: 'searchBreed', //默认使用当前页面的url作为id
+					});
+					//预加载详情页
+					needIntention = mui.preload({
+						url: './needIntention.html',
+						id: 'needIntention'
+					})
+				}, 200)
+
 			})
 			var vm = new Vue({
 				el: '#sayPriceList',
@@ -302,7 +328,7 @@
 					},
 					//跳转到详情页
 					jumpDetail: function(id) {
-						//console.log(id)
+						needIntention.show('slide-in-right', 300)
 					},
 					//重置数据请求
 					initGetHttp: function() {

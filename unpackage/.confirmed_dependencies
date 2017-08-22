@@ -426,7 +426,8 @@
       "i18n/zh_CN.js"
     ],
     "refer": [
-      "pages/searchBreed.html"
+      "pages/searchBreed.html",
+      "pages/purchaseOrders/needIntention.html"
     ]
   }
 }
