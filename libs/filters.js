@@ -220,7 +220,34 @@
 
 		}
 	}
-
+	//	初始	0	申请上架	1	上架	2	上架失败 -2  申请下架	3	下架	4	不通过继续上架 2
+	filters.onsell = function(params) {
+		var str = ''
+		switch(params) {
+			case 0:
+				str = '初始';
+				break;
+			case 1:
+				str = '申请上架';
+				break;
+			case 2:
+				str = '已上架';
+				break;
+			case -2:
+				str = '上架失败';
+				break;
+			case 3:
+				str = '申请下架';
+				break;
+			case 4:
+				str = '已下架';
+				break;
+			default:
+				str = '未知状态'
+				break;
+		}
+		return str
+	}
 	//注册过滤器
 	for(var key in filters) {
 		Vue.filter(key, filters[key])

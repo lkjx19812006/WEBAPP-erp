@@ -326,6 +326,35 @@
 					"pages/purchaseOrders/needIntention.html"
 				],
 				"priority": 0
+			},
+			"pages/purchaseOrders/needIntention.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [
+					"pages/purchaseOrders/qrCode.html",
+					"pages/purchaseOrders/myOffer.html",
+					"pages/purchaseOrders/offerPrice.html"
+				],
+				"priority": 0
+			},
+			"pages/purchaseOrders/qrCode.html": {
+				"resources": [
+					"js/qrious.min.js",
+					"fonts/mui.ttf"
+				],
+				"refer": [],
+				"priority": 0
 			}
 		},
 		"idle": {

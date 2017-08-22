@@ -40,11 +40,11 @@
 			flex-direction: row;
 			justify-content: flex-start;
 			flex-wrap: wrap;
-			
 		}
+		
 		#needIntention .intention-list .block .item-wrap span {
 			flex: 0 0 auto;
- 			padding: 8px 15px;
+			padding: 8px 15px;
 			margin-right: 10px;
 			margin-top: 5px;
 			margin-bottom: 5px;
@@ -94,53 +94,47 @@
 			<h1 class="mui-title">求购意向信息</h1>
 		</header>
 		<!--表单列表-->
-		<div class="intention-list">
+		<div class="intention-list" v-if="detailInfo.intention">
 			<!--输入项目开始-->
 			<div class="detail">
 				<span class="tit">品种：</span>
-				<span class="info">百步</span>
+				<span class="info" style="color: #EC971F">{{detailInfo.intention.breedName}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">数量：</span>
-				<span class="info">1005瓶（Bottle）</span>
+				<span class="info" style="color: #007AFF">{{detailInfo.intention.number}}/{{detailInfo.intention.unit | idToUnit}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">单价：</span>
-				<span class="info">27元/瓶（Bottle）</span>
+				<span class="info" style="color: #007AFF">{{detailInfo.intention.price}}/{{detailInfo.intention.unit | idToUnit}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">产地：</span>
-				<span class="info">江西</span>
+				<span class="info" v-if="detailInfo.extendsDesc">{{detailInfo.extendsDesc.locationName}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">上架状态：</span>
-				<span class="info">已上架</span>
+				<span class="info">{{detailInfo.intention.onSell | onsell}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">报价人数：</span>
-				<span class="info">6</span>
+				<span class="info" style="color: #007AFF">{{detailInfo.intention.offer}}</span>
 			</div>
-			<div class="detail block">
+			<div class="detail">
 				<span class="tit">备注：</span>
-				<div class="item-wrap">
-					<span class="item">标签</span>
-					<span class="item">标签</span>
-					<span class="item">标签</span>
-					<span class="item">标签</span>
-					<span class="item">标签</span>
-				</div>
+				<span class="info">{{detailInfo.intention.quality}}</span>
 			</div>
 		</div>
 
 		<!--提交按钮-->
 		<div class="button-wrap">
-			<div>
+			<div v-tap="{func: showQrCode}">
 				二维码
 			</div>
-			<div>
+			<div v-tap="{func: showMyOffer}">
 				我的报价
 			</div>
-			<div>
+			<div v-tap="{func:showOfferPrice}">
 				立即报价
 			</div>
 		</div>
@@ -154,37 +148,82 @@
 	<script src="../../libs/vueComponents.js"></script>
 	<script>
 		//初始化
-		mui.init({
-			gestureConfig: {
-				tap: true, //默认为true
-				doubletap: true, //默认为false
-				longtap: true, //默认为false			
-			}
-		});
-		//加载完毕
-		var offerPrice;
-		//分享操作
-		var shares = {};
+		mui.init();
+		var detail, qrCode, myOffer, offerPrice;
 		mui.plusReady(function() {
-			offerPrice = plus.webview.currentWebview()
-			plus.share.getServices(function(s) {
-				if(s && s.length > 0) {
-					for(var i = 0; i < s.length; i++) {
-						var t = s[i];
-						shares[t.id] = t;
-					}
-				}
-			}, function() {
-				console.log("获取分享服务列表失败");
-			});
+			detail = plus.webview.currentWebview();
+
+			setTimeout(function() {
+				//预加载二维码页面
+				qrCode = mui.preload({
+					url: './qrCode.html',
+					id: 'qrCode'
+				})
+				//预加载我的报价页面
+				myOffer = mui.preload({
+					url: './myOffer.html',
+					id: 'myOffer'
+				})
+				//预加载立即报价页面
+				offerPrice = mui.preload({
+					url: './offerPrice.html',
+					id: 'offerPrice'
+				})
+			}, 300)
 		})
+
 		var vm = new Vue({
 			el: '#needIntention',
 			i18n: window.i18n,
-			data: {},
+			data: {
+				detailId: '',
+				detailInfo: {}
+			},
 			methods: {
-
+				//显示二维码页面
+				showQrCode: function() {
+					qrCode.show('slide-in-right', 300)
+				},
+				//显示我的报价页面
+				showMyOffer: function() {
+					myOffer.show('slide-in-right', 300)
+				},
+				//显示立即报价页
+				showOfferPrice: function() {
+					offerPrice.show('slide-in-right', 300)
+				},
+				//获取详情页数据
+				getDetailHttp: function() {
+					var _self = this;
+					var url = common.commonUrl + common.apiUrl.most;
+					var body = {
+						biz_module: 'erpIntentionService',
+						biz_method: 'queryIntentionById',
+						biz_param: {
+							id: this.detailId
+						}
+					}
+					//开启loading
+					plus.nativeUI.showWaiting()
+					common.commonPost(url, body, function(suc) {
+						_self.detailInfo = suc.biz_result
+						//关闭loading
+						plus.nativeUI.closeWaiting()
+					}, function(err) {
+						//关闭loading
+						plus.nativeUI.closeWaiting()
+					})
+				}
 			}
+		})
+
+		//注册全局时间 让其意向ID 可以发生改变
+		window.addEventListener('changeDetailId', function(event) {
+			vm.detailId = event.detail.id;
+			if(vm.detailId) {
+				vm.getDetailHttp();
+			}
+			console.log(event.detail.id)
 		})
 	</script>
 </body>
