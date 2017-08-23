@@ -71,7 +71,7 @@
 	filters.idToUnit = function(val) {
 		switch(val) {
 			case 1:
-				val = '斤(HKG)';
+				val = '斤';
 				break;
 			case 3:
 				val = '克(G)';
@@ -83,7 +83,7 @@
 				val = '棵(tree)';
 				break;
 			case 66:
-				val = '份()';
+				val = '份';
 				break;
 			case 69:
 				val = '朵(flower)';
@@ -109,11 +109,11 @@
 			case 112:
 				val = '20尺柜(20GP)';
 				break;
-			case 73:
+			case 113:
 				val = '40尺柜(40GP)';
 				break;
-			case 73:
-				val = '40高柜(40GP(HQ))';
+			case 114:
+				val = '40高柜(40HQ)';
 				break;
 		}
 		return val;

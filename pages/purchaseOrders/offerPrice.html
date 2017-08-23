@@ -34,8 +34,8 @@
 			margin: 0;
 		}
 		
-		#offerPrice .offerList .detail .breedName:active {
-			border-color: #007AFF;
+		#offerPrice .offerList .detail .breedName {
+			background-color: #e0e0e0;
 		}
 		/*底部项目 块级标题*/
 		
@@ -65,6 +65,11 @@
 			margin-left: 0;
 			border: 1px solid #d0d0d0;
 			border-radius: 5px;
+		}
+		
+		#offerPrice .offerList .block .item-quality .itemActive {
+			background-color: #007AFF;
+			color: #fff;
 		}
 		
 		#offerPrice .offerList .block textarea {
@@ -98,69 +103,64 @@
 			<!--输入项目开始-->
 			<div class="detail">
 				<span class="tit">品种：</span>
-				<input class="breedName" v-model="formData.breedName" v-tap="{func: showSearchBreed}" type="text" readonly placeholder="请选择品种" />
+				<input class="breedName" disabled v-model="formData.breedName" type="text" placeholder="请选择品种" />
 			</div>
 			<div class="detail">
 				<span class="tit">数量：</span>
-				<input class="mui-input-numbox" type="number" placeholder="请输入数量" />
+				<input class="mui-input-numbox" v-model="formData.number" type="number" placeholder="请输入数量" />
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<my-select v-on:change="changUnit" v-model="formData.unitId" :options="unitList" placeholder="单位"></my-select>
+					<my-select v-model="formData.unit" :options="unitList" placeholder="单位"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">单价：</span>
-				<input class="mui-input-numbox" type="number" placeholder="请输入单价" />
+				<input class="mui-input-numbox" v-model="formData.price" type="number" placeholder="请输入单价" />
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<input type="text" readonly v-model="unitName" placeholder="单位"></input>
+					<my-select desabled v-model="formData.unit" :options="unitList" placeholder="单位"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">产地：</span>
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<my-select placeholder="请选择产地"></my-select>
+					<my-select v-model="formData.location" :options="locationList" placeholder="请选择产地"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">规格：</span>
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<my-select placeholder="请选择规格"></my-select>
+					<input type="text" v-model="formData.spec" placeholder="请输入规格"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">有效时间：</span>
-				<input type="date" :min="minDate" />
+				<input v-model="formData.dueDate" type="date" :min="minDate" />
 			</div>
 			<div class="detail">
 				<span class="tit">供应商名称：</span>
-				<input type="text" placeholder="请选择供应商" />
-
+				<input type="text" v-model="formData.customerName" placeholder="请选择供应商" readonly v-tap="{func: showCustomer}" />
 			</div>
 			<!--质量说明-->
 			<div class="detail block">
 				<span class="tit">质量说明：</span>
 				<div class="item-quality">
-					<span class="item">产品包交</span>
-					<span class="item">质量优质</span>
-					<span class="item">一手货源</span>
-					<span class="item">含量较高</span>
-					<span class="item">可以加工</span>
+					<span v-for="item in qualityList" :class="{'itemActive': item.select}" class="item" v-tap="{func:addQuality, params:item}">{{item.label}}</span>
 				</div>
-				<textarea rows="4" placeholder="其余质量说明，可在此填写！！！"></textarea>
+				<textarea v-model="formData.quality" rows="4" placeholder="其余质量说明，可在此填写！！！"></textarea>
 			</div>
 			<!--药材图片-->
 			<div class="detail block">
 				<span class="tit">药材图片：</span>
-				<my-updateimg></my-updateimg>
+				<my-updateimg v-on:getimgurl="getimgurl"></my-updateimg>
 			</div>
 			<!--报价备注-->
 			<div class="detail block" style="border: none">
 				<span class="tit">报价备注：</span>
-				<textarea rows="4" placeholder="请填写报价备注信息"></textarea>
+				<textarea v-model="formData.description" rows="4" placeholder="请填写报价备注信息"></textarea>
 			</div>
 		</div>
 
 		<!--提交按钮-->
-		<div class="button-wrap">
+		<div class="button-wrap" v-tap="{func:submit}">
 			提交报价
 		</div>
 	</div>
@@ -175,46 +175,82 @@
 		//初始化
 		mui.init();
 		//加载完毕
-		var offerPrice, searchBreed;
+		var offerPrice, customer, offerSuc;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview()
 			vm.getUnitHttp();
 			var nowDate = new Date().getTime();
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
-				//预加载品种
-				searchBreed = mui.preload({
-					url: '../searchBreed.html',
-					id: 'searchBreed'
-				})
 				//预加载客户选项
-
+				customer = mui.preload({
+					url: '../customer.html',
+					id: 'customer'
+				})
+				//预加载成功页面
+				offerSuc = mui.preload({
+					url: './offerSuc.html',
+					id: 'offerSuc',
+					styles: {
+						opacity: .3
+					}
+				})
 			}, 300)
-
 		})
 		var vm = new Vue({
 			el: '#offerPrice',
 			i18n: window.i18n,
 			data: {
 				formData: {
+					intentionId: '',
 					breedName: '',
 					breedId: '',
-					unitId: '',
+					unit: '',
+					number: '',
+					price: '',
+					location: '',
+					spec: '',
+					description: '',
+					quality: '',
+					dueDate: '',
+					imageArray: [],
+					customerId: '',
+					customerName: '',
 				},
-				unitName: '',
 				unitList: [],
-				minDate: ''
+				locationList: [],
+				qualityList: [{
+					label: '产品包交',
+					select: false,
+				}, {
+					label: '质量优质',
+					select: false,
+				}, {
+					label: '一手货源',
+					select: false,
+				}, {
+					label: '含量较高',
+					select: false,
+				}, {
+					label: '可以加工',
+					select: false,
+				}],
+				minDate: '', //最小时间及过期时间不能小于今天				
 			},
 			methods: {
 				//显示搜索列表
-				showSearchBreed: function() {
+				showCustomer: function() {
 					//传值自己的ID给列表页面
-					mui.fire(searchBreed, 'updateFormData', {
+					mui.fire(customer, 'getParentId', {
 						id: offerPrice.id
 					})
 					setTimeout(function() {
-						searchBreed.show('slide-in-right', 300)
+						customer.show('slide-in-right', 300)
 					}, 300)
+				},
+				//获取图片数组
+				getimgurl: function(params) {
+					this.formData.imageArray = params;
 				},
 				//获取单位列表
 				getUnitHttp: function() {
@@ -231,8 +267,12 @@
 						var list = []
 						for(var i = 0; i < suc.biz_result.list.length; i++) {
 							var obj = suc.biz_result.list[i];
+							var name = obj.name;
+							if(obj.nameEn) {
+								name = obj.name + '(' + obj.nameEn + ')';
+							}
 							list.push({
-								label: obj.name + '(' + obj.nameEn + ')',
+								label: name,
 								value: obj.id
 							})
 						}
@@ -241,10 +281,136 @@
 
 					})
 				},
-				//单位改变
-				changUnit: function(event) {
-					this.unitName = event.label;
-					console.log(JSON.stringify(event))
+				//根据品种获取产地列表
+				getLocationList: function() {
+					var url = common.commonUrl + common.apiUrl.most;
+					var body = {
+						biz_module: 'breedService',
+						biz_method: 'queryLocalSpecList',
+						biz_param: {
+							breedId: this.formData.breedId
+						}
+					}
+					var _self = this;
+					common.commonPost(url, body, function(suc) {
+						var list = [];
+						for(var i = 0; i < suc.biz_result.localList.length; i++) {
+							var obj = suc.biz_result.localList[i];
+							list.push({
+								label: obj.name,
+								value: obj.locationId
+							})
+						}
+						_self.locationList = list
+					}, function(err) {
+
+					})
+				},
+				//添加质量需求
+				addQuality: function(params) {
+					//没有选择过 可以选择添加
+					if(!params.select) {
+						params.select = !params.select;
+						this.formData.quality += params.label + ','
+					} else {
+						params.select = !params.select;
+						//全局匹配文字替换文字
+						var regx = new RegExp(params.label + ',', "gim");
+						this.formData.quality = this.formData.quality.replace(regx, '')
+					}
+				},
+				//提交表单
+				submit: function() {
+					var _self = this;
+					//表单校验数组
+					var validate = [{
+						data: this.formData.intentionId,
+						required: true,
+						msg: '意向ID不能为空',
+					}, {
+						data: this.formData.breedId,
+						required: true,
+						msg: '品种不能为空',
+					}, {
+						data: this.formData.number,
+						required: true,
+						msg: '数量不能为空',
+						validate: {
+							Reg: /^[0-9]+(.[0-9]{2})?$/,
+							msg: '数值类型错误，两位小数'
+						}
+					}, {
+						data: this.formData.price,
+						required: true,
+						msg: '价格不能为空',
+						validate: {
+							Reg: /^[0-9]+(.[0-9]{2})?$/,
+							msg: '价格类型错误，两位小数'
+						}
+					}, {
+						data: this.formData.location,
+						required: true,
+						msg: '请选择产地'
+					}, {
+						data: this.formData.spec,
+						required: true,
+						msg: '请填写规格',
+					}, {
+						data: this.formData.dueDate,
+						required: true,
+						msg: '请选择有效时间',
+					}, {
+						data: this.formData.customerId,
+						required: true,
+						msg: '请选择供应商名称',
+					}, {
+						data: this.formData.quality,
+						required: true,
+						msg: '请选择或填写质量说明',
+					}];
+
+					//校验表单
+					if(common.validate(validate)) {
+						//校验图片
+						if(!common.ruls.image(this.formData.imageArray)) {
+							return;
+						}
+						plus.nativeUI.actionSheet({
+							cancel: "取消提交报价",
+							buttons: [{
+								title: "确定提交报价"
+							}]
+						}, function(e) {
+							switch(e.index) {
+								case 1:
+									//提交表单数据
+									_self.submitHttp()
+									break;
+								default:
+									break;
+							}
+						});
+					}
+
+				},
+				submitHttp: function() {
+					var url = common.commonUrl + common.apiUrl.most;
+					//处理一下图片数据传值方式
+					var body = {
+						biz_module: 'erpIntentionOfferService',
+						biz_method: 'addIndentIntentionOffer',
+						biz_param: common.filterFormData(this.formData, ['breedName', 'customerName'])
+					}
+					common.commonPost(url, body, function(suc) {
+						offerSuc.show('fade-in', 300)
+					}, function(err) {});
+					//console.log(JSON.stringify(common.filterFormData(this.formData, ['breedName', 'customerName'])))
+				},
+				resetFormData: function() {
+					//重置表单数据
+					for(var key in this.formData) {
+						this.formData[key] = '';
+					}
 				}
 			}
 		})
@@ -253,10 +419,13 @@
 		window.addEventListener("getIntentionInfo", function(event) {
 			if(event.detail && typeof event.detail === 'object') {
 				var params = event.detail.intentionInfo;
+				vm.formData.intentionId = params.id;
 				vm.formData.breedName = params.breedName;
-				vm.formData.breedId =  params.breedId;
-				vm.formData.unitId = params.unitId;
-				
+				vm.formData.breedId = params.breedId;
+				vm.formData.unit = params.unit;
+				vm.formData.location = '';
+				//获取单位
+				vm.getLocationList();
 			}
 		})
 
@@ -265,6 +434,14 @@
 			if(event.detail && typeof event.detail === 'object') {
 				vm.formData.breedName = event.detail.name;
 				vm.formData.breedId = event.detail.id;
+			}
+		})
+
+		//接收用户列表来的用户信息
+		window.addEventListener('getCustomer', function(event) {
+			if(event.detail !== undefined) {
+				vm.formData.customerId = event.detail.id;
+				vm.formData.customerName = event.detail.name;
 			}
 		})
 	</script>

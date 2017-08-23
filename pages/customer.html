@@ -83,7 +83,8 @@
 				el: '#customer',
 				data: {
 					customerName: '',
-					listData: []
+					listData: [],
+					parentId: ''
 				},
 				methods: {
 					//输入框输入事件
@@ -118,10 +119,21 @@
 						})
 					},
 					//发送客户数据
-					sendData: function(params){
-						console.log(params.name)
-						console.log(params.id)
+					sendData: function(params) {
+						mui.fire(plus.webview.getWebviewById(this.parentId), 'getCustomer', params);
+						var _self = this;
+						setTimeout(function(){
+							_self.customerName = '';
+							mui.back();
+						}, 200)
 					}
+				}
+			})
+
+			//监听事件获取父元素ID
+			window.addEventListener('getParentId', function(event) {
+				if(event.detail !== undefined) {
+					vm.parentId = event.detail.id;
 				}
 			})
 		</script>

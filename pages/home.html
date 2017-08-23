@@ -25,7 +25,7 @@
 			<!--头部导航-->
 			<my-header v-on:show="showMenu" title="移动ERP">
 			</my-header>
-			
+
 			<!--底部-->
 			<my-navbar>
 			</my-navbar>
@@ -44,16 +44,17 @@
 
 			var vm = new Vue({
 				el: '#myOrder',
+				i18n:window.i18n,
 				data: {
 					msgNum: 0,
-					
+
 				},
-				methods: {	
+				methods: {
 					//显示菜单
 					showMenu: function() {
 						menu.show('slide-in-left', 300)
 					},
-				
+
 				}
 			})
 			mui.plusReady(function() {
@@ -71,7 +72,17 @@
 			})
 			window.addEventListener('closeMenu', function(event) {
 				mask.close()
-			})
+			});
+
+			//缓存老的 old_back 重新back
+			var old_back = mui.back;
+			mui.back = function() {
+				mui.confirm(vm.$t('message.Determine_exit_application'), vm.$t('message.friendly_warning'), [vm.$t('message.confirm'), vm.$t('message.cancel')], function(e) {
+					if(e.index === 0) {
+						plus.runtime.quit()
+					}
+				})
+			}
 		</script>
 	</body>
 

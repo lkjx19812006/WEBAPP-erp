@@ -292,7 +292,14 @@
 					"libs/vueComponents.js",
 					"libs/filters.js",
 					"fonts/mui.ttf",
-					"css/mui.min.css"
+					"css/mui.min.css",
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
 				],
 				"refer": [
 					"pages/menu.html"
@@ -301,7 +308,8 @@
 			},
 			"pages/menu.html": {
 				"resources": [
-					"css/mui.min.css"
+					"css/mui.min.css",
+					"fonts/mui.ttf"
 				],
 				"refer": [
 					"pages/purchaseOrders/sayPriceList.html"
@@ -414,6 +422,40 @@
 					"libs/httpService.js",
 					"i18n/zh_CN.js"
 				],
+				"refer": [
+					"pages/customer.html",
+					"pages/purchaseOrders/offerSuc.html"
+				],
+				"priority": 0
+			},
+			"pages/customer.html": {
+				"resources": [
+					"fonts/mui.ttf",
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/purchaseOrders/offerSuc.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
 				"refer": [],
 				"priority": 0
 			}
@@ -450,8 +492,7 @@
 				"images/qrcode.png",
 				"images/yuantiao.jpg",
 				"pages/orderMg/model.html",
-				"pages/orderMg/searchView.html",
-				"pages/customer.html"
+				"pages/orderMg/searchView.html"
 			]
 		}
 	}
