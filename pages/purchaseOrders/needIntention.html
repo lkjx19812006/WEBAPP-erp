@@ -151,14 +151,13 @@
 					url: './offerPrice.html',
 					id: 'offerPrice'
 				})
-			}, 300)
+			}, 500)
 		})
 
 		var vm = new Vue({
 			el: '#needIntention',
 			i18n: window.i18n,
 			data: {
-				detailId: '',
 				detailInfo: {}
 			},
 			methods: {
@@ -176,29 +175,13 @@
 				},
 				//显示立即报价页
 				showOfferPrice: function() {
-					offerPrice.show('slide-in-right', 300)
-				},
-				//获取详情页数据
-				getDetailHttp: function() {
-					var _self = this;
-					var url = common.commonUrl + common.apiUrl.most;
-					var body = {
-						biz_module: 'erpIntentionService',
-						biz_method: 'queryIntentionById',
-						biz_param: {
-							id: this.detailId
-						}
-					}
-					//开启loading
-					plus.nativeUI.showWaiting()
-					common.commonPost(url, body, function(suc) {
-						_self.detailInfo = suc.biz_result
-						//关闭loading
-						plus.nativeUI.closeWaiting()
-					}, function(err) {
-						//关闭loading
-						plus.nativeUI.closeWaiting()
+					//将意向信息传递过去
+					mui.fire(offerPrice, 'getIntentionInfo', {
+						intentionInfo: this.detailInfo.intention
 					})
+					setTimeout(function() {
+						offerPrice.show('slide-in-right', 300)
+					}, 200)
 				},
 				//重置数据
 				resetData: function() {
@@ -208,11 +191,10 @@
 		})
 
 		//注册全局时间 让其意向ID 可以发生改变
-		window.addEventListener('changeDetailId', function(event) {
-			vm.detailId = event.detail.id;
-			if(vm.detailId) {
-				vm.getDetailHttp();
-			}			
+		window.addEventListener('getDetailInfo', function(event) {
+			if(event.detail !== undefined && typeof event.detail === 'object') {
+				vm.detailInfo = event.detail.intentionInfo
+			}
 		})
 
 		//重写返回逻辑

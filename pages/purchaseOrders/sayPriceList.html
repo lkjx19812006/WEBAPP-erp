@@ -70,7 +70,7 @@
 				color: #007AFF;
 				padding: 12px 0;
 				border-radius: 5px;
-				border: 1px solid #007AFF;				
+				border: 1px solid #007AFF;
 			}
 			
 			#sayPriceList .nav .active {
@@ -274,6 +274,7 @@
 					listData: {
 						list: []
 					},
+					detailId: '', //详情页Id
 					show: 0
 				},
 				methods: {
@@ -323,15 +324,45 @@
 							this.getHttp();
 						}
 					},
+					//获取详情页数据
+					getDetailHttp: function(fn) {
+						var _self = this;
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'erpIntentionService',
+							biz_method: 'queryIntentionById',
+							biz_param: {
+								id: this.detailId
+							}
+						}
+						//开启loading
+						plus.nativeUI.showWaiting()
+						common.commonPost(url, body, function(suc) {
+							_self.detailInfo = suc.biz_result
+							if(fn !== undefined && typeof fn === 'function') {
+								fn(_self.detailInfo);
+							}
+							//关闭loading
+							plus.nativeUI.closeWaiting()
+						}, function(err) {
+							//关闭loading
+							plus.nativeUI.closeWaiting()
+						})
+					},
 					//跳转到详情页
 					jumpDetail: function(id) {
-						//详情页面传入Id
-						mui.fire(needIntention, 'changeDetailId', {
-							id: id
-						})
-						setTimeout(function() {
-							needIntention.show('slide-in-right', 300);
-						}, 200)
+						this.detailId = id;
+						//获取详情页的数据后 传入到详情页 并显示详情页
+						this.getDetailHttp(function(params) {
+							//详情页面传入Id
+							mui.fire(needIntention, 'getDetailInfo', {
+								intentionInfo: params
+							})
+							setTimeout(function() {
+								needIntention.show('slide-in-right', 300);
+							}, 200)
+						});
+
 					},
 					//重置数据请求
 					initGetHttp: function() {

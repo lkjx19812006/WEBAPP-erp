@@ -64,6 +64,7 @@
 			margin-bottom: 10px;
 			margin-left: 0;
 			border: 1px solid #d0d0d0;
+			border-radius: 5px;
 		}
 		
 		#offerPrice .offerList .block textarea {
@@ -127,7 +128,7 @@
 			</div>
 			<div class="detail">
 				<span class="tit">有效时间：</span>
-				<input type="date" placeholder="请选择日期" />
+				<input type="date" :min="minDate" />
 			</div>
 			<div class="detail">
 				<span class="tit">供应商名称：</span>
@@ -177,7 +178,9 @@
 		var offerPrice, searchBreed;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview()
-			vm.getUnitHttp()
+			vm.getUnitHttp();
+			var nowDate = new Date().getTime();
+			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
 				//预加载品种
 				searchBreed = mui.preload({
@@ -199,7 +202,8 @@
 					unitId: '',
 				},
 				unitName: '',
-				unitList: []
+				unitList: [],
+				minDate: ''
 			},
 			methods: {
 				//显示搜索列表
@@ -242,6 +246,17 @@
 					this.unitName = event.label;
 					console.log(JSON.stringify(event))
 				}
+			}
+		})
+
+		//获取详情页床底过来的意向信息
+		window.addEventListener("getIntentionInfo", function(event) {
+			if(event.detail && typeof event.detail === 'object') {
+				var params = event.detail.intentionInfo;
+				vm.formData.breedName = params.breedName;
+				vm.formData.breedId =  params.breedId;
+				vm.formData.unitId = params.unitId;
+				
 			}
 		})
 
