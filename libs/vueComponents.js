@@ -51,10 +51,11 @@
 	//注册全局select组件
 	Vue.component('my-select', {
 		template: '<div style="display: flex; flex-direction: column;justify-content: flex-start; position:relative; width: 100%; height: 100%;">' +
-			'<input readonly :placeholder="placeholder" ref="input" v-on:change="change" v-on:focus="showList = true" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px;" />' +
-			'<span style="position: absolute; right: 8px;top:50%; margin-top: -6px; height: 0; width: 0; border: 8px solid transparent; border-top-color: #666;"></span>' +
-			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 99;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;margin-top: 5px;">' +
-			'<div v-tap="{func: selected, params:item}" style="padding:10px;background-color: #fff; color: #333;border-bottom: 1px solid #d0d0d0;" v-for="item in options">' +
+			'<input readonly :placeholder="placeholder" ref="inputLabel" v-on:change="change" v-on:focus="focus" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px;" />' +
+			'<input v-bind:value="value"  ref="input" style="display:none" />' +
+			'<span style="position: absolute; right: 8px;top:50%; margin-top: -4px; height: 0; width: 0; border: 6px solid transparent; border-top-color: #aaa;"></span>' +
+			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 1;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;margin-top: 5px;">' +
+			'<div v-tap="{func: selected, params:item}" style="padding:10px;background-color: #fff; color: #333;border-bottom: 1px solid #d0d0d0;" v-for="item in options" :key="item.value">' +
 			'{{item.label}}' +
 			'</div>' +
 			'</div>' +
@@ -65,10 +66,40 @@
 				nowSelectData: {},
 			}
 		},
+		watch: {
+			value: function(newVal, oldVal) {
+				//只绑定了ID 构建一个对象 change的时候用 并实现label显示
+				var obj = {}
+				for(var i = 0; i < this.options.length; i++) {
+					if(this.options[i].value === newVal) {
+						obj.label = this.options[i].label;
+						obj.value = this.options[i].value;
+						break;
+					}
+				}
+				this.nowSelectData = obj;
+				if(obj.value !== undefined) {
+					this.$refs.inputLabel.value = obj.label;
+					this.$refs.input.value = obj.value;
+					this.$emit('input', obj.value);
+
+				} else {
+					this.$refs.inputLabel.value = '';
+					this.$refs.input.value = '';
+					this.$emit('input', '');
+				}
+				this.change();
+			}
+		},
 		props: {
+			value: '',
 			placeholder: {
 				type: String,
 				default: '请选择！'
+			},
+			desabled: {
+				type: Boolean,
+				default: false
 			},
 			options: {
 				type: Array,
@@ -81,7 +112,8 @@
 			selected: function(params) {
 				//选中项目
 				this.nowSelectData = params;
-				this.$refs.input.value = params.label;
+				this.$refs.inputLabel.value = params.label;
+				this.$refs.input.value = params.value;
 				//双向绑定
 				this.$emit('input', params.value);
 				this.change();
@@ -89,6 +121,9 @@
 			change: function() {
 				//change事件传值
 				this.$emit('change', this.nowSelectData)
+			},
+			focus: function() {
+				this.showList = true && !this.desabled;
 			},
 			blur: function() {
 				var _self = this;
@@ -130,7 +165,7 @@
 			//获取图片文件路径
 			getImgFile: function() {
 				if(this.imgList.length >= this.maxImgNum) {
-					return ;
+					return;
 				}
 				//获取token
 				var _self = this;
@@ -146,7 +181,7 @@
 			deleteImg: function(index) {
 				this.imgList.splice(index, 1);
 				//删除图片后 告诉引用页面 更新数据
-				this.$emit('getImgUrl', this.imgList);
+				this.$emit('getimgurl', this.imgList);
 			},
 			//获取七牛token
 			getToken: function(success) {

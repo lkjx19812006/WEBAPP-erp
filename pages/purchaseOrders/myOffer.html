@@ -13,6 +13,7 @@
 			padding-top: 45px;
 			padding-bottom: 50px;
 			background-color: #f0f0f0;
+			font-size: 14px;
 		}
 		
 		#myOffer .header-filter {
@@ -85,7 +86,10 @@
 			justify-content: space-between;
 			padding: 5px 0;
 		}
-		
+
+		#myOffer .list-item .list-item-row.last{
+			justify-content: flex-start;
+		}
 		#myOffer .list-item .list-item-row>div {
 			display: flex;
 			flex-direction: row;
@@ -94,7 +98,7 @@
 		
 		#myOffer .list-item .list-item-row .detail-left {
 			flex: 0 0 auto;
-			width: 60%;
+			width: 50%;
 		}
 		
 		#myOffer .list-item .list-item-row .tit {
@@ -103,7 +107,7 @@
 		
 		#myOffer .list-item .list-item-row .detail-right {
 			flex: 0 0 auto;
-			width: 40%;
+			width: 50%;
 		}
 		/*底部操作按钮*/
 		
@@ -184,6 +188,7 @@
 							<span class="info">{{todo.locationDesc}}</span>
 						</div>
 					</div>
+
 					<div class="list-item-row">
 						<div class="detail-left">
 							<span class="tit">报价时间：</span>
@@ -214,6 +219,7 @@
 							<span class="info">{{todo.unitDesc}}</span>
 						</div>
 					</div>
+
 				</div>
 			</div>
 		</div>

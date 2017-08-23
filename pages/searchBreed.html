@@ -51,7 +51,9 @@
 			<header class="mui-bar mui-bar-nav">
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 				<input v-model="searchName" v-on:input="inputValue" type="text" placeholder="请输入药材名称" />
+
 				<span v-tap="{func: clear}" class="mui-icon mui-icon-close" v-show="searchName"></span>
+
 			</header>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">
@@ -74,10 +76,10 @@
 				//还不知道该页面的返回逻辑 先执行原来的返回功能
 				oldBack()
 			}
-			var menu;
+			var searchBreed;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
-				menu = plus.webview.currentWebview();
+				searchBreed = plus.webview.currentWebview();
 
 			})
 
@@ -125,12 +127,12 @@
 							//给过来页面传值过去
 							mui.fire(comeFromPage, 'backBreedName', {
 								id: params.id,
-								name:params.name
+								name: params.name
 							})
 							_self.searchName = ''
 							setTimeout(function() {
-								comeFromPage.show('slide-in-right', 300);
-							}, 200);
+								mui.back()
+							}, 100)
 						}
 					}
 				}
@@ -140,6 +142,7 @@
 			window.addEventListener('updateFormData', function(event) {
 				//console.log(JSON.stringify(event.detail.id))
 				vm.comeFrom = event.detail.id; //拿到跳转过来页面的id
+				console.log(event.detail.id)
 			})
 		</script>
 	</body>

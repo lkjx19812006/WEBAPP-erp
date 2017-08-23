@@ -84,9 +84,7 @@
         "Barcode": {
             "description": "管理二维码扫描插件"
         },
-        "Maps": {
-            "description": "管理地图插件"
-        },
+        
         "Speech": {
             "description": "管理语音识别插件"
         },
@@ -101,7 +99,7 @@
         },
         "NativeObj":{
         	"description": "原生对象"
-        },"Push":{},"Share":{},"OAuth":{},"Payment":{}
+        },"Push":{},"Share":{},"OAuth":{},"Payment":{},"Maps":{}
     },
     "plus": {
         "splashscreen": {
@@ -111,7 +109,7 @@
         "popGesture": "close",/*设置应用默认侧滑返回关闭Webview窗口，"none"为无侧滑返回功能，"hide"为侧滑隐藏Webview窗口。参考http://ask.dcloud.net.cn/article/102*/
         "runmode": "normal",/*应用的首次启动运行模式，可取liberate或normal，liberate模式在第一次启动时将解压应用资源（Android平台File API才可正常访问_www目录）*/
         "signature": "Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw==",/*可选，保留给应用签名，暂不使用*/
-        "distribute": {"plugins":{"payment":{"weixin":{"description":"微信支付","appid":"wx0de5a9d3c29ba844"}},"oauth":{"weixin":{"appid":"wx0de5a9d3c29ba844","appsecret":"4fb692de5363749d8295aa212865e90c"}},"share":{"weixin":{"appid":"wx0de5a9d3c29ba844","appsecret":"9jzNVvNqDk8L7utVuMmay3","description":"可选，微信分享"}},"push":{"igexin":{"appid":"Gb1duJhr8R6dgW4mf3eh21","appkey":"9jzNVvNqDk8L7utVuMmay3","appsecret":"iGNXovpai77VZTfZbP2ri7"}}},
+        "distribute": {"plugins":{"payment":{"weixin":{"description":"微信支付","appid":"wxe4952b7320fc7265"}},"oauth":{"weixin":{"appid":"wxe4952b7320fc7265","appsecret":"a220c13ac146cb26d12bea7ddea49530"},"qq":{"appid":"1105477019"}},"share":{"weixin":{"appid":"wxe4952b7320fc7265","appsecret":"a220c13ac146cb26d12bea7ddea49530","description":"可选，微信分享"},"qq":{"appid":"1105477019","description":"QQ分享"}},"push":{"igexin":{"appid":"Gb1duJhr8R6dgW4mf3eh21","appkey":"9jzNVvNqDk8L7utVuMmay3","appsecret":"iGNXovpai77VZTfZbP2ri7"}}},
             "apple": {
                 "appid": "",/*iOS应用标识，苹果开发网站申请的appid，如io.dcloud.HelloH5*/
                 "mobileprovision": "",/*iOS应用打包配置文件*/
@@ -292,7 +290,16 @@
 			"pages/home.html": {
 				"resources": [
 					"libs/vueComponents.js",
-					"libs/filters.js"
+					"libs/filters.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
 				],
 				"refer": [
 					"pages/menu.html"
@@ -300,7 +307,10 @@
 				"priority": 0
 			},
 			"pages/menu.html": {
-				"resources": [],
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf"
+				],
 				"refer": [
 					"pages/purchaseOrders/sayPriceList.html"
 				],
@@ -325,6 +335,128 @@
 					"pages/searchBreed.html",
 					"pages/purchaseOrders/needIntention.html"
 				],
+				"priority": 0
+			},
+			"pages/purchaseOrders/needIntention.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [
+					"pages/purchaseOrders/qrCode.html",
+					"pages/purchaseOrders/myOffer.html",
+					"pages/purchaseOrders/offerPrice.html"
+				],
+				"priority": 0
+			},
+			"pages/purchaseOrders/qrCode.html": {
+				"resources": [
+					"js/qrious.min.js",
+					"fonts/mui.ttf",
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/purchaseOrders/myOffer.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/searchBreed.html": {
+				"resources": [
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/purchaseOrders/offerPrice.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [
+					"pages/customer.html",
+					"pages/purchaseOrders/offerSuc.html"
+				],
+				"priority": 0
+			},
+			"pages/customer.html": {
+				"resources": [
+					"fonts/mui.ttf",
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/purchaseOrders/offerSuc.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [],
 				"priority": 0
 			}
 		},
@@ -360,8 +492,7 @@
 				"images/qrcode.png",
 				"images/yuantiao.jpg",
 				"pages/orderMg/model.html",
-				"pages/orderMg/searchView.html",
-				"pages/customer.html"
+				"pages/orderMg/searchView.html"
 			]
 		}
 	}

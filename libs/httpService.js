@@ -122,11 +122,26 @@
 	}
 
 	//过滤掉数据请求对象为空的字段
-	common.filterFormData = function(params) {
+	common.filterFormData = function(params, filterKey) {
 		if(params && typeof params == 'object') {
 			var obj = {};
 			for(var key in params) {
-				if(params[key] || params[key] === 0 || params[key] === false) obj[key] = params[key];
+				//如果键对应的值 是一个对象 递归
+				if(params[key] || params[key] === 0 || params[key] === false) {
+					//过滤掉不需要传值得字段
+					var flag = true;
+					if(filterKey !== undefined && filterKey instanceof Array) {
+						for(var i = 0; i < filterKey.length; i++) {
+							if(key === filterKey[i]) {
+								flag = false;
+								break;
+							}
+						}
+					}
+					if(flag) {
+						obj[key] = params[key];
+					}
+				}
 			}
 			return obj;
 		} else {
@@ -355,6 +370,24 @@
 			} else {
 				return true;
 			}
+		},
+		image: function(imgArray) {
+			if(imgArray !== undefined && imgArray instanceof Array) {
+				if(imgArray.length === 0) {
+					mui.toast('请上传图片', {
+						duration: 'short',
+						type: 'div'
+					})
+					return false;
+				} else {
+					return true;
+				}
+			}
+			mui.toast('图片信息错误', {
+				duration: 'short',
+				type: 'div'
+			})
+			return false;
 		}
 
 	}

@@ -99,7 +99,8 @@
 					no: '',
 					password: '',
 					autoLogin: 'on',
-					language: 'zh'
+					language: 'zh',
+					clientId: '',
 				},
 				watch: {
 					language: function(newVal) {
@@ -117,8 +118,7 @@
 						}
 					}
 				},
-				methods: {
-					
+				methods: {					
 					//清除密碼
 					clearPW: function() {
 						this.password = '';
@@ -135,7 +135,8 @@
 							var obj = {
 								biz_param: {
 									no: this.no,
-									password: this.password
+									password: this.password,
+									clientId: this.clientId
 								}
 							}
 							var _self = this;
@@ -205,6 +206,7 @@
 			//在mui.plusReady完成后 执行一些配置
 			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
 			mui.plusReady(function() {
+				vm.clientId = plus.push.getClientInfo().clientid;
 				vm.autoLogin = common.getItem('autoLogin');
 				vm.language = common.getItem('language') || vm.language;
 				if(vm.autoLogin === 'on') {

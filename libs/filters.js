@@ -71,7 +71,7 @@
 	filters.idToUnit = function(val) {
 		switch(val) {
 			case 1:
-				val = '斤(HKG)';
+				val = '斤';
 				break;
 			case 3:
 				val = '克(G)';
@@ -83,7 +83,7 @@
 				val = '棵(tree)';
 				break;
 			case 66:
-				val = '份()';
+				val = '份';
 				break;
 			case 69:
 				val = '朵(flower)';
@@ -109,11 +109,11 @@
 			case 112:
 				val = '20尺柜(20GP)';
 				break;
-			case 73:
+			case 113:
 				val = '40尺柜(40GP)';
 				break;
-			case 73:
-				val = '40高柜(40GP(HQ))';
+			case 114:
+				val = '40高柜(40HQ)';
 				break;
 		}
 		return val;
@@ -184,7 +184,9 @@
 			return '1970-01-01 00:00:00';
 		} else {
 			//兼容IOS时间显示问题
-			time = time.replace(/\-/g, "/").split('.')[0];
+			if(typeof time !== 'number') {
+				time = time.replace(/\-/g, "/").split('.')[0];
+			}
 			var date = new Date(time);
 			var y = date.getFullYear();
 			var M = date.getMonth() + 1;
@@ -220,9 +222,37 @@
 
 		}
 	}
-
+	//	初始	0	申请上架	1	上架	2	上架失败 -2  申请下架	3	下架	4	不通过继续上架 2
+	filters.onsell = function(params) {
+		var str = ''
+		switch(params) {
+			case 0:
+				str = '初始';
+				break;
+			case 1:
+				str = '申请上架';
+				break;
+			case 2:
+				str = '已上架';
+				break;
+			case -2:
+				str = '上架失败';
+				break;
+			case 3:
+				str = '申请下架';
+				break;
+			case 4:
+				str = '已下架';
+				break;
+			default:
+				str = '未知状态'
+				break;
+		}
+		return str
+	}
 	//注册过滤器
 	for(var key in filters) {
 		Vue.filter(key, filters[key])
 	}
+	window.filters = filters;
 })(window, Vue)
