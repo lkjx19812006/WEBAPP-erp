@@ -51,7 +51,9 @@
 			<header class="mui-bar mui-bar-nav">
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 				<input v-model="searchName" v-on:input="inputValue" type="text" placeholder="请输入药材名称" />
-				<span v-show="searchName" v-tap="{func: clear}" class="mui-icon mui-icon-close"></span>
+
+				<span v-tap="{func: clear}" class="mui-icon mui-icon-close" v-show="searchName"></span>
+
 			</header>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">

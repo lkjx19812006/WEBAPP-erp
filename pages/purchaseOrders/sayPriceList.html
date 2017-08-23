@@ -311,7 +311,9 @@
 							if(typeof fn === 'function') {
 								fn(suc)
 							}
+
 							plus.nativeUI.closeWaiting();
+
 						}, function(err) {
 							plus.nativeUI.closeWaiting();
 						})
