@@ -40,11 +40,11 @@
 			flex-direction: row;
 			justify-content: flex-start;
 			flex-wrap: wrap;
-			
 		}
+		
 		#needIntention .intention-list .block .item-wrap span {
 			flex: 0 0 auto;
- 			padding: 8px 15px;
+			padding: 8px 15px;
 			margin-right: 10px;
 			margin-top: 5px;
 			margin-bottom: 5px;
@@ -137,7 +137,7 @@
 			<div>
 				二维码
 			</div>
-			<div>
+			<div v-tap="func:jumpMyOffer,params:1">
 				我的报价
 			</div>
 			<div>
@@ -162,28 +162,32 @@
 			}
 		});
 		//加载完毕
-		var offerPrice;
-		//分享操作
-		var shares = {};
+		var needIntention, myOffer;
 		mui.plusReady(function() {
-			offerPrice = plus.webview.currentWebview()
-			plus.share.getServices(function(s) {
-				if(s && s.length > 0) {
-					for(var i = 0; i < s.length; i++) {
-						var t = s[i];
-						shares[t.id] = t;
-					}
-				}
-			}, function() {
-				console.log("获取分享服务列表失败");
-			});
+			needIntention = plus.webview.currentWebview()
+
+			setTimeout(function() {
+				//预加载我的报价列表页面
+				myOffer = mui.preload({
+					url: './myOffer.html',
+					id: 'myOffer', //默认使用当前页面的url作为id
+				});
+			}, 200)
 		})
 		var vm = new Vue({
 			el: '#needIntention',
 			i18n: window.i18n,
 			data: {},
 			methods: {
-
+				jumpMyOffer(params) {
+					//把intentionId传到我的报价页面
+					mui.fire(myOffer, 'needintentionId', {
+						intentionId: params
+					})
+					setTimeout(function() {
+						myOffer.show('slide-in-right', 300);
+					}, 200);
+				}
 			}
 		})
 	</script>
