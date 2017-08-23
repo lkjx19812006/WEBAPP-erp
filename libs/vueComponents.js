@@ -137,13 +137,13 @@
 	//注册全局的图片上传
 	Vue.component('my-updateimg', {
 		template: '<div class="img_up" style="display: flex; flex-direction: row; justify-content: space-between; padding: 0;flex-wrap: wrap;">' +
-			'<div v-for="item,index in imgList" :key="index" style="position: relative; margin: 5px; border:2px solid #d0d0d0;border-radius: 10px; padding:5px;display: flex;flex-direction: row; justify-content: center;align-items: center;height: 120px; width: 120px;">' +
+			'<div v-for="item,index in imglist" :key="index" style="position: relative; margin: 5px; border:2px solid #d0d0d0;border-radius: 10px; padding:5px;display: flex;flex-direction: row; justify-content: center;align-items: center;height: 120px; width: 120px;">' +
 			'<div class="img-wrap" style="flex: 0 0 auto;height: 100%; width: 100%; overflow: hidden;display: flex;flex-direction: row; justify-content: center;align-items: center;">' +
 			'<img style="max-width: 100%;" :src="item" />' +
 			'</div>' +
 			'<span v-tap="{func:deleteImg, params:index}" class="mui-icon mui-icon-close" style="position: absolute; right: -10px; top:-10px; color: red; font-weight: 700;border-radius: 12px;"></span>' +
 			'</div>' +
-			'<button v-show="imgList.length < maxImgNum" style="margin: 5px;flex: 0 0 auto; height: 120px; width: 120px; border: 2px solid #d0d0d0; border-radius: 10px; background-color: #f0f0f0" v-tap="{func: getImgFile}">' +
+			'<button v-show="imglist.length < maxImgNum" style="margin: 5px;flex: 0 0 auto; height: 120px; width: 120px; border: 2px solid #d0d0d0; border-radius: 10px; background-color: #f0f0f0" v-tap="{func: getImgFile}">' +
 			'<span class="mui-icon mui-icon-image"  style="font-size: 80px; color: #b0b0b0"></span>' +
 			'</button>' +
 			'</div>',
@@ -151,11 +151,16 @@
 			return {
 				keyName: 'intention', //七牛图片地址
 				token: '',
-				url: '',
-				imgList: []
+				url: ''
 			}
 		},
 		props: {
+			imglist: {
+				type: Array,
+				default: function() {
+					return []
+				}
+			},
 			maxImgNum: {
 				type: Number,
 				default: 4
@@ -164,7 +169,7 @@
 		methods: {
 			//获取图片文件路径
 			getImgFile: function() {
-				if(this.imgList.length >= this.maxImgNum) {
+				if(this.imglist.length >= this.maxImgNum) {
 					return;
 				}
 				//获取token
@@ -179,9 +184,7 @@
 			},
 			//删除图片
 			deleteImg: function(index) {
-				this.imgList.splice(index, 1);
-				//删除图片后 告诉引用页面 更新数据
-				this.$emit('getimgurl', this.imgList);
+				this.$emit('deleltimg', index);
 			},
 			//获取七牛token
 			getToken: function(success) {
@@ -229,9 +232,8 @@
 						//获取结果
 						var result = JSON.parse(t.responseText);
 						var url = _self.url + '/' + result.key;
-						_self.imgList.push(url);
 						//成功后告诉应用页面 更新数据
-						_self.$emit('getimgurl', _self.imgList);
+						_self.$emit('getimgurl', url);
 					}
 				);
 				//压缩图片

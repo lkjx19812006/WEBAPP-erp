@@ -9,7 +9,12 @@
 	<script src="../../i18n/en.js"></script>
 	<script src="../../i18n/zh_CN.js"></script>
 	<style>
+		body {
+			background: transparent;
+		}
+		
 		#offerSuc {
+			background: transparent;
 		}
 		
 		#offerSuc .mask {
@@ -18,7 +23,7 @@
 			left: 0;
 			width: 100vw;
 			height: 100vh;
-			background-color: rgba(0, 0, 0, .3);
+			background-color: rgba(0, 0, 0, .5);
 			z-index: 9999;
 			display: flex;
 			flex-direction: row;
@@ -87,16 +92,16 @@
 <body>
 	<div class="mui-content" id="offerSuc">
 		<!--遮罩蒙层-->
-		<div class="mask">
+		<div class="mask" v-tap="{func: back}">
 			<!--遮罩内容-->
 			<div class="mask-content">
 				<h4>恭喜，报价已完成</h4>
 				<div class="mask-content-text">
-					可在我的供应商报价中查看报价结果
+					报价完成，请点击完成返回首页
 				</div>
 				<div class="btn-wrap">
-					<div class="btn-left">前往我的供应商报价</div>
-					<div class="btn-right">
+					<div class="btn-left" v-if="false">前往我的供应商报价</div>
+					<div class="btn-right" v-tap="{func: back}">
 						完成
 					</div>
 				</div>
@@ -113,38 +118,46 @@
 	<script src="../../libs/vueComponents.js"></script>
 	<script>
 		//初始化
-		mui.init({
-			gestureConfig: {
-				tap: true, //默认为true
-				doubletap: true, //默认为false
-				longtap: true, //默认为false			
-			}
-		});
+		mui.init();
 		//加载完毕
-		var offerPrice;
+		var offerSuc, home;
 		//分享操作
 		var shares = {};
 		mui.plusReady(function() {
-			offerPrice = plus.webview.currentWebview()
-			plus.share.getServices(function(s) {
-				if(s && s.length > 0) {
-					for(var i = 0; i < s.length; i++) {
-						var t = s[i];
-						shares[t.id] = t;
-					}
-				}
-			}, function() {
-				console.log("获取分享服务列表失败");
-			});
+			offerSuc = plus.webview.currentWebview()
+			//缓存首页
+			setTimeout(function() {
+				home = mui.preload({
+					url: '../home.html',
+					id: 'home'
+				})
+			}, 200)
+
 		})
 		var vm = new Vue({
 			el: '#offerSuc',
 			i18n: window.i18n,
 			data: {},
 			methods: {
-
+				back: function() {
+					home.show('fade-out', 300, function() {
+						setTimeout(function() {
+							offerSuc.hide('none', 0);
+						}, 300)
+					});
+				}
 			}
 		})
+		//重写back
+		var oldBack = mui.back;
+		mui.back = function() {
+			//点击完成后回到首页
+			home.show('fade-out', 300, function() {
+				setTimeout(function() {
+					offerSuc.hide('none', 0);
+				}, 300)
+			});
+		}
 	</script>
 </body>
 
