@@ -29,7 +29,6 @@
 			align-items: flex-start;
 		}
 		
-
 		#needIntention .intention-list .tit {
 			flex: 0 0 auto;
 		}
@@ -173,7 +172,9 @@
 				},
 				//显示我的报价页面
 				showMyOffer: function() {
-					mui.fire()
+					mui.fire(myOffer, 'getIntentionInfo', {
+						intentionInfo: this.detailInfo.intention
+					})
 					myOffer.show('slide-in-right', 300)
 				},
 				//显示立即报价页

@@ -46,9 +46,11 @@
 			margin: 5px 5px 5px 0;
 			border-radius: 5px;
 		}
-		#myOffer .header-filter-wrap .last{
-			margin-right:0;
+		
+		#myOffer .header-filter-wrap .last {
+			margin-right: 0;
 		}
+		
 		#myOffer .header-filter-wrap .mui-icon {
 			font-size: 12px;
 		}
@@ -86,10 +88,11 @@
 			justify-content: space-between;
 			padding: 5px 0;
 		}
-
-		#myOffer .list-item .list-item-row.last{
+		
+		#myOffer .list-item .list-item-row.last {
 			justify-content: flex-start;
 		}
+		
 		#myOffer .list-item .list-item-row>div {
 			display: flex;
 			flex-direction: row;
@@ -185,7 +188,7 @@
 						</div>
 						<div class="detail-right">
 							<span class="tit">产地：</span>
-							<span class="info">{{todo.locationDesc}}</span>
+							<span class="info">{{todo.locationDesc || '不限'}}</span>
 						</div>
 					</div>
 
@@ -194,37 +197,33 @@
 							<span class="tit">报价时间：</span>
 							<span class="info">{{todo.otime,'YYYY-MM-DD' | getYMD}}</span>
 						</div>
-						<div class="detail-right">
-							<span class="tit">价格：</span>
-							<span class="info">{{todo.price}}元/{{todo.unitDesc}}</span>
-						</div>
-					</div>
-					<div class="list-item-row">
 						<div class="detail-left">
 							<span class="tit">有效期：</span>
 							<span class="info">{{todo.duedate,'YYYY-MM-DD' | getYMD}}</span>
 						</div>
-						<div class="detail-right">
-							<span class="tit">数量：</span>
-							<span class="info">{{todo.number}}</span>
-						</div>
 					</div>
 					<div class="list-item-row">
-						<div class="detail-left">
-							<span class="tit">供应商名称：</span>
-							<span class="info">{{todo.buyCustomerName}}</span>
+
+						<div class="detail-right">
+							<span class="tit">价格：</span>
+							<span class="info">{{todo.price}}元/{{todo.unitDesc}}</span>
 						</div>
 						<div class="detail-right">
-							<span class="tit">单位：</span>
-							<span class="info">{{todo.unitDesc}}</span>
+							<span class="tit">数量：</span>
+							<span class="info">{{todo.number}}{{todo.unitDesc}}</span>
 						</div>
+					</div>
+
+					<div class="list-item-row last">
+						<span class="tit">供应商名称：</span>
+						<span class="info">{{todo.buyCustomerName}}</span>
 					</div>
 
 				</div>
 			</div>
 		</div>
 		<!--提交按钮-->
-		<div class="button-wrap">
+		<div class="button-wrap" v-tap="{func: back}">
 			返回
 		</div>
 	</div>
@@ -387,6 +386,7 @@
 					plus.nativeUI.showWaiting('loading...');
 					common.commonPost(url, body, function(suc) {
 						plus.nativeUI.closeWaiting();
+						//第一次加载时 total为undefined
 						if(_self.listData.total === undefined) {
 							_self.listData = suc.biz_result
 						} else {
@@ -411,15 +411,19 @@
 					//重置上拉加载业务
 					mui('#pullrefresh').pullRefresh().refresh(true);
 				},
+				//返回逻辑
+				back: function(){
+					mui.back();
+				}
 			}
 		})
 		//上拉加载数据
 		function pullupRefresh() {
 			vm.formData.pn++;
-			vm.getHttp(function() {
+			vm.getHttp(function(suc) {
 				console.log(vm.listData.total)
 				console.log(vm.listData.list.length)
-				if(vm.listData.total <= vm.listData.list.length || vm.listData.total === 0) {
+				if(vm.listData.total <= vm.listData.list.length || vm.listData.total === 0 || suc.biz_result.total === 0) {
 					mui('#pullrefresh').pullRefresh().endPullup(true);
 				} else {
 					mui('#pullrefresh').pullRefresh().endPullup(false);
@@ -434,9 +438,14 @@
 			});
 		}
 		//监听来自求购意向信息带过来的intentionId
-		window.addEventListener('needintentionId', function(event) {
+		window.addEventListener('getIntentionInfo', function(event) {
 			//console.log(JSON.stringify(event.detail.intentionId))
-
+			window.scrollTo(0, 0);
+			if(event.detail && typeof event.detail === 'object') {
+				var params = event.detail.intentionInfo;
+				vm.formData.intentionId = params.id;
+				vm.getHttp();
+			}
 		})
 	</script>
 </body>
