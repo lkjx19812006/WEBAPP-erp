@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html class="ui-page-login">
 
 	<head>
@@ -25,7 +26,7 @@
 				text-align: right;
 				font-size: 15px;
 				position: fixed;
-				top: 45px;
+				top: 44px;
 				width: 100%;
 				background-color: #fff;
 			}
@@ -245,7 +246,7 @@
 					}
 				},
 			});
-			var home;
+			var home,myOfferDetail;
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
 				vm.formData = formData;
@@ -261,6 +262,10 @@
 							scrollIndicator: 'none',
 						}
 					});
+					myOfferDetail = mui.preload({
+						url: '../pages/purchaseOrders/myOfferDetail.html',
+						id: 'myOfferDetail'
+					})
 				}, 300);
 			})
 			var vm = new Vue({
@@ -299,7 +304,11 @@
 					listData: {
 						list: []
 					},
+<<<<<<< HEAD
 					messageNum: ''
+=======
+					messageNum: '',
+>>>>>>> b4bf3dadb4b7101a1774cc8d50c658d4fd5735d9
 				},
 
 				methods: {
@@ -334,7 +343,14 @@
 					},
 					//跳转到详情页面
 					jumpDetail: function(params) {
-						//mui.fire()
+						var _self = this;
+						//console.log(JSON.stringify(params.bizId))
+						mui.fire(myOfferDetail, 'myOfferDetailId', {
+							id: params.bizId
+						})
+						setTimeout(function() {
+							myOfferDetail.show('slide-in-right', 300)
+						}, 200)
 					},
 					//获取列表数据
 					getHttp: function(fn) {

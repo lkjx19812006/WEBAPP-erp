@@ -83,6 +83,10 @@
 			margin-bottom: 10px;
 		}
 		
+		#myOffer .list-item:active {
+			background-color: #d0d0d0;
+		}
+		
 		#myOffer .list-item .list-item-row {
 			display: flex;
 			flex-direction: row;
@@ -127,7 +131,6 @@
 			background-color: #007AFF;
 			color: #fff;
 		}
-	</style>
 	</style>
 </head>
 
@@ -181,7 +184,7 @@
 		<!--列表部分-->
 		<div id="pullrefresh">
 			<div class="list-wrap">
-				<div class="list-item" v-for="(todo,index) in listData.list" :key="todo.id">
+				<div class="list-item" v-for="(todo,index) in listData.list" :key="todo.id" v-tap="{func:jumpDetail,params:todo.id}">
 					<div class="list-item-row">
 						<div class="detail-left">
 							<span class="tit">审核状态：</span>
@@ -192,7 +195,6 @@
 							<span class="info">{{todo.locationDesc || '不限'}}</span>
 						</div>
 					</div>
-
 					<div class="list-item-row">
 						<div class="detail-left">
 							<span class="tit">报价时间：</span>
@@ -204,7 +206,6 @@
 						</div>
 					</div>
 					<div class="list-item-row">
-
 						<div class="detail-right">
 							<span class="tit">价格：</span>
 							<span class="info">{{todo.price}}元/{{todo.unitDesc}}</span>
@@ -214,13 +215,10 @@
 							<span class="info">{{todo.number}}{{todo.unitDesc}}</span>
 						</div>
 					</div>
-
 					<div class="list-item-row last">
 						<span class="tit">供应商名称：</span>
 						<span class="info">{{todo.buyCustomerName}}</span>
 					</div>
-
-
 				</div>
 			</div>
 		</div>
@@ -261,11 +259,18 @@
 		});
 
 		//加载完毕
-		var myOffer;
+		var myOffer, myOfferDetail;
 		mui.plusReady(function() {
 			//获取当前页面对象
 			myOffer = plus.webview.currentWebview();
 			vm.formData = formData;
+			setTimeout(function() {
+				//预加载我的报价详情页面
+				myOfferDetail = mui.preload({
+					url: './myOfferDetail.html',
+					id: 'myOfferDetail'
+				})
+			}, 500)
 		})
 		var vm = new Vue({
 			el: '#myOffer',
@@ -323,11 +328,17 @@
 					asc: '',
 					title: '默认'
 				}, {
+					asc: 0,
+					title: '未审核'
+				}, {
 					asc: 1,
-					title: '升序'
+					title: '申请中'
 				}, {
 					asc: 2,
-					title: '降序'
+					title: '通过'
+				}, {
+					asc: 3,
+					title: '未通过'
 				}],
 				select4: [{
 					asc: '',
@@ -345,10 +356,16 @@
 				select(params) {
 					var _self = this;
 					//console.log(JSON.stringify(_self.needconcat.sort[params.key]))
-					if(params.todo.asc) {
+
+					if(params.todo.asc !== '') {
 						//asc为1,2的时候筛选头上文字替换对应文字
+						console.log(JSON.stringify(params.num))
 						_self.headFilter[params.num].name = params.todo.title;
-						_self.needconcat.sort[params.key] = params.todo.asc;
+						if(params.num !== 2) {
+							_self.needconcat.sort[params.key] = params.todo.asc;
+						} else {
+							_self.formData.validate = params.todo.asc;
+						}
 						_self.initGetHttp();
 						_self.getHttp();
 						//console.log(JSON.stringify(_self.needconcat.sort[params.key]))
@@ -356,6 +373,7 @@
 						//asc为空的时候筛选头上文字不替换，换成默认文字
 						_self.headFilter[params.num].name = _self.headFilter[params.num].selectName;
 						_self.needconcat.sort[params.key] = params.todo.asc;
+						if(params.num == 2) _self.formData.validate = ''; //如果是审核状态的话
 						_self.initGetHttp();
 						_self.getHttp();
 					}
@@ -416,6 +434,16 @@
 				//返回逻辑
 				back: function() {
 					mui.back();
+				},
+				//跳到详情页
+				jumpDetail: function(id) {
+					var _self = this;
+					mui.fire(myOfferDetail, 'myOfferDetailId', {
+                         id:id
+					})
+					setTimeout(function() {
+						myOfferDetail.show('slide-in-right', 300)
+					}, 200)
 				}
 			}
 		})
@@ -447,6 +475,7 @@
 			if(event.detail && typeof event.detail === 'object') {
 				var params = event.detail.intentionInfo;
 				vm.formData.intentionId = params.id;
+				console.log(JSON.stringify(params.id))
 				vm.getHttp();
 			}
 		})
