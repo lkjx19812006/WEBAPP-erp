@@ -77,7 +77,8 @@
 			"pages/orderMg/departmentOrder.html",
 			"pages/orderMg/allOrder.html",
 			"pages/purchaseOrders/sayPriceList.html",
-			"pages/purchaseOrders/myOffer.html"
+			"pages/purchaseOrders/myOffer.html",
+			"pages/login.html"
 		]
 	},
 	"pages/userInfo.html": {

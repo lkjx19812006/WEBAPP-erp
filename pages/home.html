@@ -37,8 +37,9 @@
 			.home .head-top .last {
 				margin-bottom: 10px;
 			}
-			.home .head-top .last span{
-				color:#007AFF;
+			
+			.home .head-top .last span {
+				color: #007AFF;
 			}
 			/*筛选*/
 			
@@ -130,12 +131,14 @@
 				flex-direction: row;
 				justify-content: flex-end;
 				align-items: center;
-				padding-right:3px;
+				padding-right: 3px;
 			}
-			.home .list .item .top .message{
-				flex:1;
+			
+			.home .list .item .top .message {
+				flex: 1;
 				padding-right: 10px;
 			}
+			
 			.home .list .item .top .green {
 				color: #007AFF;
 				font-size: 16px;
@@ -169,7 +172,7 @@
 			</my-header>
 			<!--头部信息-->
 			<div class="head-top">
-				<div>尊敬的系统管理员，您好！</div>
+				<div>尊敬的{{userInfo.name}}，您好！</div>
 				<div class="last">您还有<span>{{messageNum}}</span>条消息未处理，请及时处理！</div>
 			</div>
 			<!--头部筛选-->
@@ -199,7 +202,7 @@
 							<span class="emtry">
 								<span class="mui-icon mui-icon-info green" v-show="!todo.read"></span>
 							</span>
-							
+
 							<span class="message">{{todo.message}}</span>
 						</div>
 						<div class="bottom">
@@ -266,15 +269,17 @@
 					show: 0, //处理未处理
 					msgNum: 0,
 					selectType: [{
-						title: '报价',
-						id: 'offer'
-					}, /*{
+							title: '报价',
+							id: 'offer'
+						},
+						/*{
 						title: '订单',
 						id: 'order'
 					}, {
 						title: '意向',
 						id: 'intention'
-					}*/],
+					}*/
+					],
 					selectArr: [{
 						name: '报价',
 						asc: '',
@@ -291,7 +296,8 @@
 					listData: {
 						list: []
 					},
-					messageNum:'',
+					messageNum: '',
+					userInfo: JSON.parse(window.localStorage.userInfo)
 				},
 				methods: {
 					//显示菜单
@@ -300,7 +306,7 @@
 					},
 					//筛选
 					selectItem: function(params) {
-						var  _self = this;
+						var _self = this;
 						//如果没被选中执行
 						if(!_self.selectArr[params].show) {
 							for(var i = 0; i < _self.selectArr.length; i++) { //取消所有的对号
@@ -347,6 +353,9 @@
 							plus.nativeUI.closeWaiting();
 							if(_self.listData.total === undefined) {
 								_self.listData = suc.biz_result
+								if(_self.listData.list === undefined) {
+									_self.listData.list = []
+								}
 							} else {
 								_self.listData.list = _self.listData.list.concat(suc.biz_result.list)
 							}
@@ -359,7 +368,7 @@
 							plus.nativeUI.closeWaiting();
 						})
 					},
-					getNum:function(){
+					getNum: function() {
 						var _self = this;
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
@@ -369,7 +378,7 @@
 						}
 						plus.nativeUI.showWaiting('loading...');
 						common.commonPost(url, body, function(suc) {
-							plus.nativeUI.closeWaiting();	
+							plus.nativeUI.closeWaiting();
 							_self.messageNum = suc.biz_result.offer;
 						}, function(err) {
 							plus.nativeUI.closeWaiting();

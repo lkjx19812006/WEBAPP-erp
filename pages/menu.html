@@ -12,6 +12,7 @@
 		<style>
 			.mui-content {
 				padding-top: 45px;
+				padding-bottom: 50px;
 			}
 			/*菜单栏开始*/
 			
@@ -50,6 +51,20 @@
 				color: #fff;
 				border-color: #0062CC;
 			}
+			/*底部退出按钮*/
+			
+			#menu .sign-out {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				height: 50px;
+				width: 100%;
+				line-height: 50px;
+				font-size: 18px;
+				text-align: center;
+				color: #fff;
+				background-color: #007AFF;
+			}
 		</style>
 	</head>
 
@@ -72,6 +87,10 @@
 					</div>
 				</div>
 			</div>
+			<!--退出登录按钮-->
+			<div class="sign-out" v-tap="{func:signOut }">
+				退出登录
+			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
 		<script src="../libs/vue.min.js"></script>
@@ -87,11 +106,10 @@
 					oldBack()
 				})			
 			}			
-			var menu;
+			var menu, login;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
 				menu = plus.webview.currentWebview();
-
 			})		
 			
 			//menu切换页面不能正常关闭的问题
@@ -124,6 +142,28 @@
 								plus.webview.getWebviewById('menu').hide('none', 0)
 							})
 						}, 300)
+					},
+					//退出登录
+					signOut: function(){
+						plus.nativeUI.confirm('确定退出登录？',function(event){
+							if(event.index === 0){
+								//先清除用户数据
+								window.localStorage.userInfo = '',
+								common.setItem('KEY', '')
+								common.setItem('SID', '')
+								window.localStorage.KEY = ''
+								window.localStorage.SID = '';
+								common.KEY = '';
+								common.SID = '';
+								login = mui.openWindow({
+									url: './login.html',
+									id: 'login',
+									show: {
+										aniShow: 'fade-in'
+									}
+								})
+							}							
+						}, '提示信息',['确定', '取消'])
 					}
 				}
 			})

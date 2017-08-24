@@ -4,7 +4,6 @@
 		template: '<header class="mui-bar mui-bar-nav">' +
 			'<h1 v-tap="{' + "func" + ':mysrolltop}" class="mui-title">{{title}}</h1>' +
 			'<a v-tap="{func: showMenu}" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>' +
-			'<a class="mui-icon mui-icon-email mui-pull-right"></a>' +
 			'</header>',
 		data: function() {
 			return {}
