@@ -200,27 +200,24 @@
 								window.localStorage.SID = suc.biz_result.SID;
 								common.KEY = suc.biz_result.KEY;
 								common.SID = suc.biz_result.SID;
-								//自动登录 记录账号密码
-								if(vm.autoLogin === 'on') {
-									common.setItem('no', _self.no)
-									common.setItem('password', _self.password)
-								} else {
-									common.setItem('no', '')
-									common.setItem('password', '')
-								}
+								//登录成功 记录账号密码
+								common.setItem('no', _self.no)
+								common.setItem('password', _self.password)
+
 								mui(_self.$refs.submit).button('reset')
-								//打开新的窗口
-								var home = mui.preload({
-									url: 'home.html',
-									id: 'home',
-									createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示	
+
+								_self.getUserInfo(function() {
+									setTimeout(function() {
+										mui.openWindow({
+											url: './home.html',
+											id: 'home',
+											show: {
+												aniShow: 'slide-in-right'
+											}
+										});
+										mui(_self.$refs.submit).button('reset');
+									}, 200)
 								})
-								setTimeout(function() {
-									home.show('slide-in-right', 300);
-									mui(_self.$refs.submit).button('reset');
-								}, 200)
-								//获取用户信息
-								_self.getUserInfo()
 							}, function(err) {
 								mui(_self.$refs.submit).button('reset');
 							})
@@ -234,11 +231,9 @@
 							this.autoLogin = 'on'
 						}
 						common.setItem('autoLogin', this.autoLogin)
-						console.log(common.getItem('autoLogin'))
-
 					},
 					//获取用户信息
-					getUserInfo: function() {
+					getUserInfo: function(fn) {
 						//先同步时间
 						var _self = this;
 						common.getDate(function() {
@@ -252,7 +247,9 @@
 								common.setItem('userInfo', window.localStorage.userInfo)
 								//获取用户信息完成后开启事件监听								
 								_self.addPush();
-
+								if(fn !== undefined && typeof fn === 'function') {
+									fn(suc);
+								}
 							}, function(err) {
 
 							})
@@ -317,7 +314,7 @@
 					var result = params.biz_result;
 					//获取到台返回的数据
 					//当前设备版本ID
-					var deviceVersion = plus.runtime.version;
+					var deviceVersion = plus.runtime.version.split('.');
 					//最低的强制更新版本
 					var compel = result.compel.split('.');
 					//普通更新版本
@@ -328,8 +325,6 @@
 					if(validate(deviceVersion, compel)) {
 						//强制更新
 						btnArr = ['立即更新'];
-						//显示蒙层
-						vm.showMask = true;
 						plus.nativeUI.confirm(result.content, function(event) {
 							//点击更新后执行更新逻辑
 							if(event.index === 0) {
@@ -343,8 +338,6 @@
 
 					} else if(validate(deviceVersion, version)) {
 						//普通更新
-						//显示蒙层
-						vm.showMask = true;
 						plus.nativeUI.confirm(result.content, function(event) {
 							//点击更新后执行更新逻辑
 							if(event.index === 0) {
@@ -358,11 +351,13 @@
 						//不需要更新直接登录
 						vm.autoLogin = common.getItem('autoLogin');
 						vm.language = common.getItem('language') || vm.language;
+						vm.no = common.getItem('no');
+						vm.password = common.getItem('password');
+						console.log(vm.no)
+						console.log(vm.password)
 						if(vm.autoLogin === 'on') {
-							vm.no = common.getItem('no');
-							vm.password = common.getItem('password');
 							if(vm.no && vm.password) {
-//								vm.submit()
+								vm.submit()
 							}
 						}
 					}
@@ -397,6 +392,7 @@
 						if(result.iosUrl) plus.runtime.openURL(result.iosUrl);
 					}
 				}
+
 				//版本校验
 				function validate(deviceVersion, version) {
 					var isUpdate = false;

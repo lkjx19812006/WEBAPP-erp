@@ -249,7 +249,8 @@
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
 				vm.formData = formData;
-				vm.getHttp();
+				vm.userInfo = JSON.parse(common.getItem('userInfo')),
+					vm.getHttp();
 				vm.getNum();
 				setTimeout(function() {
 					//侧滑菜单默认隐藏，这样可以节省内存；
@@ -266,6 +267,8 @@
 				el: '#myOrder',
 				i18n: window.i18n,
 				data: {
+					formData: {},
+					userInfo: {},
 					show: 0, //处理未处理
 					msgNum: 0,
 					selectType: [{
@@ -296,9 +299,9 @@
 					listData: {
 						list: []
 					},
-					messageNum: '',
-					userInfo: JSON.parse(window.localStorage.userInfo)
+					messageNum: ''
 				},
+
 				methods: {
 					//显示菜单
 					showMenu: function() {
@@ -428,7 +431,7 @@
 						plus.runtime.quit()
 					}
 				})
-			}
+			};
 		</script>
 	</body>
 

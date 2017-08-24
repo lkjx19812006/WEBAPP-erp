@@ -129,18 +129,19 @@
 				methods: {
 					openWindow: function(params) {
 						//先预加载页面
-						var nowPage = mui.preload({
+						var nowPage = mui.openWindow({
 							url: params.url,
 							id: params.id, //默认使用当前页面的url作为id							
 							createNew: false, //禁止重复创建
 							styles:{
 								zIndex: 1//为所有新开页面设置层级值 防止 菜单被覆盖
+							},
+							show:{
+								aniShow: 'slide-in-right'
 							}
 						});
-						setTimeout(function() {							
-							nowPage.show('slide-in-right', 300, function(){
-								plus.webview.getWebviewById('menu').hide('none', 0)
-							})
+						setTimeout(function(){
+							menu.hide('none');	
 						}, 300)
 					},
 					//退出登录
@@ -155,21 +156,24 @@
 								window.localStorage.SID = '';
 								common.KEY = '';
 								common.SID = '';
-								login = mui.openWindow({
+								common.setItem('autoLogin', 'off');
+								mui.openWindow({
 									url: './login.html',
 									id: 'login',
-									show: {
+									show:{
 										aniShow: 'fade-in'
 									}
 								})
+								setTimeout(function(){
+									var home = plus.webview.getWebviewById('home');
+									home.close('none');
+									menu.close('none');									
+								}, 300)
 							}							
 						}, '提示信息',['确定', '取消'])
 					}
 				}
-			})
-			
-			
-			
+			})	
 		</script>
 	</body>
 
