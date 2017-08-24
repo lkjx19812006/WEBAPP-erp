@@ -11,7 +11,149 @@
 		<script src="../i18n/zh_CN.js"></script>
 		<style>
 			.mui-content {
-				padding-top: 45px;
+				padding-top: 196px;
+			}
+			
+			.home {
+				background-color: #f0f0f0;
+			}
+			/*头部信息*/
+			
+			.home .head-top {
+				display: flex;
+				flex-direction: column;
+				text-align: right;
+				font-size: 15px;
+				position: fixed;
+				top: 45px;
+				width: 100%;
+				background-color: #fff;
+			}
+			
+			.home .head-top>div {
+				margin-top: 15px;
+			}
+			
+			.home .head-top .last {
+				margin-bottom: 10px;
+			}
+			.home .head-top .last span{
+				color:#007AFF;
+			}
+			/*筛选*/
+			
+			.home .select {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				border-top: 1px solid #007AFF;
+				border-bottom: 1px solid #007AFF;
+				padding: 15px 0 15px 10px;
+				position: fixed;
+				top: 126px;
+				width: 100%;
+				background-color: #fff;
+			}
+			
+			.home .select .item {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-content: center;
+				flex: 1;
+				margin-right: 10px;
+				border: 1px solid #007AFF;
+				font-size: 15px;
+				padding: 6px 0;
+				border-radius: 4px;
+			}
+			
+			.home .select .select-type {
+				display: flex;
+				padding: 5px;
+				flex-direction: row;
+				background-color: #007AFF;
+				color: #fff;
+				align-items: center;
+				position: relative;
+			}
+			
+			.home .select .select-type .bubble {
+				position: absolute;
+				bottom: -130px;
+				left: 0;
+				width: 80px;
+				font-size: 14px;
+				color: #666;
+			}
+			
+			.home .select .select-type .down {
+				font-size: 14px;
+			}
+			
+			.home .select .item .green {
+				color: #007AFF;
+			}
+			
+			.home .mui-popover {
+				width: 120px;
+				font-size: 14px;
+				color: #666;
+			}
+			
+			.home .mui-table-view {
+				max-width: 120px;
+			}
+			/*消息列表*/
+			
+			.home .list {}
+			
+			.home .list .item {
+				padding: 12px 0;
+				border-bottom: 1px solid #007AFF;
+			}
+			
+			.home .list .item:active {
+				background-color: #d0d0d0;
+			}
+			
+			.home .list .item .top {
+				display: flex;
+				flex-direction: row;
+				font-size: 15px;
+			}
+			
+			.home .list .item .top .emtry {
+				width: 30px;
+				height: 25px;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-end;
+				align-items: center;
+				padding-right:3px;
+			}
+			.home .list .item .top .message{
+				flex:1;
+				padding-right: 10px;
+			}
+			.home .list .item .top .green {
+				color: #007AFF;
+				font-size: 16px;
+			}
+			
+			.home .list .item .bottom {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-end;
+				padding-right: 30px;
+				margin-top: 10px;
+			}
+			
+			.home .list .item .bottom .button {
+				border: 1px solid #007AFF;
+				border-radius: 4px;
+				padding: 3px 15px;
+				font-size: 15px;
 			}
 			
 			#offCanvasWrapper .mui-off-canvas-left {
@@ -21,14 +163,54 @@
 	</head>
 
 	<body>
-		<div class="mui-content" id="myOrder">
+		<div class="mui-content home" id="myOrder">
 			<!--头部导航-->
 			<my-header v-on:show="showMenu" title="移动ERP">
 			</my-header>
+			<!--头部信息-->
+			<div class="head-top">
+				<div>尊敬的系统管理员，您好！</div>
+				<div class="last">您还有<span>{{messageNum}}</span>条消息未处理，请及时处理！</div>
+			</div>
+			<!--头部筛选-->
+			<div class="select">
+				<a class="item select-type" v-for="(todo,index) in selectArr" :key="index" v-show="index==0" href="#messageType">
+					<span>{{todo.name}}</span>
+					<span class="mui-icon mui-icon-arrowdown down"></span>
+				</a>
+				<div class="item" v-for="(todo,index) in selectArr" :key="index" v-tap="{func:selectItem,params:index}" v-show="index!==0">
+					<span class="mui-icon mui-icon-checkmarkempty green" v-show="todo.show"></span>
+					<span>{{todo.name}}</span>
+				</div>
+			</div>
 
+			<div id="messageType" class="mui-popover">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" v-for="(todo,index) in selectType" :key="index" v-tap="{func:selectTypes,params:todo}">
+						<a href="#">{{todo.title}}</a>
+					</li>
+				</ul>
+			</div>
+			<!--列表-->
+			<div id="pullrefresh">
+				<div class="list">
+					<div class="item" v-for="(todo,index) in listData.list" :key="index" v-tap="{func:jumpDetail,params:todo}">
+						<div class="top">
+							<span class="emtry">
+								<span class="mui-icon mui-icon-info green" v-show="!todo.read"></span>
+							</span>
+							
+							<span class="message">{{todo.message}}</span>
+						</div>
+						<div class="bottom">
+							<div class="button">详情</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<!--底部-->
-			<my-navbar>
-			</my-navbar>
+			<!--<my-navbar>
+			</my-navbar>-->
 		</div>
 
 		<script src="../js/mui.min.js"></script>
@@ -38,27 +220,34 @@
 		<script src="../libs/httpService.js"></script>
 		<script src="../libs/filters.js"></script>
 		<script src="../libs/vueComponents.js"></script>
+		<script src="./common.js"></script>
 		<script>
-			mui.init();
-			var home;
-
-			var vm = new Vue({
-				el: '#myOrder',
-				i18n:window.i18n,
-				data: {
-					msgNum: 0,
-
-				},
-				methods: {
-					//显示菜单
-					showMenu: function() {
-						menu.show('slide-in-left', 300)
+			//初始化上拉下拉
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置					
+						auto: false, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh
 					},
-
-				}
-			})
+					up: {
+						auto: false,
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				},
+			});
+			var home;
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
+				vm.formData = formData;
+				vm.getHttp();
+				vm.getNum();
 				setTimeout(function() {
 					//侧滑菜单默认隐藏，这样可以节省内存；
 					menu = mui.preload({
@@ -70,10 +259,158 @@
 					});
 				}, 300);
 			})
+			var vm = new Vue({
+				el: '#myOrder',
+				i18n: window.i18n,
+				data: {
+					show: 0, //处理未处理
+					msgNum: 0,
+					selectType: [{
+						title: '报价',
+						id: 'offer'
+					}, /*{
+						title: '订单',
+						id: 'order'
+					}, {
+						title: '意向',
+						id: 'intention'
+					}*/],
+					selectArr: [{
+						name: '报价',
+						asc: '',
+						show: true
+					}, {
+						name: '未处理',
+						asc: 0,
+						show: true
+					}, {
+						name: '已处理',
+						asc: 1,
+						show: false
+					}],
+					listData: {
+						list: []
+					},
+					messageNum:'',
+				},
+				methods: {
+					//显示菜单
+					showMenu: function() {
+						menu.show('slide-in-left', 300)
+					},
+					//筛选
+					selectItem: function(params) {
+						let _self = this;
+						//如果没被选中执行
+						if(!_self.selectArr[params].show) {
+							for(var i = 0; i < _self.selectArr.length; i++) { //取消所有的对号
+								_self.selectArr[i].show = false;
+							}
+							_self.selectArr[params].show = true; //展示选中的
+							_self.show = _self.selectArr[params].asc; //筛选要调的接口是处理还是未处理
+							_self.initGetHttp(); //重置
+							_self.getHttp();
+						}
+					},
+					//筛选报价，订单，意向
+					selectTypes: function(params) {
+						//如果选中的类型和头上显示的不一样才执行
+						if(params.title !== this.selectArr[0].name) {
+							this.selectArr[0].name = params.title; //将选中的类型赋值给头部	
+							this.formData.type = params.id; //确定要选择的是报价，订单还是意向
+							this.initGetHttp(); //重置
+							this.getHttp();
+						}
+						mui('#messageType').popover('hide'); //点击选中后气泡消失
+					},
+					//跳转到详情页面
+					jumpDetail: function(params) {
+						//mui.fire()
+					},
+					//获取列表数据
+					getHttp: function(fn) {
+						var _self = this;
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'notificationService',
+							biz_method: 'processedList',
+							biz_param: common.filterFormData(_self.formData)
+						}
+						if(_self.show) {
+							body.biz_method = 'processedList'
+						} else {
+							body.biz_method = 'undisposedList'
+						}
+						console.log(JSON.stringify(body.biz_method))
+						plus.nativeUI.showWaiting('loading...');
+						common.commonPost(url, body, function(suc) {
+							plus.nativeUI.closeWaiting();
+							if(_self.listData.total === undefined) {
+								_self.listData = suc.biz_result
+							} else {
+								_self.listData.list = _self.listData.list.concat(suc.biz_result.list)
+							}
+							console.log(JSON.stringify(22, suc))
+							if(typeof fn === 'function') {
+								fn(suc)
+							}
+						}, function(err) {
+							console.log(JSON.stringify(11))
+							plus.nativeUI.closeWaiting();
+						})
+					},
+					getNum:function(){
+						var _self = this;
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'notificationService',
+							biz_method: 'undisposedCount',
+							biz_param: {}
+						}
+						plus.nativeUI.showWaiting('loading...');
+						common.commonPost(url, body, function(suc) {
+							plus.nativeUI.closeWaiting();	
+							_self.messageNum = suc.biz_result.offer;
+						}, function(err) {
+							plus.nativeUI.closeWaiting();
+						})
+					},
+					//重置数据请求
+					initGetHttp: function() {
+						this.formData.pn = 1;
+						this.formData.pSize = 15;
+						this.listData = {
+							list: []
+						};
+						//重置上拉加载业务
+						mui('#pullrefresh').pullRefresh().refresh(true);
+					},
+
+				}
+			})
 			window.addEventListener('closeMenu', function(event) {
 				mask.close()
 			});
-
+			//上拉加载数据
+			function pullupRefresh() {
+				vm.formData.pn++;
+				vm.getHttp(function() {
+					console.log(vm.listData.total)
+					console.log(vm.listData.list.length)
+					if(vm.listData.total <= vm.listData.list.length || vm.listData.total === 0) {
+						mui('#pullrefresh').pullRefresh().endPullup(true);
+					} else {
+						mui('#pullrefresh').pullRefresh().endPullup(false);
+					}
+				})
+			}
+			//下拉刷新数据
+			function pulldownRefresh() {
+				vm.initGetHttp();
+				vm.getHttp(function() {
+					mui('#pullrefresh').pullRefresh().endPulldown();
+				});
+			}
 			//缓存老的 old_back 重新back
 			var old_back = mui.back;
 			mui.back = function() {
