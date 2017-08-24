@@ -150,7 +150,7 @@
 			<!--药材图片-->
 			<div class="detail block">
 				<span class="tit">药材图片：</span>
-				<my-updateimg v-on:getimgurl="getimgurl"></my-updateimg>
+				<my-updateimg v-on:getimgurl="getimgurl" :imglist="formData.imageArray" v-on:deleltimg="deleltimg"></my-updateimg>
 			</div>
 			<!--报价备注-->
 			<div class="detail block" style="border: none">
@@ -160,7 +160,7 @@
 		</div>
 
 		<!--提交按钮-->
-		<div class="button-wrap" v-tap="{func:submit}">
+		<div class="button-wrap" ref="submit" v-tap="{func:submit}">
 			提交报价
 		</div>
 	</div>
@@ -192,7 +192,13 @@
 					url: './offerSuc.html',
 					id: 'offerSuc',
 					styles: {
-						opacity: .3
+						top: '0px',
+						bottom: '0px',
+						left: '0px',
+						right: '0px',
+						margin: 'auto',
+						background: 'transparent',
+						zIndex: 9999
 					}
 				})
 			}, 300)
@@ -250,7 +256,12 @@
 				},
 				//获取图片数组
 				getimgurl: function(params) {
-					this.formData.imageArray = params;
+					console.log(params)
+					this.formData.imageArray.push(params);
+				},
+				//删除图片
+				deleltimg: function(index) {
+					this.formData.imageArray.splice(index, 1);
 				},
 				//获取单位列表
 				getUnitHttp: function() {
@@ -394,6 +405,7 @@
 
 				},
 				submitHttp: function() {
+					var _self = this;
 					var url = common.commonUrl + common.apiUrl.most;
 					//处理一下图片数据传值方式
 					var body = {
@@ -401,15 +413,27 @@
 						biz_method: 'addIndentIntentionOffer',
 						biz_param: common.filterFormData(this.formData, ['breedName', 'customerName'])
 					}
+					mui(_self.$refs.submit).button('loading')
 					common.commonPost(url, body, function(suc) {
-						offerSuc.show('fade-in', 300)
-					}, function(err) {});
+						offerSuc.show('fade-in', 300);
+						mui(_self.$refs.submit).button('reset');
+					}, function(err) {
+						mui(_self.$refs.submit).button('reset')
+					});
 					//console.log(JSON.stringify(common.filterFormData(this.formData, ['breedName', 'customerName'])))
 				},
+				//重置表单数据
 				resetFormData: function() {
 					//重置表单数据
 					for(var key in this.formData) {
-						this.formData[key] = '';
+						if(key === 'imageArray') {
+							this.formData[key] = [];
+						} else {
+							this.formData[key] = '';
+						}
+					}
+					for(var i = 0; i < this.qualityList.length; i++) {
+						this.qualityList[i].select = false;
 					}
 				}
 			}
@@ -417,6 +441,10 @@
 
 		//获取详情页床底过来的意向信息
 		window.addEventListener("getIntentionInfo", function(event) {
+			//重置所有表单数据
+			vm.resetFormData();
+			//滚动到页面头部
+			window.scrollTo(0, 0);
 			if(event.detail && typeof event.detail === 'object') {
 				var params = event.detail.intentionInfo;
 				vm.formData.intentionId = params.id;

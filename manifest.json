@@ -10,7 +10,7 @@
     "icons": {
         "72": "icon.png"
     },
-    "launch_path": "pages/home.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
+    "launch_path": "pages/login.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
     "developer": {
         "name": "",/*开发者名称*/
         "email": "",/*开发者邮箱地址*/
@@ -309,10 +309,18 @@
 			"pages/menu.html": {
 				"resources": [
 					"css/mui.min.css",
-					"fonts/mui.ttf"
+					"fonts/mui.ttf",
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
 				],
 				"refer": [
-					"pages/purchaseOrders/sayPriceList.html"
+					"pages/purchaseOrders/sayPriceList.html",
+					"pages/purchaseOrders/myOffer.html"
 				],
 				"priority": 0
 			},
@@ -388,7 +396,8 @@
 					"css/mui.min.css",
 					"libs/vue.min.js",
 					"libs/httpService.js",
-					"i18n/zh_CN.js"
+					"i18n/zh_CN.js",
+					"pages/purchaseOrders/purchase.js"
 				],
 				"refer": [],
 				"priority": 0
@@ -456,7 +465,41 @@
 					"libs/httpService.js",
 					"i18n/zh_CN.js"
 				],
-				"refer": [],
+				"refer": [
+					"pages/home.html"
+				],
+				"priority": 0
+			},
+			"pages/orderMg/myOrder.html": {
+				"resources": [
+					"libs/vueComponents.js",
+					"libs/crypto-js.js",
+					"libs/filters.js",
+					"js/mui.min.js",
+					"pages/orderMg/order.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js"
+				],
+				"refer": [
+					"pages/menu.html",
+					"pages/orderMg/myOrderDetail.html",
+					"pages/orderMg/searchView.html"
+				],
+				"priority": 0
+			},
+			"pages/orderMg/myOrderDetail.html": {
+				"resources": [],
+				"refer": [
+					"pages/orderMg/purchase.html",
+					"pages/orderMg/playPrice.html",
+					"pages/orderMg/baseInfo.html",
+					"pages/orderMg/newProduct.html"
+				],
 				"priority": 0
 			}
 		},
@@ -470,29 +513,21 @@
 				"images/shuijiao.jpg",
 				"pages/department.html",
 				"images/iconfont-tianjia.png",
-				"pages/orderMg/myOrderDetail.html",
 				"pages/navBar.html",
 				"images/logo.png",
 				"libs/validate.js",
 				"images/60x60.gif",
-				"pages/orderMg/playPrice.html",
 				"js/mui.js",
 				"images/login-1.png",
-				"pages/orderMg/purchase.html",
 				"pages/orderMg/departmentOrder.html",
-				"pages/orderMg/order.js",
-				"pages/orderMg/baseInfo.html",
-				"pages/orderMg/newProduct.html",
 				"css/mui.css",
-				"pages/orderMg/myOrder.html",
 				"images/back.png",
 				"pages/userInfo.html",
 				"pages/needOrder/offerPrice.html",
 				"images/userImg.png",
 				"images/qrcode.png",
 				"images/yuantiao.jpg",
-				"pages/orderMg/model.html",
-				"pages/orderMg/searchView.html"
+				"pages/orderMg/model.html"
 			]
 		}
 	}
