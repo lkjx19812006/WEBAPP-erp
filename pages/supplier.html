@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+	<!--供应商模块-->
 
 	<head>
 		<meta charset="utf-8">
@@ -13,7 +14,7 @@
 				padding-top: 55px;
 			}
 			
-			#customer header {
+			#supplier header {
 				height: 55px;
 				display: flex;
 				flex-direction: row;
@@ -21,14 +22,14 @@
 				align-items: center;
 			}
 			
-			#customer header input {
+			#supplier header input {
 				margin: 0;
 				margin-left: 15px;
 				padding-right: 15px;
 				color: #333;
 			}
 			
-			#customer header span {
+			#supplier header span {
 				font-size: 30px;
 				position: absolute;
 				right: 15px;
@@ -37,7 +38,7 @@
 				color: #007AFF;
 			}
 			
-			#customer .mui-table-view-cell {
+			#supplier .mui-table-view-cell {
 				padding-top: 15px;
 				padding-bottom: 15px;
 			}
@@ -45,17 +46,17 @@
 	</head>
 
 	<body>
-		<div class="mui-content" id="customer">
+		<div class="mui-content" id="supplier">
 			<!--页面头部-->
 			<header class="mui-bar mui-bar-nav">
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-				<input v-model="customerName" v-on:input="inputValue" type="text" placeholder="请输入客户名称" />
-				<span v-tap="{func: clear}" v-show="customerName !== ''" class="mui-icon mui-icon-close"></span>
+				<input v-model="supplierName" v-on:input="inputValue" type="text" placeholder="请输入供应商名称" />
+				<span v-tap="{func: clear}" v-show="supplierName !== ''" class="mui-icon mui-icon-close"></span>
 			</header>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">
 				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item in listData" :key="item.id">
-					{{item.name}}({{item.tel}})
+					{{item.name}}({{item.mainPhone}})
 				</li>
 			</ul>
 
@@ -72,19 +73,21 @@
 			mui.back = function() {
 				oldBack()
 			}
-			var customer;
+			var supplier;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
-				customer = plus.webview.currentWebview();
+				supplier = plus.webview.currentWebview();
+				vm.getHttp()
 
 			})
 
 			var vm = new Vue({
-				el: '#customer',
+				el: '#supplier',
 				data: {
-					customerName: '',
+					supplierName: '',
 					listData: [],
-					parentId: ''
+					parentId: '',
+					userInfo: JSON.parse(window.localStorage.userInfo)
 				},
 				methods: {
 					//输入框输入事件
@@ -93,20 +96,20 @@
 					},
 					//清楚输入框中内容
 					clear: function() {
-						this.customerName = '';
+						this.supplierName = '';
 						this.listData = [];
 					},
 					//获取客户数据
 					getHttp: function() {
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
-							biz_module: 'erpCustomerService',
-							biz_method: 'queryCustomerList',
+							biz_module: 'erpSupplierService',
+							biz_method: 'querySupplierList',
 							biz_param: {
-								name: this.customerName,
+								name: this.supplierName,
 								pSize: 50,
 								page: 1,
-								blacklist: 0
+								employeeId: this.userInfo.id
 							}
 						}
 						var _self = this;
@@ -120,10 +123,10 @@
 					},
 					//发送客户数据
 					sendData: function(params) {
-						mui.fire(plus.webview.getWebviewById(this.parentId), 'getCustomer', params);
+						mui.fire(plus.webview.getWebviewById(this.parentId), 'getSupplier', params);
 						var _self = this;
-						setTimeout(function(){
-							_self.customerName = '';
+						setTimeout(function() {
+							_self.supplierName = '';
 							mui.back();
 						}, 200)
 					}

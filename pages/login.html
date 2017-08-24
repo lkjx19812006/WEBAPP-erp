@@ -196,8 +196,8 @@
 							};
 							common.commonPost(url, body, function(suc) {
 								window.localStorage.userInfo = JSON.stringify(suc.biz_result);
-								common.setItem('userInfo', suc.biz_result)
-
+								common.setItem('userInfo', window.localStorage.userInfo)
+								console.log(common.getItem('userInfo'))
 								//获取用户信息完成后开启事件监听								
 								_self.addPush();
 

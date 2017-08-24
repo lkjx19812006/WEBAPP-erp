@@ -299,7 +299,8 @@
 					"i18n/en.js",
 					"libs/vue.min.js",
 					"libs/httpService.js",
-					"i18n/zh_CN.js"
+					"i18n/zh_CN.js",
+					"pages/common.js"
 				],
 				"refer": [
 					"pages/menu.html"
@@ -433,7 +434,8 @@
 				],
 				"refer": [
 					"pages/customer.html",
-					"pages/purchaseOrders/offerSuc.html"
+					"pages/purchaseOrders/offerSuc.html",
+					"pages/supplier.html"
 				],
 				"priority": 0
 			},
@@ -500,6 +502,21 @@
 					"pages/orderMg/baseInfo.html",
 					"pages/orderMg/newProduct.html"
 				],
+				"priority": 0
+			},
+			"pages/supplier.html": {
+				"resources": [
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"libs/vue-i18n.min.js",
+					"i18n/en.js",
+					"css/mui.min.css",
+					"libs/vue.min.js",
+					"libs/httpService.js",
+					"i18n/zh_CN.js",
+					"fonts/mui.ttf"
+				],
+				"refer": [],
 				"priority": 0
 			}
 		},
