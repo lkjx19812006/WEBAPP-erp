@@ -3,12 +3,13 @@
  * */
 (function(CryptoJS, window, mui, Vue) {
 	mui.init();
-	var common = {}
-	common.KEY = window.localStorage.KEY || ''
-	common.SID = window.localStorage.SID || ''
-	common.commonUrl = 'http://192.168.1.142/front'
-	common.version = 1
-	common.difTime = window.localStorage.difTime || 0
+	var common = {};
+	common.H5Share = 'http://192.168.1.142:81/htm5/#/needDetails/'; //'http://apps.yaocaimaimai.com/htm5/#/needDetails/'
+	common.KEY = window.localStorage.KEY || '';
+	common.SID = window.localStorage.SID || '';
+	common.commonUrl = 'http://192.168.1.142/front';
+	common.version = 1;
+	common.difTime = window.localStorage.difTime || 0;
 	common.apiUrl = {
 		login: '/account/erpLogin.do',
 		code_login: '/account/verifiLogin.do',

@@ -85,11 +85,16 @@
 			</matcher>
 		</filter>
 		<filter>
-<<<<<<< HEAD
-			<id>1503380095762</id>
-=======
 			<id>1503392394856</id>
->>>>>>> 386a5b0eadc9e87d6eba88a634eadae018e28130
+			<name></name>
+			<type>26</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-node_modules</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1503537039649</id>
 			<name></name>
 			<type>26</type>
 			<matcher>
