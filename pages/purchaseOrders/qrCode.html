@@ -243,7 +243,7 @@
 		window.addEventListener("getIntentionInfo", function(event) {
 			if(event.detail !== undefined && typeof event.detail === 'object') {
 				vm.intentionInfo = event.detail.intentionInfo;
-				vm.href = "http://192.168.1.142:81/htm5/#/needDetails/" + vm.intentionInfo.id; //http://apps.yaocaimaimai.com/htm5/#/needDetails/
+				vm.href = common.H5Share + vm.intentionInfo.id; //http://apps.yaocaimaimai.com/htm5/#/needDetails/
 				qr.value = vm.href;
 			} else {
 				vm.intentionInfo = {};

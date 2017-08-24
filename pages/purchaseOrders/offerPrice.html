@@ -137,7 +137,7 @@
 			</div>
 			<div class="detail">
 				<span class="tit">供应商名称：</span>
-				<input type="text" v-model="formData.customerName" placeholder="请选择供应商" readonly v-tap="{func: showCustomer}" />
+				<input type="text" v-model="formData.customerName" placeholder="请选择供应商" readonly v-tap="{func: showSupplier}" />
 			</div>
 			<!--质量说明-->
 			<div class="detail block">
@@ -175,17 +175,17 @@
 		//初始化
 		mui.init();
 		//加载完毕
-		var offerPrice, customer, offerSuc;
+		var offerPrice, supplier, offerSuc;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview()
 			vm.getUnitHttp();
 			var nowDate = new Date().getTime();
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
-				//预加载客户选项
-				customer = mui.preload({
-					url: '../customer.html',
-					id: 'customer'
+				//预加载供应商选项
+				supplier = mui.preload({
+					url: '../supplier.html',
+					id: 'supplier'
 				})
 				//预加载成功页面
 				offerSuc = mui.preload({
@@ -245,13 +245,13 @@
 			},
 			methods: {
 				//显示搜索列表
-				showCustomer: function() {
+				showSupplier: function() {
 					//传值自己的ID给列表页面
-					mui.fire(customer, 'getParentId', {
+					mui.fire(supplier, 'getParentId', {
 						id: offerPrice.id
 					})
 					setTimeout(function() {
-						customer.show('slide-in-right', 300)
+						supplier.show('slide-in-right', 300)
 					}, 300)
 				},
 				//获取图片数组
@@ -439,7 +439,7 @@
 			}
 		})
 
-		//获取详情页床底过来的意向信息
+		//获取详情页传底过来的意向信息
 		window.addEventListener("getIntentionInfo", function(event) {
 			//重置所有表单数据
 			vm.resetFormData();
@@ -466,7 +466,7 @@
 		})
 
 		//接收用户列表来的用户信息
-		window.addEventListener('getCustomer', function(event) {
+		window.addEventListener('getSupplier', function(event) {
 			if(event.detail !== undefined) {
 				vm.formData.customerId = event.detail.id;
 				vm.formData.customerName = event.detail.name;

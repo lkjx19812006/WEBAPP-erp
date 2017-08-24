@@ -2,5 +2,8 @@
 
 .idea
 *.iml
-
+.project
 unpackage/release
+unpackage
+manifest.json
+

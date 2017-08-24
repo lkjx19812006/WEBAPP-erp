@@ -52,7 +52,7 @@
 					<input v-model="language" value="en" type="radio">
 				</div>
 
-			</div>		
+			</div>
 			<form class="mui-input-group">
 				<div class="mui-input-row">
 					<label>{{$t('message.userName')}}</label>
@@ -118,7 +118,7 @@
 						}
 					}
 				},
-				methods: {					
+				methods: {
 					//清除密碼
 					clearPW: function() {
 						this.password = '';
@@ -187,18 +187,59 @@
 					//获取用户信息
 					getUserInfo: function() {
 						//先同步时间
+						var _self = this;
 						common.getDate(function() {
 							var url = common.commonUrl + common.apiUrl.most
 							var body = {
 								biz_module: 'userService',
 								biz_method: 'getCmsUserInfo'
-							}
+							};
 							common.commonPost(url, body, function(suc) {
 								window.localStorage.userInfo = JSON.stringify(suc.biz_result);
-								common.setItem('userInfo', suc.biz_result)
+								common.setItem('userInfo', window.localStorage.userInfo)
+								console.log(common.getItem('userInfo'))
+								//获取用户信息完成后开启事件监听								
+								_self.addPush();
+
 							}, function(err) {
 
 							})
+						})
+					},
+					//监听系统消息
+					addPush: function() {
+						//消息监听完毕
+						plus.push.addEventListener("receive", function(msg) {
+							if(msg.aps) { // Apple APNS message
+								alert("接收到在线APNS消息");
+							} else {
+								alert("接收到在线APNS消息");
+							}
+							if(typeof(msg.payload) === "string") {
+								alert("payload(String): " + msg.payload);
+							} else {
+								alert("payload(JSON): " + msg.payload);
+							}
+						}, false);
+					},
+					//检查版本更新
+					validateVersion: function(fn) {
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'versionService',
+							biz_method: 'getVersion',
+							biz_param: {
+								type: 2
+							}
+						};
+						plus.nativeUI.showWaiting('正在检查更新...');
+						common.commonPost(url, body, function(suc) {
+							if(fn !== undefined && typeof fn === 'function') {
+								fn(suc);
+							};
+							plus.nativeUI.closeWaiting();
+						}, function(err) {
+							plus.nativeUI.closeWaiting();
 						})
 					}
 				}
@@ -206,16 +247,97 @@
 			//在mui.plusReady完成后 执行一些配置
 			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
 			mui.plusReady(function() {
+				//消息监听
+				vm.addPush();
+
+				//获取客户端ID 传入后台绑定所用
 				vm.clientId = plus.push.getClientInfo().clientid;
-				vm.autoLogin = common.getItem('autoLogin');
-				vm.language = common.getItem('language') || vm.language;
-				if(vm.autoLogin === 'on') {
-					vm.no = common.getItem('no');
-					vm.password = common.getItem('password');
-					if(vm.no && vm.password) {
-						vm.submit()
-					}
+
+				//获取当前设备系统的名称 
+				var deviceName;
+				switch(plus.os.name) {
+					case 'Android':
+						deviceName = 'Android';
+						break;
+					case 'iOS':
+						deviceName = 'iOS';
+						break;
 				}
+				//检查版本更新	
+				var verCallBack = function(params) {
+					var result = params.biz_result;
+					//获取到台返回的数据
+					//当前设备版本ID
+					var deviceVersion = plus.runtime.version;
+					//最低的强制更新版本
+					var compel = result.compel.split('.');
+					//普通更新版本
+					var version = result.version.split('.');
+
+					//校验强制版本
+
+				}
+
+				//版本校验
+				function validate(deviceVersion, version) {
+					var isUpdate = false;
+					if(version[0] > deviceVersion[0]) {
+						isUpdate = true;
+					} else if(version[0] === deviceVersion[0] && version[1] > deviceVersion[1]) {
+						isUpdate = true;
+					} else if(version[0] === deviceVersion[0] && version[1] === deviceVersion[1] && version[2] > deviceVersion[2]) {
+						isUpdate = true;
+					}
+					return isUpdate;
+				}
+
+				vm.validateVersion();
+
+				//				//比较版本大小
+				//				var deviceVersion = plus.runtime.version;
+				//				deviceVersion = deviceVersion.split('.');
+				//
+				//				version = version.split('.');
+				//				var version = '8.8.1';
+				//				var isUpdate = false;
+				//				//版本比较是否要更新
+				//				if(version[0] > deviceVersion[0]) {
+				//					isUpdate = true;
+				//				} else if(version[0] === deviceVersion[0] && version[1] > deviceVersion[1]) {
+				//					isUpdate = true;
+				//				} else if(version[0] === deviceVersion[0] && version[1] === deviceVersion[1] && version[2] > deviceVersion[2]) {
+				//					isUpdate = true;
+				//				}
+				//				//强制更新的时候 只有一个按钮
+				//				if(isUpdate) {
+				//					plus.nativeUI.confirm('adsfds', info, function(event) {
+				//						//点击更新后执行更新逻辑
+				//						if(event.index === 0) {
+				//							if(deviceName === 'Android') {
+				//								//自动安装
+				//								plus.runtime.install(downloadHref);
+				//								console.log('正则安装APP')
+				//							} else if(deviceName === 'iOS') {
+				//								//打开地址
+				//								plus.runtime.openURL(downloadHref);
+				//								console.log('正在打开地址')
+				//							}
+				//						}
+				//					}, title, btnArr);
+				//					return;
+				//				} else {
+				//					vm.autoLogin = common.getItem('autoLogin');
+				//					vm.language = common.getItem('language') || vm.language;
+				//					if(vm.autoLogin === 'on') {
+				//						vm.no = common.getItem('no');
+				//						vm.password = common.getItem('password');
+				//						if(vm.no && vm.password) {
+				//							vm.submit()
+				//						}
+				//					}
+				//
+				//				}
+
 			})
 			//缓存老的 old_back 重新back
 			var old_back = mui.back;

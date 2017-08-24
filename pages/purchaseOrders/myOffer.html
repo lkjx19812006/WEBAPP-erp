@@ -266,7 +266,6 @@
 			//获取当前页面对象
 			myOffer = plus.webview.currentWebview();
 			vm.formData = formData;
-			vm.getHttp();
 		})
 		var vm = new Vue({
 			el: '#myOffer',
@@ -378,6 +377,7 @@
 				},
 				//获取列表数据
 				getHttp: function(fn) {
+					console.log(this.formData.intentionId)
 					var _self = this;
 					var url = common.commonUrl + common.apiUrl.most;
 					var body = {
@@ -414,7 +414,7 @@
 					mui('#pullrefresh').pullRefresh().refresh(true);
 				},
 				//返回逻辑
-				back: function(){
+				back: function() {
 					mui.back();
 				}
 			}
@@ -443,6 +443,7 @@
 		window.addEventListener('getIntentionInfo', function(event) {
 			//console.log(JSON.stringify(event.detail.intentionId))
 			window.scrollTo(0, 0);
+			vm.initGetHttp();
 			if(event.detail && typeof event.detail === 'object') {
 				var params = event.detail.intentionInfo;
 				vm.formData.intentionId = params.id;
