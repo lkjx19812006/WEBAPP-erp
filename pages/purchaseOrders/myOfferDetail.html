@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link href="../../css/popup.css" rel="stylesheet" />
+	<!--国际化引入-->
+	<script src="../../i18n/en.js"></script>
+	<script src="../../i18n/zh_CN.js"></script>
+	<style>
+		#myOfferDetail {
+			padding-top: 45px;
+			padding-bottom: 50px;
+			background-color: #f0f0f0;
+		}
+		/*求购信息部分*/
+		
+		#myOfferDetail .need-infor {}
+		
+		#myOfferDetail .need-infor .title {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			font-size: 16px;
+			padding: 10px;
+			background-color: #FBFBF6;
+			color: #007AFF;
+		}
+		
+		#myOfferDetail .basic-infor {
+			padding: 0px 15px;
+			font-size: 17px;
+			color: #000;
+		}
+		
+		#myOfferDetail .basic-infor .box {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			border-bottom: 1px dashed #007AFF;
+			padding: 10px 0;
+		}
+		/*图片部分*/
+		
+		#myOfferDetail .images-infor {
+			margin-top: 10px;
+		}
+		
+		#myOfferDetail .images {
+			width:80%;
+		}
+		
+		/*#myOfferDetail .images .image {
+			margin-top: 5px;
+		}*/
+	</style>
+</head>
+
+<body>
+	<div class="mui-content" id="myOfferDetail">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">报价详情</h1>
+		</header>
+		<div class="need-infor">
+			<div class="title">
+				<span class="mui-icon mui-icon-compose"></span>
+				<div class="word">求购信息</div>
+			</div>
+			<div class="basic-infor">
+				<div class="box">
+					<div class="left">品名: </div>
+					<div class="right">{{needsInfor.breedName}}</div>
+				</div>
+				<div class="box">
+					<div class="left">产地: </div>
+					<div class="right">{{needsInfor.locationName}}</div>
+				</div>
+				<div class="box">
+					<div class="left">规格: </div>
+					<div class="right">{{needsInfor.spec}}</div>
+				</div>
+			</div>
+		</div>
+		<div class="need-infor images-infor">
+			<div class="title">
+				<span class="mui-icon mui-icon-compose"></span>
+				<div class="word">图片信息</div>
+			</div>
+		</div>
+		<div class="mui-content-padded images">
+			<p v-for="(todo,index) in offerFiles" v-show='index == 0'>
+				<img :src="offerFiles" data-preview-src="" data-preview-group="1" />
+			</p>
+		</div>
+		<!--报价信息-->
+		<div class="need-infor">
+			<div class="title">
+				<span class="mui-icon mui-icon-compose"></span>
+				<div class="word">报价信息</div>
+			</div>
+			<div class="basic-infor">
+				<div class="box">
+					<div class="left">产地: </div>
+					<div class="right">{{offersInfor.breedName}}</div>
+				</div>
+				<div class="box">
+					<div class="left">数量: </div>
+					<div class="right">{{offersInfor.number}}{{offersInfor.unit | idToUnit}}</div>
+				</div>
+				<div class="box">
+					<div class="left">价格: </div>
+					<div class="right">{{offersInfor.price}}元/{{offersInfor.unit | idToUnit}}</div>
+				</div>
+				<div class="box">
+					<div class="left">有效期: </div>
+					<div class="right">{{offersInfor.duedate,'YYYY-MM-DD' | getYMD}}</div>
+				</div>
+				<div class="box">
+					<div class="left">报价时间: </div>
+					<div class="right">{{offersInfor.otime,'YYYY-MM-DD' | getYMD}}</div>
+				</div>
+				<div class="box">
+					<div class="left">审核状态: </div>
+					<div class="right">{{offersInfor.onSell | validateType}}</div>
+				</div>
+				<div class="box">
+					<div class="left">供应商名称: </div>
+					<div class="right">{{offersInfor.buyCustomerName}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../libs/vue.min.js"></script>
+	<script src="../../libs/vue-i18n.min.js"></script>
+	<script src="../../libs/filters.js"></script>
+	<script src="../../libs/crypto-js.js"></script>
+	<script src="../../libs/httpService.js"></script>
+	<script src="../../libs/vueComponents.js"></script>
+	<script src="./purchase.js"></script>
+	<script src="../../js/mui.zoom.js"></script>
+	<script src="../../js/mui.previewimage.js"></script>
+	<script>
+		mui.previewImage();
+	</script>
+	<script>
+		//初始化
+		mui.init();
+
+		var myOfferDetail;
+		mui.plusReady(function() {
+			myOfferDetail = plus.webview.currentWebview(); //获取当前页面对象
+
+		})
+
+		var vm = new Vue({
+			el: '#myOfferDetail',
+			i18n: window.i18n,
+			data: {
+				needsInfor: '',
+				offersInfor: '',
+				offerFiles: '',
+				id: ''
+			},
+			methods: {
+				//获取列表数据
+				getHttp: function() {
+					var _self = this;
+					var url = common.commonUrl + common.apiUrl.most;
+					var body = {
+						biz_module: 'erpIntentionOfferService',
+						biz_method: 'queryDetailsById',
+						biz_param: {
+							id: _self.id
+						}
+					}
+					plus.nativeUI.showWaiting('loading...');
+					common.commonPost(url, body, function(suc) {
+						plus.nativeUI.closeWaiting();
+						if(suc.biz_result.offers.length !== 0) {
+							_self.offersInfor = suc.biz_result.offers[0];
+							_self.needsInfor = suc.biz_result.intention;
+							_self.offerFiles = suc.biz_result.offerFiles;
+						}
+
+						//
+						console.log(JSON.stringify(suc.biz_result.offers[0]))
+					}, function(err) {
+						//console.log(JSON.stringify(err))
+						plus.nativeUI.closeWaiting();
+					})
+				},
+				//重置数据
+				resetData: function() {
+					this.detailInfo = {}
+				}
+			}
+		})
+
+		//注册全局时间 让其意向ID 可以发生改变
+		window.addEventListener('myOfferDetailId', function(event) {
+			if(event.detail !== undefined && typeof event.detail === 'object') {
+				//console.log(JSON.stringify(event.detail))
+				vm.id = event.detail.id;
+				vm.resetData(); //重置数据
+				vm.getHttp(); //调接口		
+			}
+		})
+	</script>
+</body>
+
+</html>

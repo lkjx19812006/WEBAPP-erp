@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html class="ui-page-login">
 
 	<head>
@@ -25,7 +26,7 @@
 				text-align: right;
 				font-size: 15px;
 				position: fixed;
-				top: 45px;
+				top: 44px;
 				width: 100%;
 				background-color: #fff;
 			}
@@ -37,8 +38,9 @@
 			.home .head-top .last {
 				margin-bottom: 10px;
 			}
-			.home .head-top .last span{
-				color:#007AFF;
+			
+			.home .head-top .last span {
+				color: #007AFF;
 			}
 			/*筛选*/
 			
@@ -130,12 +132,14 @@
 				flex-direction: row;
 				justify-content: flex-end;
 				align-items: center;
-				padding-right:3px;
+				padding-right: 3px;
 			}
-			.home .list .item .top .message{
-				flex:1;
+			
+			.home .list .item .top .message {
+				flex: 1;
 				padding-right: 10px;
 			}
+			
 			.home .list .item .top .green {
 				color: #007AFF;
 				font-size: 16px;
@@ -199,7 +203,7 @@
 							<span class="emtry">
 								<span class="mui-icon mui-icon-info green" v-show="!todo.read"></span>
 							</span>
-							
+
 							<span class="message">{{todo.message}}</span>
 						</div>
 						<div class="bottom">
@@ -242,7 +246,7 @@
 					}
 				},
 			});
-			var home;
+			var home,myOfferDetail;
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
 				vm.formData = formData;
@@ -257,6 +261,10 @@
 							scrollIndicator: 'none',
 						}
 					});
+					myOfferDetail = mui.preload({
+						url: '../pages/purchaseOrders/myOfferDetail.html',
+						id: 'myOfferDetail'
+					})
 				}, 300);
 			})
 			var vm = new Vue({
@@ -266,15 +274,17 @@
 					show: 0, //处理未处理
 					msgNum: 0,
 					selectType: [{
-						title: '报价',
-						id: 'offer'
-					}, /*{
+							title: '报价',
+							id: 'offer'
+						},
+						/*{
 						title: '订单',
 						id: 'order'
 					}, {
 						title: '意向',
 						id: 'intention'
-					}*/],
+					}*/
+					],
 					selectArr: [{
 						name: '报价',
 						asc: '',
@@ -291,7 +301,7 @@
 					listData: {
 						list: []
 					},
-					messageNum:'',
+					messageNum: '',
 				},
 				methods: {
 					//显示菜单
@@ -300,7 +310,7 @@
 					},
 					//筛选
 					selectItem: function(params) {
-						var  _self = this;
+						var _self = this;
 						//如果没被选中执行
 						if(!_self.selectArr[params].show) {
 							for(var i = 0; i < _self.selectArr.length; i++) { //取消所有的对号
@@ -325,7 +335,14 @@
 					},
 					//跳转到详情页面
 					jumpDetail: function(params) {
-						//mui.fire()
+						var _self = this;
+						//console.log(JSON.stringify(params.bizId))
+						mui.fire(myOfferDetail, 'myOfferDetailId', {
+							id: params.bizId
+						})
+						setTimeout(function() {
+							myOfferDetail.show('slide-in-right', 300)
+						}, 200)
 					},
 					//获取列表数据
 					getHttp: function(fn) {
@@ -359,7 +376,7 @@
 							plus.nativeUI.closeWaiting();
 						})
 					},
-					getNum:function(){
+					getNum: function() {
 						var _self = this;
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
@@ -369,7 +386,7 @@
 						}
 						plus.nativeUI.showWaiting('loading...');
 						common.commonPost(url, body, function(suc) {
-							plus.nativeUI.closeWaiting();	
+							plus.nativeUI.closeWaiting();
 							_self.messageNum = suc.biz_result.offer;
 						}, function(err) {
 							plus.nativeUI.closeWaiting();
