@@ -113,9 +113,11 @@
 				this.nowSelectData = params;
 				this.$refs.inputLabel.value = params.label;
 				this.$refs.input.value = params.value;
+				
 				//双向绑定
 				this.$emit('input', params.value);
 				this.change();
+				this.$refs.inputLabel.blur();
 			},
 			change: function() {
 				//change事件传值
@@ -128,7 +130,7 @@
 				var _self = this;
 				setTimeout(function() {
 					_self.showList = false
-				}, 100)
+				}, 50)
 			}
 		}
 	})

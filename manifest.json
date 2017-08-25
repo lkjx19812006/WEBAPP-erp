@@ -306,7 +306,8 @@
 				],
 				"refer": [
 					"pages/menu.html",
-					"pages/purchaseOrders/myOfferDetail.html"
+					"pages/purchaseOrders/myOfferDetail.html",
+					"pages/purchaseOrders/needIntention.html"
 				],
 				"priority": 0
 			},

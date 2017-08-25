@@ -58,7 +58,8 @@
 			"pages/search.html",
 			"pages/orderMg/myOrder.html",
 			"pages/orderMg/departmentOrder.html",
-			"pages/purchaseOrders/myOfferDetail.html"
+			"pages/purchaseOrders/myOfferDetail.html",
+			"pages/purchaseOrders/needIntention.html"
 		]
 	},
 	"pages/menu.html": {

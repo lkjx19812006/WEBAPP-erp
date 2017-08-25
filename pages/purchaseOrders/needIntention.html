@@ -204,10 +204,12 @@
 							id: this.intentionId
 						}
 					}
+					plus.nativeUI.showWaiting();
 					common.commonPost(url, body, function(suc) {
 						_self.detailInfo = suc.biz_result
+						plus.nativeUI.closeWaiting();
 					}, function(err) {
-
+						plus.nativeUI.closeWaiting();
 					})
 				},
 			}
@@ -215,9 +217,9 @@
 
 		//注册全局时间 让其意向ID 可以发生改变
 		window.addEventListener('getDetailInfo', function(event) {
-			if(event.detail !== undefined ) {
+			if(event.detail !== undefined) {
 				vm.intentionId = event.detail.intentionId;
-				vm.getDetailHttp()				
+				vm.getDetailHttp()
 			}
 		})
 		//重写返回逻辑

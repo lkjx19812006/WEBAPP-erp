@@ -107,17 +107,19 @@
 			</div>
 			<div class="detail">
 				<span class="tit">数量：</span>
-				<input class="mui-input-numbox" v-model="formData.number" type="number" placeholder="请输入数量" />
+				<input style="flex: 0 0 auto; width: 100px;" class="mui-input-numbox" v-model="formData.number" type="number" placeholder="请输入数量" />
 				<div class="unit-selected" style="height: 40px; width: 100%">
 					<my-select v-model="formData.unit" :options="unitList" placeholder="单位"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">单价：</span>
-				<input class="mui-input-numbox" v-model="formData.price" type="number" placeholder="请输入单价" />
-				<div class="unit-selected" style="height: 40px; width: 100%">
+				<input style="flex: 0 0 auto; width: 100px;" class="mui-input-numbox" v-model="formData.price" type="number" placeholder="请输入单价" />
+				<span style="width: 100%; margin-left: 15px;">元/{{formData.unit | idToUnit}}</span>
+				
+				<!--<div class="unit-selected" style="height: 40px; width: 100%">
 					<my-select desabled v-model="formData.unit" :options="unitList" placeholder="单位"></my-select>
-				</div>
+				</div>-->
 			</div>
 			<div class="detail">
 				<span class="tit">产地：</span>
@@ -128,7 +130,7 @@
 			<div class="detail">
 				<span class="tit">规格：</span>
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<input type="text" v-model="formData.spec" placeholder="请输入规格"></my-select>
+					<my-select v-model="formData.spec" :options="specList" placeholder="请选择规格"></my-select>
 				</div>
 			</div>
 			<div class="detail">
@@ -225,6 +227,7 @@
 				},
 				unitList: [],
 				locationList: [],
+				specList: [],
 				qualityList: [{
 					label: '产品包交',
 					select: false,
@@ -304,15 +307,24 @@
 					}
 					var _self = this;
 					common.commonPost(url, body, function(suc) {
-						var list = [];
+						var localList = [];
 						for(var i = 0; i < suc.biz_result.localList.length; i++) {
 							var obj = suc.biz_result.localList[i];
-							list.push({
+							localList.push({
 								label: obj.name,
 								value: obj.locationId
 							})
 						}
-						_self.locationList = list
+						var specList = []
+						for(var i = 0; i < suc.biz_result.specList.length; i++) {
+							var obj = suc.biz_result.specList[i];
+							specList.push({
+								label: obj.name,
+								value: obj.name
+							})
+						}
+						_self.specList = specList;
+						_self.locationList = localList;
 					}, function(err) {
 
 					})
@@ -451,7 +463,9 @@
 				vm.formData.breedName = params.breedName;
 				vm.formData.breedId = params.breedId;
 				vm.formData.unit = params.unit;
-				vm.formData.location = '';
+				vm.formData.location = params.location;
+				vm.formData.spec = params.spec;
+				vm.formData.number = params.number;
 				//获取单位
 				vm.getLocationList();
 			}

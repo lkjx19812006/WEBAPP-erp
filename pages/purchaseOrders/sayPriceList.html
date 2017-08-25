@@ -300,8 +300,7 @@
 							body.biz_method = 'queryMyOfferList';
 						} else {
 							body.biz_method = 'queryMyWaitOfferList';
-						}
-						plus.nativeUI.showWaiting('loading...');
+						}						
 						common.commonPost(url, body, function(suc) {
 							if(_self.listData.total === undefined) {
 								_self.listData = suc.biz_result
@@ -311,11 +310,8 @@
 							if(typeof fn === 'function') {
 								fn(suc)
 							}
-
-							plus.nativeUI.closeWaiting();
-
 						}, function(err) {
-							plus.nativeUI.closeWaiting();
+							
 						})
 					},
 					//筛选未报价和已报价

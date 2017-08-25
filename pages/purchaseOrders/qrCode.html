@@ -129,6 +129,14 @@
 			data: {
 				intentionInfo: {},
 				href: '',
+				formData: {
+					category: '求购意向',
+					action: '二维码分享',
+					label: '',
+					value: '',
+					source: '5'
+				}
+
 			},
 			methods: {
 				//清除数据
@@ -142,6 +150,16 @@
 				//分享
 				share: function() {
 					share()
+				},
+				//分享成功后的統計
+				shareStatis: function(param) {
+					var url = common.commonUrl + common.apiUrl.most;
+					var body = {
+						biz_module: 'eventTrackingService',
+						biz_method: 'addEventTracking',
+						biz_param: this.formData
+					}
+					common.commonPost(url, body, function(suc) {}, function(err) {})
 				}
 			}
 		})
@@ -207,6 +225,10 @@
 					if(share) {
 						if(share.authenticated) {
 							shareMessage(share, ids[i - 1].ex);
+							//記錄分享的标题
+							vm.formData.label = bts[i - 1].title;
+							//记录分享的id
+							vm.formData.value = vm.intentionInfo.id;
 						} else {
 							share.authorize(function() {
 								shareMessage(share, ids[i - 1].ex);
@@ -234,6 +256,8 @@
 			msg.thumbs = ["../../images/256x256.png"];
 			share.send(msg, function() {
 				console.log("分享到\"" + share.description + "\"成功！ ");
+				//成功的回調 有意向ID 才記錄
+				vm.shareStatis();
 			}, function(e) {
 				console.log("分享到\"" + share.description + "\"失败: " + e.code + " - " + e.message);
 			});

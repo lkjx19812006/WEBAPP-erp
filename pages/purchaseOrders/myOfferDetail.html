@@ -176,14 +176,16 @@
 							id: _self.id
 						}
 					}
+					plus.nativeUI.showWaiting();
 					common.commonPost(url, body, function(suc) {
 						if(suc.biz_result.offers.length !== 0) {
 							_self.offersInfor = suc.biz_result.offers[0];
 							_self.needsInfor = suc.biz_result.intention;
 							_self.offerFiles = suc.biz_result.offerFiles;
 						}
+						plus.nativeUI.closeWaiting()
 					}, function(err) {
-
+						plus.nativeUI.closeWaiting()
 					})
 				},
 				//重置数据
