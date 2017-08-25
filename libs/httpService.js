@@ -8,7 +8,7 @@
 	common.KEY = window.localStorage.KEY || '';
 	common.SID = window.localStorage.SID || '';
 	common.commonUrl = 'http://192.168.1.142/front';
-	common.version = 1;
+	common.version = '1.1.0';
 	common.difTime = window.localStorage.difTime || 0;
 	common.apiUrl = {
 		login: '/account/erpLogin.do',

@@ -369,6 +369,7 @@
 					//校验强制版本
 					if(validate(deviceVersion, compel)) {
 						//强制更新
+						vm.showMask = true;
 						btnArr = ['立即更新'];
 						plus.nativeUI.confirm(result.content, function(event) {
 							//点击更新后执行更新逻辑
@@ -383,6 +384,7 @@
 
 					} else if(validate(deviceVersion, version)) {
 						//普通更新
+						vm.showMask = true;
 						plus.nativeUI.confirm(result.content, function(event) {
 							//点击更新后执行更新逻辑
 							if(event.index === 0) {

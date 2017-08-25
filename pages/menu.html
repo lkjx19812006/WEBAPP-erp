@@ -128,7 +128,10 @@
 				},
 				methods: {
 					openWindow: function(params) {
-						//先预加载页面
+						setTimeout(function(){
+							menu.hide('none');
+						}, 1000)
+							
 						var nowPage = mui.openWindow({
 							url: params.url,
 							id: params.id, //默认使用当前页面的url作为id							
@@ -140,9 +143,7 @@
 								aniShow: 'slide-in-right'
 							}
 						});
-						setTimeout(function(){
-							menu.hide('none');	
-						}, 300)
+						
 					},
 					//退出登录
 					signOut: function(){

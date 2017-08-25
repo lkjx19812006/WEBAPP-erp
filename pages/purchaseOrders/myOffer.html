@@ -47,9 +47,14 @@
 			border-radius: 5px;
 			position: relative;
 		}
-		
+		#myOffer .header-filter-wrap a:nth-child(3){
+			flex: 0 0 auto;
+			width: 100px;
+		}
 		#myOffer .header-filter-wrap .last {
 			margin-right: 0;
+			flex: 0 0 auto;
+			width: 60px;
 		}
 		
 		#myOffer .header-filter-wrap .mui-icon {
@@ -93,7 +98,6 @@
 			justify-content: space-between;
 			padding: 5px 0;
 		}
-		
 		#myOffer .list-item .list-item-row.last {
 			justify-content: flex-start;
 		}
@@ -338,17 +342,11 @@
 					asc: '',
 					title: '全部'
 				}, {
-					asc: 0,
-					title: '未审核'
-				}, {
-					asc: 1,
-					title: '申请中'
-				}, {
 					asc: 2,
-					title: '通过'
+					title: '审核通过'
 				}, {
 					asc: 3,
-					title: '未通过'
+					title: '审核未通过'
 				}],
 				select4: [{
 					asc: '',

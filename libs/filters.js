@@ -160,7 +160,7 @@
 		var str = '';
 		switch(type) {
 			case 0:
-				str = '待申请'
+				str = '未审核'
 				break;
 			case 1:
 				str = '审核中'
@@ -169,6 +169,9 @@
 				str = '审核通过'
 				break;
 			case -2:
+				str = '审核不通过'
+				break;
+			case 3:
 				str = '审核不通过'
 				break;
 			default:
