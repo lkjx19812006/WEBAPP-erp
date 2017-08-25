@@ -47,10 +47,12 @@
 			border-radius: 5px;
 			position: relative;
 		}
-		#myOffer .header-filter-wrap a:nth-child(3){
+		
+		#myOffer .header-filter-wrap a:nth-child(3) {
 			flex: 0 0 auto;
 			width: 100px;
 		}
+		
 		#myOffer .header-filter-wrap .last {
 			margin-right: 0;
 			flex: 0 0 auto;
@@ -98,6 +100,7 @@
 			justify-content: space-between;
 			padding: 5px 0;
 		}
+		
 		#myOffer .list-item .list-item-row.last {
 			justify-content: flex-start;
 		}
@@ -452,6 +455,10 @@
 					setTimeout(function() {
 						myOfferDetail.show('slide-in-right', 300)
 					}, 200)
+				},
+				//重置头部筛选数据
+				resetHeaderFilter: function() {
+
 				}
 			}
 		})
