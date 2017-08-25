@@ -6,8 +6,10 @@
 		breedId: '', //药材id
 		breedName: '', //药材名
 		intentionId: '',//意向id
-		validate:'',//筛选审核状态
+		validate:'',//筛选审核状态，不传就是全部
 
 	};
+	
 	window.formData = formData;
+	
 })(window)
