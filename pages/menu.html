@@ -122,10 +122,6 @@
 							url:'../pages/purchaseOrders/sayPriceList.html',
 							id:'sayPriceList',
 							title:'采购单报价专区'
-						},{
-							url:'../pages/purchaseOrders/imageviewer.html',
-							id:'imageviewer',
-							title:'图片'
 						}]
 					}]
 	
@@ -136,7 +132,7 @@
 						var nowPage = mui.openWindow({
 							url: params.url,
 							id: params.id, //默认使用当前页面的url作为id							
-							createNew: false, //禁止重复创建
+							createNew: true, //禁止重复创建
 							styles:{
 								zIndex: 1//为所有新开页面设置层级值 防止 菜单被覆盖
 							},
@@ -164,6 +160,7 @@
 								mui.openWindow({
 									url: './login.html',
 									id: 'login',
+									createNew: true,
 									show:{
 										aniShow: 'fade-in'
 									}

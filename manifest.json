@@ -283,7 +283,8 @@
 					"i18n/zh_CN.js"
 				],
 				"refer": [
-					"pages/home.html"
+					"pages/home.html",
+					"pages/purchaseOrders/needIntention.html"
 				],
 				"priority": 0
 			},
@@ -303,7 +304,8 @@
 					"pages/common.js"
 				],
 				"refer": [
-					"pages/menu.html"
+					"pages/menu.html",
+					"pages/purchaseOrders/myOfferDetail.html"
 				],
 				"priority": 0
 			},
@@ -401,7 +403,9 @@
 					"i18n/zh_CN.js",
 					"pages/purchaseOrders/purchase.js"
 				],
-				"refer": [],
+				"refer": [
+					"pages/purchaseOrders/myOfferDetail.html"
+				],
 				"priority": 0
 			},
 			"pages/searchBreed.html": {
@@ -516,6 +520,27 @@
 					"libs/httpService.js",
 					"i18n/zh_CN.js",
 					"fonts/mui.ttf"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"pages/purchaseOrders/myOfferDetail.html": {
+				"resources": [
+					"js/mui.zoom.js",
+					"js/mui.previewimage.js",
+					"css/popup.css",
+					"pages/purchaseOrders/purchase.js",
+					"libs/vueComponents.js",
+					"libs/filters.js",
+					"i18n/en.js",
+					"libs/vue-i18n.min.js",
+					"fonts/mui.ttf",
+					"libs/httpService.js",
+					"i18n/zh_CN.js",
+					"libs/crypto-js.js",
+					"js/mui.min.js",
+					"css/mui.min.css",
+					"libs/vue.min.js"
 				],
 				"refer": [],
 				"priority": 0

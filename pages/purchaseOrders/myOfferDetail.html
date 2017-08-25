@@ -49,9 +49,8 @@
 		}
 		
 		#myOfferDetail .images {
-			width:80%;
+			width: 80%;
 		}
-		
 		/*#myOfferDetail .images .image {
 			margin-top: 5px;
 		}*/
@@ -177,35 +176,33 @@
 							id: _self.id
 						}
 					}
-					plus.nativeUI.showWaiting('loading...');
 					common.commonPost(url, body, function(suc) {
-						plus.nativeUI.closeWaiting();
 						if(suc.biz_result.offers.length !== 0) {
 							_self.offersInfor = suc.biz_result.offers[0];
 							_self.needsInfor = suc.biz_result.intention;
 							_self.offerFiles = suc.biz_result.offerFiles;
 						}
-
-						//
-						console.log(JSON.stringify(suc.biz_result.offers[0]))
 					}, function(err) {
-						//console.log(JSON.stringify(err))
-						plus.nativeUI.closeWaiting();
+
 					})
 				},
 				//重置数据
 				resetData: function() {
-					this.detailInfo = {}
+					this.needsInfor = '';
+					this.offersInfor = '';
+					this.offerFiles = '';
+					this.id = '';
 				}
 			}
 		})
 
 		//注册全局时间 让其意向ID 可以发生改变
 		window.addEventListener('myOfferDetailId', function(event) {
+			vm.resetData(); //重置数据
+			window.scroll(0, 0);
 			if(event.detail !== undefined && typeof event.detail === 'object') {
 				//console.log(JSON.stringify(event.detail))
 				vm.id = event.detail.id;
-				vm.resetData(); //重置数据
 				vm.getHttp(); //调接口		
 			}
 		})

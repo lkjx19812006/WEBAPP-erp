@@ -76,9 +76,7 @@
 			var supplier;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
-				supplier = plus.webview.currentWebview();
-				vm.getHttp()
-
+				supplier = plus.webview.currentWebview();	
 			})
 
 			var vm = new Vue({
@@ -86,8 +84,7 @@
 				data: {
 					supplierName: '',
 					listData: [],
-					parentId: '',
-					userInfo: JSON.parse(window.localStorage.userInfo)
+					parentId: ''					
 				},
 				methods: {
 					//输入框输入事件
@@ -137,6 +134,8 @@
 			window.addEventListener('getParentId', function(event) {
 				if(event.detail !== undefined) {
 					vm.parentId = event.detail.id;
+					vm.userInfo = JSON.parse(common.getItem('userInfo'))
+					vm.getHttp()
 				}
 			})
 		</script>

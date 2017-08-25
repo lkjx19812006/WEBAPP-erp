@@ -177,8 +177,7 @@
 		//加载完毕
 		var offerPrice, supplier, offerSuc;
 		mui.plusReady(function() {
-			offerPrice = plus.webview.currentWebview()
-			vm.getUnitHttp();
+			offerPrice = plus.webview.currentWebview();
 			var nowDate = new Date().getTime();
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
@@ -202,6 +201,7 @@
 					}
 				})
 			}, 300)
+			vm.getUnitHttp();
 		})
 		var vm = new Vue({
 			el: '#offerPrice',
@@ -442,7 +442,7 @@
 		//获取详情页传底过来的意向信息
 		window.addEventListener("getIntentionInfo", function(event) {
 			//重置所有表单数据
-			vm.resetFormData();
+			vm.resetFormData();			
 			//滚动到页面头部
 			window.scrollTo(0, 0);
 			if(event.detail && typeof event.detail === 'object') {

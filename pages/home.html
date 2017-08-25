@@ -173,8 +173,8 @@
 			</my-header>
 			<!--头部信息-->
 			<div class="head-top">
-				<div>尊敬的{{userInfo.name}}，您好！</div>
-				<div class="last">您还有<span>{{messageNum}}</span>条消息未处理，请及时处理！</div>
+				<div>尊敬的系统管理员，您好！</div>
+				<div class="last">您共计有<span>{{messageNum}}</span>条待处理事项，请尽快处理！</div>
 			</div>
 			<!--头部筛选-->
 			<div class="select">
@@ -236,7 +236,7 @@
 						height: '50px', //可选,默认50px.下拉刷新控件的高度,
 						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
 						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置					
-						auto: false, //可选,默认false.首次加载自动上拉刷新一次
+						auto: true, //可选,默认false.首次加载自动上拉刷新一次
 						callback: pulldownRefresh
 					},
 					up: {
@@ -246,13 +246,10 @@
 					}
 				},
 			});
-			var home,myOfferDetail;
+			var home, myOfferDetail, needIntention;
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
 				vm.formData = formData;
-				vm.userInfo = JSON.parse(common.getItem('userInfo')),
-					vm.getHttp();
-				vm.getNum();
 				setTimeout(function() {
 					//侧滑菜单默认隐藏，这样可以节省内存；
 					menu = mui.preload({
@@ -265,6 +262,10 @@
 					myOfferDetail = mui.preload({
 						url: '../pages/purchaseOrders/myOfferDetail.html',
 						id: 'myOfferDetail'
+					});
+					needIntention = mui.preload({
+						url: '../pages/purchaseOrders/needIntention.html',
+						id: 'needIntention'
 					})
 				}, 300);
 			})
@@ -272,10 +273,10 @@
 				el: '#myOrder',
 				i18n: window.i18n,
 				data: {
-					formData: {},
-					userInfo: {},
 					show: 0, //处理未处理
 					msgNum: 0,
+					formData: {},
+					userInfo: {},
 					selectType: [{
 							title: '报价',
 							id: 'offer'
@@ -293,7 +294,7 @@
 						asc: '',
 						show: true
 					}, {
-						name: '未处理',
+						name: '待处理',
 						asc: 0,
 						show: true
 					}, {
@@ -304,13 +305,8 @@
 					listData: {
 						list: []
 					},
-<<<<<<< HEAD
-					messageNum: ''
-=======
-					messageNum: '',
->>>>>>> b4bf3dadb4b7101a1774cc8d50c658d4fd5735d9
+					messageNum: '', //消息数量
 				},
-
 				methods: {
 					//显示菜单
 					showMenu: function() {
@@ -344,13 +340,47 @@
 					//跳转到详情页面
 					jumpDetail: function(params) {
 						var _self = this;
-						//console.log(JSON.stringify(params.bizId))
-						mui.fire(myOfferDetail, 'myOfferDetailId', {
-							id: params.bizId
-						})
-						setTimeout(function() {
-							myOfferDetail.show('slide-in-right', 300)
-						}, 200)
+						console.log(JSON.stringify(123))
+						console.log(JSON.stringify(params))
+						_self.formData.bizType = params.bizType; //调取已读消息需要的参数
+						_self.formData.bizId = params.bizId; //调取已读消息需要的参数
+						_self.readMessage(); //调取已读接口
+
+						//判断不同的bizType跳转的页面不同
+						if(params.bizType !== 'offer_task') {
+							mui.fire(myOfferDetail, 'myOfferDetailId', {
+								id: params.bizId
+							})
+							setTimeout(function() {
+								myOfferDetail.show('slide-in-right', 300, function() {
+									_self.initGetHttp(); //重置数据
+									_self.getHttp(); //重新刷新列表接口
+									_self.getNum();
+								})
+							}, 300)
+						} else {
+							mui.fire(needIntention, 'getDetailInfo', {
+								intentionId: params.bizId
+							})
+							setTimeout(function() {
+								needIntention.show('slide-in-right', 300, function() {
+									_self.initGetHttp(); //重置数据
+									_self.getHttp(); //重新刷新列表接口
+									_self.getNum();
+								})
+							}, 300)
+						}
+					},
+					//消息已读
+					readMessage: function() {
+						var _self = this;
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'notificationService',
+							biz_method: 'readHandle',
+							biz_param: common.filterFormData(_self.formData, ['page', 'pageSize', 'type'])
+						}
+						common.commonPost(url, body, function(suc) {}, function(err) {})
 					},
 					//获取列表数据
 					getHttp: function(fn) {
@@ -366,26 +396,16 @@
 						} else {
 							body.biz_method = 'undisposedList'
 						}
-						console.log(JSON.stringify(body.biz_method))
-						plus.nativeUI.showWaiting('loading...');
 						common.commonPost(url, body, function(suc) {
-							plus.nativeUI.closeWaiting();
 							if(_self.listData.total === undefined) {
 								_self.listData = suc.biz_result
-								if(_self.listData.list === undefined) {
-									_self.listData.list = []
-								}
 							} else {
 								_self.listData.list = _self.listData.list.concat(suc.biz_result.list)
 							}
-							console.log(JSON.stringify(22, suc))
 							if(typeof fn === 'function') {
 								fn(suc)
 							}
-						}, function(err) {
-							console.log(JSON.stringify(11))
-							plus.nativeUI.closeWaiting();
-						})
+						}, function(err) {})
 					},
 					getNum: function() {
 						var _self = this;
@@ -395,18 +415,14 @@
 							biz_method: 'undisposedCount',
 							biz_param: {}
 						}
-						plus.nativeUI.showWaiting('loading...');
 						common.commonPost(url, body, function(suc) {
-							plus.nativeUI.closeWaiting();
 							_self.messageNum = suc.biz_result.offer;
-						}, function(err) {
-							plus.nativeUI.closeWaiting();
-						})
+						}, function(err) {})
 					},
 					//重置数据请求
 					initGetHttp: function() {
-						this.formData.pn = 1;
-						this.formData.pSize = 15;
+						this.formData.page = 1;
+						this.formData.pageSize = 15;
 						this.listData = {
 							list: []
 						};
@@ -435,6 +451,8 @@
 			//下拉刷新数据
 			function pulldownRefresh() {
 				vm.initGetHttp();
+				vm.getNum();
+				vm.userInfo = JSON.parse(common.getItem('userInfo'))
 				vm.getHttp(function() {
 					mui('#pullrefresh').pullRefresh().endPulldown();
 				});
@@ -447,7 +465,7 @@
 						plus.runtime.quit()
 					}
 				})
-			};
+			}
 		</script>
 	</body>
 

@@ -137,7 +137,7 @@
 		var detail, qrCode, myOffer, offerPrice;
 		mui.plusReady(function() {
 			detail = plus.webview.currentWebview();
-
+			//从页面跳转过来的		
 			setTimeout(function() {
 				//预加载二维码页面
 				qrCode = mui.preload({
@@ -161,6 +161,7 @@
 			el: '#needIntention',
 			i18n: window.i18n,
 			data: {
+				intentionId: '',
 				detailInfo: {}
 			},
 			methods: {
@@ -191,17 +192,34 @@
 				//重置数据
 				resetData: function() {
 					this.detailInfo = {}
-				}
+				},
+				//获取详情页数据
+				getDetailHttp: function() {
+					var _self = this;
+					var url = common.commonUrl + common.apiUrl.most;
+					var body = {
+						biz_module: 'erpIntentionService',
+						biz_method: 'queryIntentionById',
+						biz_param: {
+							id: this.intentionId
+						}
+					}
+					common.commonPost(url, body, function(suc) {
+						_self.detailInfo = suc.biz_result
+					}, function(err) {
+
+					})
+				},
 			}
 		})
 
 		//注册全局时间 让其意向ID 可以发生改变
 		window.addEventListener('getDetailInfo', function(event) {
-			if(event.detail !== undefined && typeof event.detail === 'object') {
-				vm.detailInfo = event.detail.intentionInfo
+			if(event.detail !== undefined ) {
+				vm.intentionId = event.detail.intentionId;
+				vm.getDetailHttp()				
 			}
 		})
-
 		//重写返回逻辑
 		mui.back = function() {
 			plus.webview.currentWebview().hide("auto", 200);

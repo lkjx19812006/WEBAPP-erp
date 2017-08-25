@@ -120,7 +120,7 @@
 			</form>
 			<div class="mui-content-padded">
 				<!--<button style="padding: 10px 0 ;" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>-->
-				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" v-tap="{'func': submit}" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
+				<button ref="submit" data-loading-icon="mui-spinner mui-spinner-custom" style="padding: 10px 0 ;" v-tap="{'func': loginIn}" class="mui-btn mui-btn-block mui-btn-primary">{{$t('message.submit')}}</button>
 			</div>
 			<div v-show="showMask" class="mask">
 				<div>{{proTxt}}</div>
@@ -141,7 +141,7 @@
 					menubutton: true
 				},
 			});
-
+			var needIntention;
 			var vm = new Vue({
 				el: '#login',
 				i18n: window.i18n,
@@ -180,8 +180,29 @@
 					clearNo: function() {
 						this.no = ''
 					},
+					//登录后进首页
+					loginIn: function() {
+						var _self = this;
+						this.submit(function() {
+							_self.getUserInfo(function() {
+								//获取用户信息成功 后 打开首页
+								setTimeout(function() {
+									mui.openWindow({
+										url: './home.html',
+										id: 'home',
+										createNew: true,
+										show: {
+											aniShow: 'slide-in-right'
+										}
+									});
+								}, 200)
+							})
+						})
+					},
 					//登录提交
-					submit: function() {
+					submit: function(fn) {
+						//获取客户端ID 传入后台绑定所用
+						this.clientId = plus.push.getClientInfo().clientid;
 						//校验通过 进行登录
 						if(common.validate([common.ruls.no(this.no), common.ruls.password(this.password)])) {
 							mui(this.$refs.submit).button('loading')
@@ -205,19 +226,10 @@
 								common.setItem('password', _self.password)
 
 								mui(_self.$refs.submit).button('reset')
-
-								_self.getUserInfo(function() {
-									setTimeout(function() {
-										mui.openWindow({
-											url: './home.html',
-											id: 'home',
-											show: {
-												aniShow: 'slide-in-right'
-											}
-										});
-										mui(_self.$refs.submit).button('reset');
-									}, 200)
-								})
+								//登录成功后的回调
+								if(fn !== undefined && typeof fn === 'function') {
+									fn(suc);
+								}
 							}, function(err) {
 								mui(_self.$refs.submit).button('reset');
 							})
@@ -257,21 +269,34 @@
 					},
 					//监听系统消息
 					addPush: function() {
+						var _self = this;
 						//消息监听完毕
 						plus.push.addEventListener("receive", function(msg) {
-							if(msg.aps) { // Apple APNS message
-								alert("接收到在线APNS消息");
-							} else {
-								alert("接收到在线APNS消息");
-							}
-							if(typeof(msg.payload) === "string") {
-								alert("payload(String): " + msg.payload);
-							} else {
-								alert("payload(JSON): " + msg.payload);
+							var result = JSON.parse(msg.payload);
+							switch(result.bizType) {
+								//意向信息跳转
+								case 'offer_task':
+									//执行登录
+									_self.submit(function() {
+										//登录成功获取用户信息
+										_self.getUserInfo();
+										//获取详情页数据
+										_self.getIntentionDetailHttp(result.bizId, function(params) {
+											//获取内容成功后执行跳转
+											//详情页面传入Id
+											mui.fire(needIntention, 'getDetailInfo', {
+												intentionInfo: params
+											})
+											setTimeout(function() {
+												needIntention.show('slide-in-right', 300);
+											}, 300)
+										})
+									})
+									break;
 							}
 						}, false);
 					},
-					//检查版本更新
+					//从后台拿取版本号 检查版本更新
 					validateVersion: function(fn) {
 						var url = common.commonUrl + common.apiUrl.most;
 						var body = {
@@ -286,18 +311,38 @@
 								fn(suc);
 							};
 						}, function(err) {})
-					}
+					},
+					//获取意向详情信息
+					getIntentionDetailHttp: function(id, fn) {
+						var _self = this;
+						var url = common.commonUrl + common.apiUrl.most;
+						var body = {
+							biz_module: 'erpIntentionService',
+							biz_method: 'queryIntentionById',
+							biz_param: {
+								id: id
+							}
+						}
+						common.commonPost(url, body, function(suc) {
+								_self.detailInfo = suc.biz_result
+								if(fn !== undefined && typeof fn === 'function') {
+									fn(_self.detailInfo);
+								}
+							},
+							function(err) {})
+					},
 				}
-			})
-			//在mui.plusReady完成后 执行一些配置
+			}) //在mui.plusReady完成后 执行一些配置
 			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
 			mui.plusReady(function() {
 				//消息监听
-				vm.addPush();
+				//vm.addPush();
 
-				//获取客户端ID 传入后台绑定所用
-				vm.clientId = plus.push.getClientInfo().clientid;
-
+				//预加载意向详情页
+				needIntention = mui.preload({
+					url: './purchaseOrders/needIntention.html',
+					id: 'needIntention'
+				});
 				//获取当前设备系统的名称 
 				var deviceName;
 				switch(plus.os.name) {
@@ -309,7 +354,7 @@
 						break;
 				}
 				var btnArr = ['立即更新', '取消'];
-				//检查版本更新	
+				//检查版本更新回调	
 				var verCallBack = function(params) {
 					var result = params.biz_result;
 					//获取到台返回的数据
@@ -353,11 +398,23 @@
 						vm.language = common.getItem('language') || vm.language;
 						vm.no = common.getItem('no');
 						vm.password = common.getItem('password');
-						console.log(vm.no)
-						console.log(vm.password)
 						if(vm.autoLogin === 'on') {
 							if(vm.no && vm.password) {
-								vm.submit()
+								vm.submit(function() {
+									//登录成功获取用户信息
+									vm.getUserInfo(function() {
+										//获取用户信息成功 后 打开首页
+										setTimeout(function() {
+											mui.openWindow({
+												url: './home.html',
+												id: 'home',
+												show: {
+													aniShow: 'slide-in-right'
+												}
+											});
+										}, 200)
+									})
+								})
 							}
 						}
 					}
