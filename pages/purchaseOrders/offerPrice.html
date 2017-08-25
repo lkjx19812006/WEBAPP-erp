@@ -116,7 +116,7 @@
 				<span class="tit">单价：</span>
 				<input style="flex: 0 0 auto; width: 100px;" class="mui-input-numbox" v-model="formData.price" type="number" placeholder="请输入单价" />
 				<span style="width: 100%; margin-left: 15px;">元/{{formData.unit | idToUnit}}</span>
-				
+
 				<!--<div class="unit-selected" style="height: 40px; width: 100%">
 					<my-select desabled v-model="formData.unit" :options="unitList" placeholder="单位"></my-select>
 				</div>-->
@@ -359,16 +359,16 @@
 						required: true,
 						msg: '数量不能为空',
 						validate: {
-							Reg: /^[0-9]+(.[0-9]{2})?$/,
-							msg: '数值类型错误，两位小数'
+							Reg: /^[0-9]+([.]{1}[0-9]{1,2})?$/,
+							msg: '数量请输入正整数或两位内小数'
 						}
 					}, {
 						data: this.formData.price,
 						required: true,
-						msg: '价格不能为空',
+						msg: '单价不能为空',
 						validate: {
-							Reg: /^[0-9]+(.[0-9]{2})?$/,
-							msg: '价格类型错误，两位小数'
+							Reg: /^[0-9]+([.]{1}[0-9]{1,2})?$/,
+							msg: '价格请输入正整数或两位内小数'
 						}
 					}, {
 						data: this.formData.location,
@@ -454,7 +454,7 @@
 		//获取详情页传底过来的意向信息
 		window.addEventListener("getIntentionInfo", function(event) {
 			//重置所有表单数据
-			vm.resetFormData();			
+			vm.resetFormData();
 			//滚动到页面头部
 			window.scrollTo(0, 0);
 			if(event.detail && typeof event.detail === 'object') {
