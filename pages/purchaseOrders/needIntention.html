@@ -86,15 +86,19 @@
 			</div>
 			<div class="detail">
 				<span class="tit">数量：</span>
-				<span class="info" style="color: #007AFF">{{detailInfo.intention.number}}/{{detailInfo.intention.unit | idToUnit}}</span>
+				<span class="info" style="color: #007AFF">{{detailInfo.intention.number}}{{detailInfo.intention.unit | idToUnit}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">单价：</span>
-				<span class="info" style="color: #007AFF">{{detailInfo.intention.price}}/{{detailInfo.intention.unit | idToUnit}}</span>
+				<span class="info" style="color: #007AFF">{{detailInfo.intention.price}}元/{{detailInfo.intention.unit | idToUnit}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">产地：</span>
 				<span class="info" v-if="detailInfo.extendsDesc">{{detailInfo.intention.location === -1 ? '不限' : detailInfo.extendsDesc.locationName}}</span>
+			</div>
+			<div class="detail">
+				<span class="tit">规格：</span>
+				<span class="info" v-if="detailInfo.extendsDesc">{{detailInfo.intention.spec}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">上架状态：</span>
