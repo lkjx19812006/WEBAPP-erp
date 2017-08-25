@@ -327,8 +327,10 @@
 					jumpDetail: function(id) {					
 						//获取详情页的数据后 传入到详情页 并显示详情页
 						//详情页面传入Id
+						let _self = this;
 						mui.fire(needIntention, 'getDetailInfo', {
-							intentionId: id
+							intentionId: id,
+							show:_self.show
 						})
 						setTimeout(function() {
 							needIntention.show('slide-in-right', 300);
