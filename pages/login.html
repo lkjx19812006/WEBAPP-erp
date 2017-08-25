@@ -431,7 +431,9 @@
 						}, function(download, status) {
 							if(status === 200) {
 								//下载成功 执行安装
-								plus.runtime.install(download.filename);
+								plus.runtime.install(download.filename, {force: true}, function(){
+									plus.runtime.restart();							
+								});
 							} else {
 								plus.nativeUI.alert("下载更新失敗！");
 							}

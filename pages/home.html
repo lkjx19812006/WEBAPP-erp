@@ -437,7 +437,7 @@
 			});
 			//上拉加载数据
 			function pullupRefresh() {
-				vm.formData.pn++;
+				vm.formData.page++;
 				vm.getHttp(function() {
 					console.log(vm.listData.total)
 					console.log(vm.listData.list.length)

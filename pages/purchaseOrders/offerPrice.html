@@ -180,7 +180,7 @@
 		var offerPrice, supplier, offerSuc;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview();
-			var nowDate = new Date().getTime();
+			var nowDate = new Date().getTime() + 86400000;
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
 				//预加载供应商选项

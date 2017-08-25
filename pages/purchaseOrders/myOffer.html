@@ -414,7 +414,7 @@
 						biz_method: 'queryIntentionOfferList',
 						biz_param: mui.extend(common.filterFormData(_self.formData), _self.needconcat)
 					}
-					plus.nativeUI.showWaiting('loading...');
+					plus.nativeUI.showWaiting();
 					common.commonPost(url, body, function(suc) {
 						plus.nativeUI.closeWaiting();
 						//第一次加载时 total为undefined
