@@ -9,5 +9,7 @@
 		validate:'',//筛选审核状态，不传就是全部
 
 	};
+	
 	window.formData = formData;
+	
 })(window)

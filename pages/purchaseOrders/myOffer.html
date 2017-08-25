@@ -47,10 +47,12 @@
 			border-radius: 5px;
 			position: relative;
 		}
-		#myOffer .header-filter-wrap a:nth-child(3){
+		
+		#myOffer .header-filter-wrap a:nth-child(3) {
 			flex: 0 0 auto;
 			width: 100px;
 		}
+		
 		#myOffer .header-filter-wrap .last {
 			margin-right: 0;
 			flex: 0 0 auto;
@@ -98,6 +100,7 @@
 			justify-content: space-between;
 			padding: 5px 0;
 		}
+		
 		#myOffer .list-item .list-item-row.last {
 			justify-content: flex-start;
 		}
@@ -429,6 +432,34 @@
 						plus.nativeUI.closeWaiting();
 					})
 				},
+				initSelect: function() {
+					this.needconcat = {
+						sort: {
+							otime: 0,
+							duedate: 0,
+							validate: 0,
+							price: 0,
+						}
+					}
+					this.headFilter = [{
+						name: '报价时间',
+						selectName: '报价时间',
+						id: "#purchaseTime"
+					}, {
+						name: '有效期',
+						selectName: '有效期',
+						id: "#activeTime"
+					}, {
+						name: '审核状态',
+						selectName: '审核状态',
+						id: "#testStatus"
+					}, {
+						name: '价格',
+						selectName: '价格',
+						id: "#price"
+					}]
+					this.formData.validate = '';
+				},
 				//重置数据请求
 				initGetHttp: function() {
 					this.formData.pn = 1;
@@ -480,6 +511,7 @@
 			//console.log(JSON.stringify(event.detail.intentionId))
 			window.scrollTo(0, 0);
 			vm.initGetHttp();
+			vm.initSelect();
 			if(event.detail && typeof event.detail === 'object') {
 				var params = event.detail.intentionInfo;
 				vm.formData.intentionId = params.id;
