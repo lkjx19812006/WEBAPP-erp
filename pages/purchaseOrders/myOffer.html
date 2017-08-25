@@ -414,7 +414,7 @@
 						biz_method: 'queryIntentionOfferList',
 						biz_param: mui.extend(common.filterFormData(_self.formData), _self.needconcat)
 					}
-					plus.nativeUI.showWaiting('loading...');
+					plus.nativeUI.showWaiting();
 					common.commonPost(url, body, function(suc) {
 						plus.nativeUI.closeWaiting();
 //						if(suc.biz_result.total === 0 && suc.biz_result.list.length === 0){
@@ -486,6 +486,10 @@
 					setTimeout(function() {
 						myOfferDetail.show('slide-in-right', 300)
 					}, 200)
+				},
+				//重置头部筛选数据
+				resetHeaderFilter: function() {
+
 				}
 			}
 		})
