@@ -417,8 +417,11 @@
 					plus.nativeUI.showWaiting();
 					common.commonPost(url, body, function(suc) {
 						plus.nativeUI.closeWaiting();
+//						if(suc.biz_result.total === 0 && suc.biz_result.list.length === 0){
+//							mui('#pullrefresh').pullRefresh().endPullup(true);
+//						}
 						//第一次加载时 total为undefined
-						if(_self.listData.total === undefined) {
+						if(_self.listData.total === undefined ) {
 							_self.listData = suc.biz_result
 						} else {
 							_self.listData.list = _self.listData.list.concat(suc.biz_result.list)

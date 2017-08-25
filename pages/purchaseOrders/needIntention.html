@@ -120,7 +120,7 @@
 				二维码
 			</div>
 
-			<div v-tap="{func: showMyOffer}">
+			<div v-tap="{func: showMyOffer}" v-show="show">
 				我的报价
 			</div>
 			<div v-tap="{func:showOfferPrice}">
@@ -166,6 +166,7 @@
 			i18n: window.i18n,
 			data: {
 				intentionId: '',
+				show:0,
 				detailInfo: {}
 			},
 			methods: {
@@ -224,8 +225,7 @@
 			if(event.detail !== undefined) {
 				vm.intentionId = event.detail.intentionId;
 				console.log(JSON.stringify(common))
-				
-				
+				vm.show = event.detail.show;
 				vm.getDetailHttp()
 			}
 		})
