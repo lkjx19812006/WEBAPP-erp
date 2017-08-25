@@ -284,7 +284,8 @@
 				],
 				"refer": [
 					"pages/home.html",
-					"pages/purchaseOrders/needIntention.html"
+					"pages/purchaseOrders/needIntention.html",
+					"pages/purchaseOrders/myOfferDetail.html"
 				],
 				"priority": 0
 			},

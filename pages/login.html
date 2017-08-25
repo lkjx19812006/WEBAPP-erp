@@ -141,7 +141,7 @@
 					menubutton: true
 				},
 			});
-			var needIntention;
+			var needIntention, myOfferDetail;
 			var vm = new Vue({
 				el: '#login',
 				i18n: window.i18n,
@@ -281,16 +281,27 @@
 										//登录成功获取用户信息
 										_self.getUserInfo();
 										//获取详情页数据
-										_self.getIntentionDetailHttp(result.bizId, function(params) {
-											//获取内容成功后执行跳转
-											//详情页面传入Id
-											mui.fire(needIntention, 'getDetailInfo', {
-												intentionInfo: params
-											})
-											setTimeout(function() {
-												needIntention.show('slide-in-right', 300);
-											}, 300)
+										mui.fire(needIntention, 'getDetailInfo', {
+											intentionId: result.bizId
 										})
+										setTimeout(function() {
+											needIntention.show('slide-in-right', 300);
+										}, 300)
+									})
+									break;
+								default:
+									//暂时只有两种跳转 以后能加 跳转到报价详情
+									//执行登录
+									_self.submit(function() {
+										//登录成功获取用户信息
+										_self.getUserInfo();
+										//获取详情页数据
+										mui.fire(myOfferDetail, 'myOfferDetailId', {
+											id: result.bizId
+										})
+										setTimeout(function() {
+											needIntention.show('slide-in-right', 300);
+										}, 300)
 									})
 									break;
 							}
@@ -311,26 +322,7 @@
 								fn(suc);
 							};
 						}, function(err) {})
-					},
-					//获取意向详情信息
-					getIntentionDetailHttp: function(id, fn) {
-						var _self = this;
-						var url = common.commonUrl + common.apiUrl.most;
-						var body = {
-							biz_module: 'erpIntentionService',
-							biz_method: 'queryIntentionById',
-							biz_param: {
-								id: id
-							}
-						}
-						common.commonPost(url, body, function(suc) {
-								_self.detailInfo = suc.biz_result
-								if(fn !== undefined && typeof fn === 'function') {
-									fn(_self.detailInfo);
-								}
-							},
-							function(err) {})
-					},
+					}
 				}
 			}) //在mui.plusReady完成后 执行一些配置
 			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
@@ -343,6 +335,12 @@
 					url: './purchaseOrders/needIntention.html',
 					id: 'needIntention'
 				});
+				//预加载报价详情页
+				myOfferDetail = mui.preload({
+					url: './purchaseOrders/myOfferDetail.html',
+					id: 'myOfferDetail'
+				})
+
 				//获取当前设备系统的名称 
 				var deviceName;
 				switch(plus.os.name) {

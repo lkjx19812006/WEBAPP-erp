@@ -128,8 +128,7 @@
 			//缓存首页
 			setTimeout(function() {
 				home = mui.preload({
-					url: '../home.html',
-					id: 'home'
+
 				})
 			}, 200)
 
@@ -140,24 +139,27 @@
 			data: {},
 			methods: {
 				back: function() {
-					home.show('fade-out', 300, function() {
-						setTimeout(function() {
-							offerSuc.hide('none', 0);
-						}, 300)
-					});
+					home = mui.openWindow({
+						url: '../home.html',
+						id: 'home',
+						createNew: true,
+						show: {
+							aniShow: 'fade-in'
+						}
+					})
 				}
 			}
 		})
 		//重写back
-		var oldBack = mui.back;
-		mui.back = function() {
-			//点击完成后回到首页
-			home.show('fade-out', 300, function() {
-				setTimeout(function() {
-					offerSuc.hide('none', 0);
-				}, 300)
-			});
-		}
+		//		var oldBack = mui.back;
+		//		mui.back = function() {
+		//			//点击完成后回到首页
+		//			home.show('fade-out', 300, function() {
+		//				setTimeout(function() {
+		//					offerSuc.hide('none', 0);
+		//				}, 300)
+		//			});
+		//		}
 	</script>
 </body>
 
