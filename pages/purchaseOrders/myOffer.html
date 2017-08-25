@@ -215,10 +215,20 @@
 							<span class="info">{{todo.number}}{{todo.unitDesc}}</span>
 						</div>
 					</div>
-					<div class="list-item-row last">
+					<!--<div class="list-item-row">
+						<div class="detail-right">
+							<span class="tit">供应商名称：</span>
+							<span class="info">{{todo.offerCustomerName}}</span>
+						</div>
+						<div class="detail-right">
+							<span class="tit">规格：</span>
+							<span class="info">{{todo.spec}}</span>
+						</div>
+					</div>-->
+					<!--<div class="list-item-row last">
 						<span class="tit">供应商名称：</span>
-						<span class="info">{{todo.buyCustomerName}}</span>
-					</div>
+						<span class="info">{{todo.offerCustomerName}}</span>
+					</div>-->
 				</div>
 			</div>
 		</div>
@@ -326,7 +336,7 @@
 				}],
 				select3: [{
 					asc: '',
-					title: '默认'
+					title: '全部'
 				}, {
 					asc: 0,
 					title: '未审核'
@@ -439,7 +449,7 @@
 				jumpDetail: function(id) {
 					var _self = this;
 					mui.fire(myOfferDetail, 'myOfferDetailId', {
-                         id:id
+						id: id
 					})
 					setTimeout(function() {
 						myOfferDetail.show('slide-in-right', 300)
