@@ -8,7 +8,6 @@
 	mui.plusReady(function() {
 		common.KEY = common.getItem('KEY');
 		common.SID = common.getItem('SID');
-		console.log(common.KEY)
 	})
 	common.commonUrl = 'http://192.168.1.142/front';
 	common.version = '1.1.0';
@@ -20,8 +19,11 @@
 		most: '/handle/control.do'
 	}
 	common.addSID = function addSID(url) {
-		if(this.SID && this.SID !== undefined) {
-			return url + ';jsessionid=' + this.SID
+		if(common.SID && common.SID !== undefined) {
+			console.log('----------------------------------------------------------------------')
+			console.log(url + ';jsessionid=' + common.SID)
+			console.log('----------------------------------------------------------------------')
+			return url + ';jsessionid=' + common.SID
 		} else {
 			return url
 		}
