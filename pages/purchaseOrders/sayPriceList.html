@@ -252,7 +252,6 @@
 				//获取当前页面对象
 				sayPriceList = plus.webview.currentWebview();
 				vm.formData = formData;
-				vm.getHttp();
 				setTimeout(function() {
 					//预加载品种搜索
 					searchBreed = mui.preload({
@@ -327,7 +326,7 @@
 					jumpDetail: function(id) {					
 						//获取详情页的数据后 传入到详情页 并显示详情页
 						//详情页面传入Id
-						let _self = this;
+						var  _self = this;
 						mui.fire(needIntention, 'getDetailInfo', {
 							intentionId: id,
 							show:_self.show
