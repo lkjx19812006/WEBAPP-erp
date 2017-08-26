@@ -47,9 +47,7 @@
 			flex:0 0 100px;
 		}
 		#myOfferDetail .basic-infor .box .right {
-			
 			align-self: flex-end;
-			
 		}
 		/*图片部分*/
 		
@@ -58,7 +56,23 @@
 		}
 		
 		#myOfferDetail .images {
-			width: 80%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+		#myOfferDetail .images p{
+			flex: 0 0 50%;
+			padding: 5px;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			height: 120px;
+			overflow: hidden;
+		}
+		#myOfferDetail .images p img{
+			width: 100%;
 		}
 		/*#myOfferDetail .images .image {
 			margin-top: 5px;
@@ -99,7 +113,7 @@
 			</div>
 		</div>
 		<div class="mui-content-padded images">
-			<p v-for="(todo,index) in offerFiles" v-show='index == 0'>
+			<p v-for="(todo,index) in offerFiles">
 				<img :src="todo" data-preview-src="" data-preview-group="1" />
 			</p>
 		</div>
