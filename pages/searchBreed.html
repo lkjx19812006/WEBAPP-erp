@@ -57,7 +57,7 @@
 			</header>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">
-				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item in listData" :key="item.id">
+				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item, index in listData" :key="item.name">
 					{{item.name}}({{item.eName}})
 				</li>
 			</ul>
@@ -130,9 +130,7 @@
 								name: params.name
 							})
 							_self.searchName = ''
-							setTimeout(function() {
-								mui.back()
-							}, 100)
+							searchBreed.hide('fade-out', 200)
 						}
 					}
 				}
