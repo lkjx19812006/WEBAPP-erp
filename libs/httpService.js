@@ -5,10 +5,6 @@
 	mui.init();
 	var common = {};
 	common.H5Share = 'http://192.168.1.142:81/htm5/#/needDetails/'; //'http://apps.yaocaimaimai.com/htm5/#/needDetails/'
-	mui.plusReady(function() {
-		common.KEY = common.getItem('KEY');
-		common.SID = common.getItem('SID');
-	})
 	common.commonUrl = 'http://192.168.1.142/front';
 	common.version = '1.1.0';
 	common.difTime = 0 || window.localStorage.difTime;
@@ -19,6 +15,8 @@
 		most: '/handle/control.do'
 	}
 	common.addSID = function addSID(url) {
+		common.KEY = common.getItem('KEY');
+		common.SID = common.getItem('SID');
 		if(common.SID && common.SID !== undefined) {
 			console.log('----------------------------------------------------------------------')
 			console.log(url + ';jsessionid=' + common.SID)
