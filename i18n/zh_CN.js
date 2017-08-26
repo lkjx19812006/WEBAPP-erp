@@ -2,7 +2,7 @@
 (function() {
 	var zh = {
 		message: {
-			login: '登陆',
+			login: '登录',
 			automatic_logon: '自动登录',
 			Determine_exit_application: '确定退出应用？',
 			language: '语言',

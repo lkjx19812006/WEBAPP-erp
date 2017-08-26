@@ -299,7 +299,7 @@
 										mui.fire(myOfferDetail, 'myOfferDetailId', {
 											id: result.bizId
 										})
-										
+
 										setTimeout(function() {
 											myOfferDetail.show('slide-in-right', 300);
 										}, 300)
@@ -358,13 +358,12 @@
 				var verCallBack = function(params) {
 					var result = params.biz_result;
 					//获取到台返回的数据
-					//当前设备版本ID
+					//当前设备版本ID plus.runtime.version
 					var deviceVersion = plus.runtime.version.split('.');
 					//最低的强制更新版本
 					var compel = result.compel.split('.');
 					//普通更新版本
 					var version = result.version.split('.');
-
 					var title = '当前最新版本 V' + result.version;
 					//校验强制版本
 					if(validate(deviceVersion, compel)) {
@@ -431,8 +430,10 @@
 						}, function(download, status) {
 							if(status === 200) {
 								//下载成功 执行安装
-								plus.runtime.install(download.filename, {force: true}, function(){
-									plus.runtime.restart();							
+								plus.runtime.install(download.filename, {
+									force: true
+								}, function() {
+									plus.runtime.restart();
 								});
 							} else {
 								plus.nativeUI.alert("下载更新失敗！");
@@ -455,12 +456,15 @@
 				//版本校验
 				function validate(deviceVersion, version) {
 					var isUpdate = false;
-					if(version[0] > deviceVersion[0]) {
+					if(Number(version[0]) > Number(deviceVersion[0])) {
 						isUpdate = true;
-					} else if(version[0] === deviceVersion[0] && version[1] > deviceVersion[1]) {
+						return isUpdate;
+					} else if(Number(version[0]) === Number(deviceVersion[0]) && Number(version[1]) > Number(deviceVersion[1])) {
 						isUpdate = true;
-					} else if(version[0] === deviceVersion[0] && version[1] === deviceVersion[1] && version[2] > deviceVersion[2]) {
+						return isUpdate;
+					} else if(Number(version[0]) === Number(deviceVersion[0]) && Number(version[1]) === Number(deviceVersion[1]) && Number(version[2]) > Number(deviceVersion[2])) {
 						isUpdate = true;
+						return isUpdate;
 					}
 					return isUpdate;
 				}

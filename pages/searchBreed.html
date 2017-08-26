@@ -70,12 +70,6 @@
 		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-
-			var oldBack = mui.back;
-			mui.back = function() {
-				//还不知道该页面的返回逻辑 先执行原来的返回功能
-				oldBack()
-			}
 			var searchBreed;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
@@ -129,8 +123,8 @@
 								id: params.id,
 								name: params.name
 							})
-							_self.searchName = ''
-							searchBreed.hide('fade-out', 200)
+							_self.searchName = '';
+							searchBreed.hide('slide-out-right ', 300);						
 						}
 					}
 				}
