@@ -299,7 +299,7 @@
 							body.biz_method = 'queryMyOfferList';
 						} else {
 							body.biz_method = 'queryMyWaitOfferList';
-						}						
+						}
 						common.commonPost(url, body, function(suc) {
 							if(_self.listData.total === undefined) {
 								_self.listData = suc.biz_result
@@ -310,7 +310,7 @@
 								fn(suc)
 							}
 						}, function(err) {
-							
+							fn(suc)
 						})
 					},
 					//筛选未报价和已报价
@@ -323,13 +323,13 @@
 					},
 
 					//跳转到详情页
-					jumpDetail: function(id) {					
+					jumpDetail: function(id) {
 						//获取详情页的数据后 传入到详情页 并显示详情页
 						//详情页面传入Id
-						var  _self = this;
+						var _self = this;
 						mui.fire(needIntention, 'getDetailInfo', {
 							intentionId: id,
-							show:_self.show
+							show: _self.show
 						})
 						setTimeout(function() {
 							needIntention.show('slide-in-right', 300);

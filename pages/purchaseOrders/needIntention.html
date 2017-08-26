@@ -141,6 +141,9 @@
 		var detail, qrCode, myOffer, offerPrice;
 		mui.plusReady(function() {
 			detail = plus.webview.currentWebview();
+			if(detail.intentionId){
+				vm.getDetailHttp();
+			}
 			//从页面跳转过来的		
 			setTimeout(function() {
 				//预加载二维码页面
