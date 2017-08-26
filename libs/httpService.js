@@ -4,9 +4,9 @@
 (function(CryptoJS, window, mui, Vue) {
 	mui.init();
 	var common = {};
-	common.H5Share = 'http://192.168.1.142:81/htm5/#/needDetails/'; //'http://apps.yaocaimaimai.com/htm5/#/needDetails/'
-	common.commonUrl = 'http://192.168.1.142/front';
-	common.version = '1.1.0';
+	common.H5Share = 'http://apps.yaocaimaimai.com/htm5/#/needDetails/'; //'http://apps.yaocaimaimai.com/htm5/#/needDetails/' http://192.168.1.142:81/htm5/#/needDetails/
+	common.commonUrl = 'http://apps.yaocaimaimai.com/front/';//http://192.168.1.142/front 
+	common.version = '1.1.13';
 	common.difTime = 0 || window.localStorage.difTime;
 	common.apiUrl = {
 		login: '/account/erpLogin.do',

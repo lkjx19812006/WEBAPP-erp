@@ -82,12 +82,21 @@
 				data: {
 					searchName: '',
 					listData: [],
-					comeFrom: ''
+					comeFrom: '',
+					timer: '',
 				},
 				methods: {
 					//输入框输入事件
 					inputValue: function() {
-						this.getHttp();
+						clearTimeout(this.timer);
+						if(this.searchName === ''){
+							return;
+						}
+						var _self = this;
+						this.timer = setTimeout(function() {
+							_self.getHttp();
+						}, 300)
+
 					},
 					//清楚输入框中内容
 					clear: function() {
@@ -103,7 +112,9 @@
 							biz_module: 'breedService',
 							biz_method: 'queryErpBreedList',
 							biz_param: {
-								name: this.searchName
+								name: this.searchName,
+								page: 1,
+								pageSize: 30,
 							}
 						}
 						var _self = this;
@@ -124,7 +135,7 @@
 								name: params.name
 							})
 							_self.searchName = '';
-							searchBreed.hide('slide-out-right ', 300);						
+							searchBreed.hide('slide-out-right ', 300);
 						}
 					}
 				}
