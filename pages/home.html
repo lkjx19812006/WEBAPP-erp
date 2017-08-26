@@ -405,7 +405,9 @@
 							if(typeof fn === 'function') {
 								fn(suc)
 							}
-						}, function(err) {})
+						}, function(err) {
+							mui('#pullrefresh').pullRefresh().endPullup(false);
+						})
 					},
 					getNum: function() {
 						var _self = this;
