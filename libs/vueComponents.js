@@ -216,14 +216,14 @@
 			//获取七牛token
 			getToken: function(success) {
 				//先从本地获取有没有七牛token 没有 再从服务器获取
-				if(common.getItem("qnToken") && common.getItem('qnImgUrl')) {
-					this.token = common.getItem("qnToken");
-					this.url = common.getItem('qnImgUrl');
-					if(typeof success === 'function') {
-						success()
-					}
-					return
-				};
+//				if(common.getItem("qnToken") && common.getItem('qnImgUrl')) {
+//					this.token = common.getItem("qnToken");
+//					this.url = common.getItem('qnImgUrl');
+//					if(typeof success === 'function') {
+//						success()
+//					}
+//					return
+//				};
 				var url = common.commonUrl + common.apiUrl.most;
 				var body = {
 					biz_module: 'filesService',
