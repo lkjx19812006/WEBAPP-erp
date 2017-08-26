@@ -224,6 +224,7 @@
 		window.addEventListener('getDetailInfo', function(event) {
 			if(event.detail !== undefined) {
 				vm.intentionId = event.detail.intentionId;
+				console.log(JSON.stringify(common))
 				vm.show = event.detail.show;
 				vm.getDetailHttp()
 			}
