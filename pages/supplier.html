@@ -10,8 +10,17 @@
 		<script src="../i18n/en.js"></script>
 		<script src="../i18n/zh_CN.js"></script>
 		<style>
-			.mui-content {
-				padding-top: 55px;
+			.offerPrice-isIos-no {
+				padding-top: 55px;				
+			}
+			
+			.offerPrice-isIos: {
+				padding-top: 0px;
+				padding-bottom: 0px;
+			}
+			
+			.position-isIos {
+				position: relative !important;
 			}
 			
 			#supplier header {
@@ -46,7 +55,7 @@
 	</head>
 
 	<body>
-		<div class="mui-content" id="supplier">
+		<div class="mui-content" id="supplier" :class="{'offerPrice-isIos': isIos === true, 'offerPrice-isIos-no': isIos === false}">
 			<!--页面头部-->
 			<header class="mui-bar mui-bar-nav">
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
@@ -68,7 +77,7 @@
 		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init({
-				swipeBack:false,
+				swipeBack: false,
 			});
 
 			var oldBack = mui.back;
@@ -79,15 +88,22 @@
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
 				supplier = plus.webview.currentWebview();
-				supplier.setStyle({'popGesture':'none'});
+				supplier.setStyle({
+					'popGesture': 'none'
+				});
+				//校验是否是IOS系统
+				if(plus.os.name === 'iOS') {
+					vm.isIos = true;
+				}
 			})
 
 			var vm = new Vue({
 				el: '#supplier',
 				data: {
+					isIos: false,
 					supplierName: '',
 					listData: [],
-					parentId: ''					
+					parentId: ''
 				},
 				methods: {
 					//输入框输入事件

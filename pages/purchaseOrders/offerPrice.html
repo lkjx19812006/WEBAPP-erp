@@ -9,9 +9,18 @@
 	<script src="../../i18n/en.js"></script>
 	<script src="../../i18n/zh_CN.js"></script>
 	<style>
-		#offerPrice {
+		.offerPrice-isIos-no {
 			padding-top: 45px;
 			padding-bottom: 50px;
+		}
+		
+		.offerPrice-isIos: {
+			padding-top: 0px;
+			padding-bottom: 0px;
+		}
+		
+		.position-isIos {
+			position: relative !important;
 		}
 		/*表单列表开始*/
 		
@@ -93,8 +102,8 @@
 </head>
 
 <body>
-	<div class="mui-content" id="offerPrice">
-		<header class="mui-bar mui-bar-nav">
+	<div class="mui-content" id="offerPrice" :class="{'offerPrice-isIos':isIos === true, 'offerPrice-isIos-no': isIos === false}">
+		<header class="mui-bar mui-bar-nav" :class="{'position-isIos':isIos === true}">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">报价</h1>
 		</header>
@@ -158,7 +167,7 @@
 		</div>
 
 		<!--提交按钮-->
-		<div class="button-wrap" ref="submit" v-tap="{func:submit}">
+		<div class="button-wrap" ref="submit" v-tap="{func:submit}" :class="{'position-isIos':isIos}">
 			提交报价
 		</div>
 	</div>
@@ -172,13 +181,19 @@
 	<script>
 		//初始化
 		mui.init({
-			swipeBack:false,
+			swipeBack: false,
 		});
 		//加载完毕
 		var offerPrice, supplier, offerSuc;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview();
-			offerPrice.setStyle({'popGesture':'none'});
+			offerPrice.setStyle({
+				'popGesture': 'none'
+			});
+			//校验是否是IOS系统
+			if(plus.os.name === 'iOS') {
+				vm.isIos = true;
+			}
 			var nowDate = new Date().getTime() + 86400000;
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
@@ -208,6 +223,7 @@
 			el: '#offerPrice',
 			i18n: window.i18n,
 			data: {
+				isIos: false,
 				formData: {
 					intentionId: '',
 					breedName: '',
@@ -344,6 +360,7 @@
 				//提交表单
 				submit: function() {
 					var _self = this;
+					//ios校验时间 是不是大于当前时间					
 					//表单校验数组
 					var validate = [{
 						data: this.formData.intentionId,
@@ -381,8 +398,7 @@
 						data: this.formData.quality,
 						required: true,
 						msg: '请选择或填写质量说明',
-					}];
-					
+					}];					
 					//校验数量
 					if(Number(this.formData.number) === 0 || Number(this.formData.number) > 9999999) {
 						mui.toast('数量不能为0或者不能大于9999999', {
@@ -399,7 +415,14 @@
 						})
 						return;
 					}
-
+					//校验有效时间
+					if(new Date(this.minDate).getTime() > new Date(this.formData.dueDate).getTime()) {
+						mui.toast('有效时间必须大于今天', {
+							duration: 'short',
+							type: 'div'
+						})
+						return;
+					}
 					//校验表单
 					if(common.validate(validate)) {
 						//校验图片
