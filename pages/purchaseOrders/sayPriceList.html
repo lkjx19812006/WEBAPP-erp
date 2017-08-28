@@ -279,7 +279,7 @@
 				methods: {
 					//跳转搜索页面
 					jumpSearch: function() {
-						mui.fire(plus.webview.getWebviewById('searchBreed'), 'updateFormData', {
+						mui.fire(searchBreed, 'updateFormData', {
 							id: sayPriceList.id
 						})
 						setTimeout(function() {
