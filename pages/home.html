@@ -228,6 +228,7 @@
 		<script>
 			//初始化上拉下拉
 			mui.init({
+				swipeBack:true,
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
@@ -249,6 +250,7 @@
 			var home, myOfferDetail, needIntention;
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
+				home.setStyle({'popGesture':'none'});
 				vm.formData = formData;
 				setTimeout(function() {
 					//侧滑菜单默认隐藏，这样可以节省内存；
