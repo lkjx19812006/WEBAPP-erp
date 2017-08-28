@@ -9,14 +9,24 @@
 	<script src="../../i18n/en.js"></script>
 	<script src="../../i18n/zh_CN.js"></script>
 	<style>
-		#offerPrice {
+		.offerPrice-isIos-no {
 			padding-top: 45px;
 			padding-bottom: 50px;
+		}
+		
+		.offerPrice-isIos: {
+			padding-top: 0px;
+			padding-bottom: 0px;
+		}
+		
+		.position-isIos {
+			position: relative !important;
 		}
 		/*表单列表开始*/
 		/*#offerPrice .head{
 			position: static;
 		}*/
+		
 		#offerPrice .offerList .detail {
 			display: flex;
 			flex-direction: row;
@@ -95,8 +105,9 @@
 </head>
 
 <body>
-	<div class="mui-content" id="offerPrice">
-		<header class="mui-bar mui-bar-nav head">
+
+	<div class="mui-content" id="offerPrice" :class="{'offerPrice-isIos':isIos === true, 'offerPrice-isIos-no': isIos === false}">
+		<header class="mui-bar mui-bar-nav" :class="{'position-isIos':isIos === true}">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">报价</h1>
 		</header>
@@ -160,7 +171,7 @@
 		</div>
 
 		<!--提交按钮-->
-		<div class="button-wrap" ref="submit" v-tap="{func:submit}">
+		<div class="button-wrap" ref="submit" v-tap="{func:submit}" :class="{'position-isIos':isIos}">
 			提交报价
 		</div>
 	</div>
@@ -182,7 +193,11 @@
 			offerPrice = plus.webview.currentWebview();
 			offerPrice.setStyle({
 				'popGesture': 'none'
-			});
+			}); 
+				//校验是否是IOS系统
+				if(plus.os.name === 'iOS') {
+					vm.isIos = true;
+				}
 			var nowDate = new Date().getTime() + 86400000;
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
@@ -212,6 +227,7 @@
 			el: '#offerPrice',
 			i18n: window.i18n,
 			data: {
+				isIos: false,
 				formData: {
 					intentionId: '',
 					breedName: '',
@@ -348,6 +364,7 @@
 				//提交表单
 				submit: function() {
 					var _self = this;
+					//ios校验时间 是不是大于当前时间					
 					//表单校验数组
 					var validate = [{
 						data: this.formData.intentionId,
@@ -387,80 +404,88 @@
 						msg: '请选择或填写质量说明',
 					}];
 
-					//校验数量
-					if(Number(this.formData.number) === 0 || Number(this.formData.number) > 9999999) {
-						mui.toast('数量不能为0或者不能大于9999999', {
-							duration: 'short',
-							type: 'div'
-						})
-						return;
+				}];
+			//校验数量
+			if(Number(this.formData.number) === 0 || Number(this.formData.number) > 9999999) {
+				mui.toast('数量不能为0或者不能大于9999999', {
+					duration: 'short',
+					type: 'div'
+				})
+				return;
+			}
+			//校验价格
+			if(Number(this.formData.price) === 0 || Number(this.formData.price) > 9999999) {
+				mui.toast('单价不能为0或者不能大于9999999', {
+					duration: 'short',
+					type: 'div'
+				})
+				return;
+			}
+			//校验有效时间
+			if(new Date(this.minDate).getTime() > new Date(this.formData.dueDate).getTime()) {
+				mui.toast('有效时间必须大于今天', {
+					duration: 'short',
+					type: 'div'
+				})
+				return;
+			}
+			//校验表单
+			if(common.validate(validate)) {
+				//校验图片
+				if(!common.ruls.image(this.formData.imageArray)) {
+					return;
+				}
+				plus.nativeUI.actionSheet({
+					cancel: "取消提交报价",
+					buttons: [{
+						title: "确定提交报价"
+					}]
+				}, function(e) {
+					switch(e.index) {
+						case 1:
+							//提交表单数据
+							_self.submitHttp()
+							break;
+						default:
+							break;
 					}
-					//校验价格
-					if(Number(this.formData.price) === 0 || Number(this.formData.price) > 9999999) {
-						mui.toast('单价不能为0或者不能大于9999999', {
-							duration: 'short',
-							type: 'div'
-						})
-						return;
-					}
+				});
+			}
 
-					//校验表单
-					if(common.validate(validate)) {
-						//校验图片
-						if(!common.ruls.image(this.formData.imageArray)) {
-							return;
-						}
-						plus.nativeUI.actionSheet({
-							cancel: "取消提交报价",
-							buttons: [{
-								title: "确定提交报价"
-							}]
-						}, function(e) {
-							switch(e.index) {
-								case 1:
-									//提交表单数据
-									_self.submitHttp()
-									break;
-								default:
-									break;
-							}
-						});
-					}
-
-				},
-				submitHttp: function() {
-					var _self = this;
-					var url = common.commonUrl + common.apiUrl.most;
-					//处理一下图片数据传值方式
-					var body = {
-						biz_module: 'erpIntentionOfferService',
-						biz_method: 'addIndentIntentionOffer',
-						biz_param: common.filterFormData(this.formData, ['breedName', 'customerName'])
-					}
-					mui(_self.$refs.submit).button('loading')
-					common.commonPost(url, body, function(suc) {
-						offerSuc.show('fade-in', 300);
-						mui(_self.$refs.submit).button('reset');
-					}, function(err) {
-						mui(_self.$refs.submit).button('reset')
-					});
-					//console.log(JSON.stringify(common.filterFormData(this.formData, ['breedName', 'customerName'])))
-				},
-				//重置表单数据
-				resetFormData: function() {
-					//重置表单数据
-					for(var key in this.formData) {
-						if(key === 'imageArray') {
-							this.formData[key] = [];
-						} else {
-							this.formData[key] = '';
-						}
-					}
-					for(var i = 0; i < this.qualityList.length; i++) {
-						this.qualityList[i].select = false;
-					}
+		},
+		submitHttp: function() {
+			var _self = this;
+			var url = common.commonUrl + common.apiUrl.most;
+			//处理一下图片数据传值方式
+			var body = {
+				biz_module: 'erpIntentionOfferService',
+				biz_method: 'addIndentIntentionOffer',
+				biz_param: common.filterFormData(this.formData, ['breedName', 'customerName'])
+			}
+			mui(_self.$refs.submit).button('loading')
+			common.commonPost(url, body, function(suc) {
+				offerSuc.show('fade-in', 300);
+				mui(_self.$refs.submit).button('reset');
+			}, function(err) {
+				mui(_self.$refs.submit).button('reset')
+			});
+			//console.log(JSON.stringify(common.filterFormData(this.formData, ['breedName', 'customerName'])))
+		},
+		//重置表单数据
+		resetFormData: function() {
+			//重置表单数据
+			for(var key in this.formData) {
+				if(key === 'imageArray') {
+					this.formData[key] = [];
+				} else {
+					this.formData[key] = '';
 				}
 			}
+			for(var i = 0; i < this.qualityList.length; i++) {
+				this.qualityList[i].select = false;
+			}
+		}
+		}
 		})
 
 		//获取详情页传底过来的意向信息

@@ -1,5 +1,5 @@
 ;
-(function() {
+(function(window) {
 	const en = {
 		message: {
 			login: 'login',

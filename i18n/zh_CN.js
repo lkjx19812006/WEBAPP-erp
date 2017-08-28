@@ -1,5 +1,5 @@
 ;
-(function() {
+(function(window) {
 	var zh = {
 		message: {
 			login: '登录',

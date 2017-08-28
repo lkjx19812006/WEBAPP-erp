@@ -82,7 +82,7 @@
 		<div class="mui-content" id="login">
 			<header class="mui-bar mui-bar-nav">
 				<h1 class="mui-title">{{$t('message.login')}}</h1>
-				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<a v-show="!isIos" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			</header>
 			<div class="language">
 				<span>{{$t('message.language')}}</span>
@@ -147,6 +147,7 @@
 				el: '#login',
 				i18n: window.i18n,
 				data: {
+					isIos: false,
 					no: '',
 					password: '',
 					autoLogin: 'on',
@@ -355,6 +356,7 @@
 						deviceName = 'Android';
 						break;
 					case 'iOS':
+						vm.isIos = true;
 						deviceName = 'iOS';
 						break;
 				}
