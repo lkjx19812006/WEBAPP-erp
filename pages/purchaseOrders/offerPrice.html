@@ -14,7 +14,9 @@
 			padding-bottom: 50px;
 		}
 		/*表单列表开始*/
-		
+		/*#offerPrice .head{
+			position: static;
+		}*/
 		#offerPrice .offerList .detail {
 			display: flex;
 			flex-direction: row;
@@ -94,7 +96,7 @@
 
 <body>
 	<div class="mui-content" id="offerPrice">
-		<header class="mui-bar mui-bar-nav">
+		<header class="mui-bar mui-bar-nav head">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">报价</h1>
 		</header>
@@ -172,13 +174,15 @@
 	<script>
 		//初始化
 		mui.init({
-			swipeBack:false,
+			swipeBack: false,
 		});
 		//加载完毕
 		var offerPrice, supplier, offerSuc;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview();
-			offerPrice.setStyle({'popGesture':'none'});
+			offerPrice.setStyle({
+				'popGesture': 'none'
+			});
 			var nowDate = new Date().getTime() + 86400000;
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {
@@ -382,7 +386,7 @@
 						required: true,
 						msg: '请选择或填写质量说明',
 					}];
-					
+
 					//校验数量
 					if(Number(this.formData.number) === 0 || Number(this.formData.number) > 9999999) {
 						mui.toast('数量不能为0或者不能大于9999999', {
