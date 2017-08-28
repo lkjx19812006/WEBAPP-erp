@@ -3,10 +3,11 @@
  * */
 (function(CryptoJS, window, mui, Vue) {
 	mui.init();
+	var evn = 'prod';//dev 测试环境 prod 生产环境
 	var common = {};
-	common.H5Share = 'http://192.168.1.142:81/htm5/#/needDetails/'; //'http://apps.yaocaimaimai.com/htm5/#/needDetails/'
-	common.commonUrl = 'http://192.168.1.142/front';
-	common.version = '1.1.0';
+	common.H5Share = evn === 'dev' ? 'http://192.168.1.142:81/htm5/#/needDetails/' : 'http://apps.yaocaimaimai.com/htm5/#/needDetails/'; //'http://apps.yaocaimaimai.com/htm5/#/needDetails/' http://192.168.1.142:81/htm5/#/needDetails/
+	common.commonUrl = evn === 'dev' ? 'http://192.168.1.142/front' : 'http://apps.yaocaimaimai.com/front/'; //http://192.168.1.142/front  http://apps.yaocaimaimai.com/front/
+	common.version = '1.1.16';
 	common.difTime = 0 || window.localStorage.difTime;
 	common.apiUrl = {
 		login: '/account/erpLogin.do',
@@ -52,7 +53,22 @@
 		var signStr = CryptoJS.HmacSHA1(str, _self.KEY).toString(CryptoJS.enc.Base64)
 		return signStr
 	}
+
+	//检查网络状态
+	common.validateHttp = function() {
+		if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+			mui.toast("网络异常，请检查网络设置！");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	common.commonPost = function(url, data, suc, err) {
+		if(!common.validateHttp()) {
+			err()
+			return;
+		}
 		url = this.addSID(url);
 		if(data || typeof data === 'object') {
 			data.version = this.version
@@ -99,7 +115,10 @@
 
 	}
 	common.commonGet = function commonGet(url, suc, err) {
-		console.log(url)
+		if(!common.validateHttp()) {
+			err()
+			return;
+		}
 		mui.ajax(url, {
 			crossDomain: true, //强制使用 5+跨域 基于 plus.net方法
 			dataType: 'json', //服务器返回json格式数据

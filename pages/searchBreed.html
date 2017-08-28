@@ -57,7 +57,7 @@
 			</header>
 			<!--列表模式的单选-->
 			<ul class="mui-table-view">
-				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item in listData" :key="item.id">
+				<li v-tap="{func: sendData, params: item}" class="mui-table-view-cell" v-for="item, index in listData" :key="item.name">
 					{{item.name}}({{item.eName}})
 				</li>
 			</ul>
@@ -70,12 +70,6 @@
 		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-
-			var oldBack = mui.back;
-			mui.back = function() {
-				//还不知道该页面的返回逻辑 先执行原来的返回功能
-				oldBack()
-			}
 			var searchBreed;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
@@ -88,12 +82,21 @@
 				data: {
 					searchName: '',
 					listData: [],
-					comeFrom: ''
+					comeFrom: '',
+					timer: '',
 				},
 				methods: {
 					//输入框输入事件
 					inputValue: function() {
-						this.getHttp();
+						clearTimeout(this.timer);
+						if(this.searchName === ''){
+							return;
+						}
+						var _self = this;
+						this.timer = setTimeout(function() {
+							_self.getHttp();
+						}, 300)
+
 					},
 					//清楚输入框中内容
 					clear: function() {
@@ -109,7 +112,9 @@
 							biz_module: 'breedService',
 							biz_method: 'queryErpBreedList',
 							biz_param: {
-								name: this.searchName
+								name: this.searchName,
+								page: 1,
+								pageSize: 30,
 							}
 						}
 						var _self = this;
@@ -129,10 +134,8 @@
 								id: params.id,
 								name: params.name
 							})
-							_self.searchName = ''
-							setTimeout(function() {
-								mui.back()
-							}, 300)
+							_self.searchName = '';
+							searchBreed.hide('slide-out-right ', 300);
 						}
 					}
 				}

@@ -310,7 +310,7 @@
 								fn(suc)
 							}
 						}, function(err) {
-							fn(suc)
+							mui('#pullrefresh').pullRefresh().endPullup(false);
 						})
 					},
 					//筛选未报价和已报价

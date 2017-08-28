@@ -44,8 +44,9 @@
 		}
 		
 		#myOfferDetail .basic-infor .box .left {
-			flex:0 0 100px;
+			flex: 0 0 100px;
 		}
+		
 		#myOfferDetail .basic-infor .box .right {
 			align-self: flex-end;
 		}
@@ -61,7 +62,8 @@
 			justify-content: space-between;
 			flex-wrap: wrap;
 		}
-		#myOfferDetail .images p{
+		
+		#myOfferDetail .images p {
 			flex: 0 0 50%;
 			padding: 5px;
 			display: flex;
@@ -71,7 +73,8 @@
 			height: 120px;
 			overflow: hidden;
 		}
-		#myOfferDetail .images p img{
+		
+		#myOfferDetail .images p img {
 			width: 100%;
 		}
 	</style>
@@ -124,6 +127,10 @@
 				<div class="box">
 					<div class="left">产地: </div>
 					<div class="right">{{offersInfor.locationName || '不限'}}</div>
+				</div>
+				<div class="box">
+					<div class="left">规格: </div>
+					<div class="right">{{offersInfor.spec || '不限'}}</div>
 				</div>
 				<div class="box">
 					<div class="left">数量: </div>

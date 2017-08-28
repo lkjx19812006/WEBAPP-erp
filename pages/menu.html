@@ -102,14 +102,13 @@
 			
 			var oldBack = mui.back;			
 			mui.back = function (){
-				menu.hide('slide-out-left', 300, function(){
-					oldBack()
-				})			
+				menu.hide('slide-out-left', 300)			
 			}			
 			var menu, login;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
-				menu = plus.webview.currentWebview();
+				menu = plus.webview.currentWebview();		
+				
 			})		
 			
 			//menu切换页面不能正常关闭的问题
@@ -158,14 +157,16 @@
 								common.KEY = '';
 								common.SID = '';
 								common.setItem('autoLogin', 'off');
-								mui.openWindow({
-									url: './login.html',
-									id: 'login',
-									createNew: false,
-									show:{
-										aniShow: 'fade-in'
-									}
-								})
+								var login = plus.webview.getLaunchWebview();
+								login.show('fade-in', 300)
+//								mui.openWindow({
+//									url: './login.html',
+//									id: 'login',
+//									createNew: false,
+//									show:{
+//										aniShow: 'fade-in'
+//									}
+//								})
 							}							
 						}, '提示信息',['确定', '取消'])
 					}
