@@ -171,11 +171,14 @@
 	<script src="../../libs/vueComponents.js"></script>
 	<script>
 		//初始化
-		mui.init();
+		mui.init({
+			swipeBack:false,
+		});
 		//加载完毕
 		var offerPrice, supplier, offerSuc;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview();
+			offerPrice.setStyle({'popGesture':'none'});
 			var nowDate = new Date().getTime() + 86400000;
 			vm.minDate = filters.getYMD(nowDate, 'YYYY-MM-DD');
 			setTimeout(function() {

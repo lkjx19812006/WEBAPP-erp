@@ -168,6 +168,7 @@
 				margin-left: 40%;
 				background-color: #007AFF;
 			}
+			
 		</style>
 	</head>
 
@@ -193,18 +194,18 @@
 				<div class="list">
 					<div class="box" v-for="(todo,index) in listData.list" :key="todo.id" v-tap="{func:jumpDetail,params:todo.id}">
 						<div class="top">
-							<div class="breed">{{todo.breedName}}</div>
+							<div class="breed overit-hidden">{{todo.breedName}}</div>
 							<div class="pubdate">发布日期: {{todo.pubdate,'YYYY-MM-DD' | getYMD}}</div>
 						</div>
 						<div class="bottom">
 							<div class="left">
 								<div class="type">
 									<span class="tit">采购单类型:</span>
-									<span>{{todo.indentTypeDesc}}</span>
+									<span class="overit-hidden">{{todo.indentTypeDesc}}</span>
 								</div>
 								<div class="origin type">
 									<span class="tit">采购单来源:</span>
-									<span>{{todo.inTypeDesc}}</span>
+									<span class="overit-hidden">{{todo.inTypeDesc}}</span>
 								</div>
 							</div>
 							<div class="right">
@@ -228,6 +229,7 @@
 		<script>
 			//			初始化上拉下拉
 			mui.init({
+				swipeBack:false,
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
@@ -251,6 +253,7 @@
 			mui.plusReady(function() {
 				//获取当前页面对象
 				sayPriceList = plus.webview.currentWebview();
+				sayPriceList.setStyle({'popGesture':'none'});
 				vm.formData = formData;
 				setTimeout(function() {
 					//预加载品种搜索

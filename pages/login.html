@@ -136,6 +136,7 @@
 		<script src="../libs/httpService.js"></script>
 		<script>
 			mui.init({
+				swipeBack:false,
 				keyEventBind: {
 					backbutton: true,
 					menubutton: true
@@ -327,9 +328,13 @@
 				}
 			}) //在mui.plusReady完成后 执行一些配置
 			//自动登录 先判断本地 有无SID 有就登录 没有就留在登录页面 
+			var login;
 			mui.plusReady(function() {
+				login = plus.webview.currentWebview();
+				login.setStyle({'popGesture':'none'});
 				vm.no = common.getItem('no');
 				vm.password = common.getItem('password');
+				
 				//消息监听
 				vm.addPush();
 				//预加载意向详情页
@@ -360,6 +365,7 @@
 					//获取到台返回的数据
 					//当前设备版本ID plus.runtime.version
 					var deviceVersion = plus.runtime.version.split('.');
+					//var deviceVersion = '1.1.0'.split('.');
 					//最低的强制更新版本
 					var compel = result.compel.split('.');
 					//普通更新版本
@@ -448,6 +454,8 @@
 						}, false);
 						dtask.start();
 					} else if(deviceName === 'iOS') {
+						vm.showPro = false;
+						
 						//iOS打开地址下载
 						if(result.iosUrl) plus.runtime.openURL(result.iosUrl);
 					}

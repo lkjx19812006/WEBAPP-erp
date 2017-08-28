@@ -97,6 +97,7 @@
 	<script>
 		//初始化
 		mui.init({
+			swipeBack:false,
 			gestureConfig: {
 				tap: true, //默认为true
 				doubletap: true, //默认为false
@@ -110,7 +111,8 @@
 
 		//加载完毕
 		mui.plusReady(function() {
-			offerPrice = plus.webview.currentWebview()
+			offerPrice = plus.webview.currentWebview();
+			offerPrice.setStyle({'popGesture':'none'});
 			plus.share.getServices(function(s) {
 				if(s && s.length > 0) {
 					for(var i = 0; i < s.length; i++) {

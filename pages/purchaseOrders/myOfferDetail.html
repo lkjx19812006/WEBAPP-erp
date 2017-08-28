@@ -154,7 +154,7 @@
 				</div>
 				<div class="box">
 					<div class="left">供应商名称: </div>
-					<div class="right">{{offersInfor.offerCustomerName}}</div>
+					<div class="right">{{offersInfor.offerCustomerName}}爱的哈哈大健康活动教案和大海大手大脚德哈卡哈萨克好的</div>
 				</div>
 			</div>
 		</div>
@@ -174,11 +174,14 @@
 	</script>
 	<script>
 		//初始化
-		mui.init();
+		mui.init({
+			swipeBack:false,
+		});
 
 		var myOfferDetail;
 		mui.plusReady(function() {
 			myOfferDetail = plus.webview.currentWebview(); //获取当前页面对象
+			myOfferDetail.setStyle({'popGesture':'none'});
 			if(myOfferDetail.offerId) {
 				vm.getHttp()
 			}
