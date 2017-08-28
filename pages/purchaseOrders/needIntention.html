@@ -137,10 +137,13 @@
 	<script src="../../libs/vueComponents.js"></script>
 	<script>
 		//初始化
-		mui.init();
+		mui.init({
+			swipeBack:false,
+		});
 		var detail, qrCode, myOffer, offerPrice;
 		mui.plusReady(function() {
 			detail = plus.webview.currentWebview();
+			detail.setStyle({'popGesture':'none'});
 			if(detail.intentionId){
 				vm.getDetailHttp();
 			}

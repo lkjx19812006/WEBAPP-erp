@@ -33,6 +33,7 @@
 		<script src="../libs/httpService.js"></script>
 		<script>
 			mui.init({
+				swipeBack:false,
 				beforeback: back
 			});
 			var home, menu, mask, userInfo, isshowMenu;
@@ -102,6 +103,7 @@
 			})
 			mui.plusReady(function() {
 				home = plus.webview.currentWebview();
+				home.setStyle({'popGesture':'none'});
 				//校验登录状态
 				//				if(!common.validateLogin()) {
 				//					setTimeout(function() {

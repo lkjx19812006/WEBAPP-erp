@@ -118,13 +118,16 @@
 	<script src="../../libs/vueComponents.js"></script>
 	<script>
 		//初始化
-		mui.init();
+		mui.init({
+			swipeBack:false,
+		});
 		//加载完毕
 		var offerSuc, home;
 		//分享操作
 		var shares = {};
 		mui.plusReady(function() {
-			offerSuc = plus.webview.currentWebview()
+			offerSuc = plus.webview.currentWebview();
+			offerSuc.setStyle({'popGesture':'none'});
 			//缓存首页
 			setTimeout(function() {
 				home = mui.preload({

@@ -36,7 +36,6 @@
 			
 			#menu .menu-wrap .list-item .list-subItem {
 				flex: 0 0 auto;
-				width: 45%;
 				height: 56px;
 				line-height: 56px;
 				margin: 5px;
@@ -98,7 +97,9 @@
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			mui.init();
+			mui.init({
+				swipeBack:false,
+			});
 			
 			var oldBack = mui.back;			
 			mui.back = function (){
@@ -107,7 +108,8 @@
 			var menu, login;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
-				menu = plus.webview.currentWebview();		
+				menu = plus.webview.currentWebview();	
+				menu.setStyle({'popGesture':'none'});
 				
 			})		
 			

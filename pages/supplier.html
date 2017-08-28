@@ -67,7 +67,9 @@
 		<script src="../libs/crypto-js.js"></script>
 		<script src="../libs/httpService.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			mui.init();
+			mui.init({
+				swipeBack:false,
+			});
 
 			var oldBack = mui.back;
 			mui.back = function() {
@@ -76,7 +78,8 @@
 			var supplier;
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
-				supplier = plus.webview.currentWebview();	
+				supplier = plus.webview.currentWebview();
+				supplier.setStyle({'popGesture':'none'});
 			})
 
 			var vm = new Vue({

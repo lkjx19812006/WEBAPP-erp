@@ -50,13 +50,11 @@
 		
 		#myOffer .header-filter-wrap a:nth-child(3) {
 			flex: 0 0 auto;
-			width: 100px;
 		}
 		
 		#myOffer .header-filter-wrap .last {
 			margin-right: 0;
 			flex: 0 0 auto;
-			width: 60px;
 		}
 		
 		#myOffer .header-filter-wrap .mui-icon {
@@ -195,46 +193,46 @@
 					<div class="list-item-row">
 						<div class="detail-left">
 							<span class="tit">审核状态：</span>
-							<span class="info">{{todo.validateDesc}}</span>
+							<span class="info overit-hidden">{{todo.validateDesc}}</span>
 						</div>
 						<div class="detail-right">
 							<span class="tit">产地：</span>
-							<span class="info">{{todo.locationDesc || '不限'}}</span>
+							<span class="info overit-hidden">{{todo.locationDesc || '不限'}}</span>
 						</div>
 					</div>
 					<div class="list-item-row">
 						<div class="detail-left">
 							<span class="tit">报价时间：</span>
-							<span class="info">{{todo.otime,'YYYY-MM-DD' | getYMD}}</span>
+							<span class="info overit-hidden">{{todo.otime,'YYYY-MM-DD' | getYMD}}</span>
 						</div>
 						<div class="detail-left">
 							<span class="tit">有效期：</span>
-							<span class="info">{{todo.duedate,'YYYY-MM-DD' | getYMD}}</span>
+							<span class="info overit-hidden">{{todo.duedate,'YYYY-MM-DD' | getYMD}}</span>
 						</div>
 					</div>
 					<div class="list-item-row">
 						<div class="detail-right">
 							<span class="tit">价格：</span>
-							<span class="info">{{todo.price}}元/{{todo.unitDesc}}</span>
+							<span class="info overit-hidden">{{todo.price}}元/{{todo.unitDesc}}</span>
 						</div>
 						<div class="detail-right">
 							<span class="tit">数量：</span>
-							<span class="info">{{todo.number}}</span>
+							<span class="info overit-hidden">{{todo.number}}</span>
 						</div>
 					</div>
 					<div class="list-item-row">
 						<div class="detail-right">
 							<span class="tit">规格：</span>
-							<span class="info">{{todo.spec}}</span>
+							<span class="info overit-hidden">{{todo.spec}}</span>
 						</div>
 						<div class="detail-right">
 							<span class="tit">单位：</span>
-							<span class="info">{{todo.unitDesc}}</span>
+							<span class="info overit-hidden">{{todo.unitDesc}}</span>
 						</div>
 					</div>
 					<div class="list-item-row last">
 						<span class="tit">供应商名称：</span>
-						<span class="info">{{todo.offerCustomerName}}</span>
+						<span class="info overit-hidden">{{todo.offerCustomerName}}</span>
 					</div>
 				</div>
 			</div>
@@ -256,6 +254,7 @@
 	<script>
 		//初始化上拉下拉
 		mui.init({
+			swipeBack:false,
 			pullRefresh: {
 				container: '#pullrefresh',
 				down: {
@@ -280,6 +279,7 @@
 		mui.plusReady(function() {
 			//获取当前页面对象
 			myOffer = plus.webview.currentWebview();
+			myOffer.setStyle({'popGesture':'none'});
 			vm.formData = formData;
 			setTimeout(function() {
 				//预加载我的报价详情页面
@@ -349,10 +349,10 @@
 					title: '未审核'
 				}, {
 					asc: 2,
-					title: '审核通过'
+					title: '通过'
 				}, {
 					asc: 3,
-					title: '审核未通过'
+					title: '未通过'
 				}],
 				select4: [{
 					asc: '',

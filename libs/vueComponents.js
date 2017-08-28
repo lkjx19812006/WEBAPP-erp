@@ -50,7 +50,7 @@
 	//注册全局select组件
 	Vue.component('my-select', {
 		template: '<div style="display: flex; flex-direction: column;justify-content: flex-start; position:relative; width: 100%; height: 100%;">' +
-			'<input readonly :placeholder="placeholder" ref="inputLabel" v-on:change="change" v-on:focus="focus" v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px;" />' +
+			'<input readonly :placeholder="placeholder" ref="inputLabel" v-on:change="change" v-tap="{func:focus}"  v-on:blur="blur" type="text" style="flex:1;height: 100%; width: 100%; margin: 0; padding: 0 10px; padding-right:20px;" />' +
 			'<input v-bind:value="value"  ref="input" style="display:none" />' +
 			'<span style="position: absolute; right: 8px;top:50%; margin-top: -4px; height: 0; width: 0; border: 6px solid transparent; border-top-color: #aaa;"></span>' +
 			'<div v-show="showList" style="position: absolute;top:100%; left: 0;z-index: 1;max-height:200px; box-shadow: 0 0 5px #333; border-radius:4px;overflow:hidden;overflow-y:auto; width: 100%; background-color: #e0e0e0; padding: 5px 0;margin-top: 5px;">' +

@@ -104,6 +104,7 @@
 		<script type="text/javascript" charset="utf-8">
 			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
 			mui.init({
+				swipeBack:false,
 				keyEventBind: {
 					backbutton: true,
 					menubutton: true
@@ -146,6 +147,7 @@
 			mui.plusReady(function() {
 				//获取当前窗口的WebviewObject对象
 				userInfo = plus.webview.currentWebview();
+				userInfo.setStyle({'popGesture':'none'});
 				if(common.getItem('language')) {
 					vm.language = common.getItem('language')
 				}
