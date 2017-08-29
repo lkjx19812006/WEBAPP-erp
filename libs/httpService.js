@@ -3,7 +3,7 @@
  * */
 (function(CryptoJS, window, mui, Vue) {
 	mui.init();
-	var evn = 'dev';//dev 测试环境 prod 生产环境
+	var evn = 'prod';//dev 测试环境 prod 生产环境
 	var common = {};
 	common.H5Share = evn === 'dev' ? 'http://192.168.1.142:81/htm5/#/needDetails/' : 'http://apps.yaocaimaimai.com/htm5/#/needDetails/'; //'http://apps.yaocaimaimai.com/htm5/#/needDetails/' http://192.168.1.142:81/htm5/#/needDetails/
 	common.commonUrl = evn === 'dev' ? 'http://192.168.1.142/front' : 'http://apps.yaocaimaimai.com/front/'; //http://192.168.1.142/front  http://apps.yaocaimaimai.com/front/
