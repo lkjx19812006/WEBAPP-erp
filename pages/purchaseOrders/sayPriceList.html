@@ -168,7 +168,6 @@
 				margin-left: 40%;
 				background-color: #007AFF;
 			}
-			
 		</style>
 	</head>
 
@@ -229,7 +228,7 @@
 		<script>
 			//			初始化上拉下拉
 			mui.init({
-				swipeBack:false,
+				swipeBack: false,
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
@@ -249,18 +248,16 @@
 				},
 			});
 
-			var searchBreed, needIntention;
+			var needIntention;
 			mui.plusReady(function() {
 				//获取当前页面对象
 				sayPriceList = plus.webview.currentWebview();
-				sayPriceList.setStyle({'popGesture':'none'});
+				sayPriceList.setStyle({
+					'popGesture': 'none'
+				});
 				vm.formData = formData;
 				setTimeout(function() {
-					//预加载品种搜索
-					searchBreed = mui.preload({
-						url: '../searchBreed.html',
-						id: 'searchBreed', //默认使用当前页面的url作为id
-					});
+					//预加载品种搜索					
 					//预加载详情页
 					needIntention = mui.preload({
 						url: './needIntention.html',
@@ -282,12 +279,17 @@
 				methods: {
 					//跳转搜索页面
 					jumpSearch: function() {
-						mui.fire(searchBreed, 'updateFormData', {
-							id: sayPriceList.id
-						})
-						setTimeout(function() {
-							searchBreed.show('slide-in-right', 300)
-						}, 300);
+						mui.openWindow({
+							url: '../searchBreed.html',
+							id: 'searchBreed', //默认使用当前页面的url作为id
+							extras: {
+								comeFrom: sayPriceList.id
+							},
+							createNew: true,
+							show: {
+								aniShow: 'slide-in-right'
+							}
+						})					
 					},
 					//获取列表是数据
 					getHttp: function(fn) {

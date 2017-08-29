@@ -112,30 +112,30 @@
 			<!--输入项目开始-->
 			<div class="detail">
 				<span class="tit">品种：</span>
-				<input class="breedName" disabled v-model="formData.breedName" type="text" placeholder="请选择品种" />
+				<input class="breedName" disabled v-model="formData.breedName" type="text" placeholder="请选择" />
 			</div>
 			<div class="detail">
 				<span class="tit">数量：</span>
-				<my-input style="flex: 0 0 auto; width: 100px;" v-model="formData.number" placeholder="请输入数量"></my-input>
+				<my-input style="flex: 0 0 auto; width: 100px;" v-model="formData.number" placeholder="请输入"></my-input>
 				<div class="unit-selected" style="height: 40px; width: 100%">
 					<my-select v-model="formData.unit" :options="unitList" placeholder="单位"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">单价：</span>
-				<my-input style="flex: 0 0 auto; width: 100px;" v-model="formData.price" placeholder="请输入单价"></my-input>
+				<my-input style="flex: 0 0 auto; width: 100px;" v-model="formData.price" placeholder="请输入"></my-input>
 				<span style="width: 100%; margin-left: 15px;">元/{{formData.unit | idToUnit}}</span>
 			</div>
 			<div class="detail">
 				<span class="tit">产地：</span>
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<my-select v-model="formData.location" :options="locationList" placeholder="请选择产地"></my-select>
+					<my-select v-model="formData.location" :options="locationList" placeholder="请选择"></my-select>
 				</div>
 			</div>
 			<div class="detail">
 				<span class="tit">规格：</span>
 				<div class="unit-selected" style="height: 40px; width: 100%">
-					<my-select v-model="formData.spec" :options="specList" placeholder="请选择规格"></my-select>
+					<my-select v-model="formData.spec" :options="specList" placeholder="请选择"></my-select>
 				</div>
 			</div>
 			<div class="detail">
@@ -144,7 +144,7 @@
 			</div>
 			<div class="detail">
 				<span class="tit">供应商名称：</span>
-				<input type="text" v-model="formData.customerName" placeholder="请选择供应商" readonly v-tap="{func: showSupplier}" />
+				<input type="text" v-model="formData.customerName" placeholder="请选择" readonly v-tap="{func: showSupplier}" />
 			</div>
 			<!--质量说明-->
 			<div class="detail block">
@@ -398,7 +398,7 @@
 						data: this.formData.quality,
 						required: true,
 						msg: '请选择或填写质量说明',
-					}];					
+					}];
 					//校验数量
 					if(Number(this.formData.number) === 0 || Number(this.formData.number) > 9999999) {
 						mui.toast('数量不能为0或者不能大于9999999', {
@@ -486,6 +486,8 @@
 		window.addEventListener("getIntentionInfo", function(event) {
 			//重置所有表单数据
 			vm.resetFormData();
+			//获取单位			
+			vm.getUnitHttp();
 			//滚动到页面头部
 			window.scrollTo(0, 0);
 			if(event.detail && typeof event.detail === 'object') {
@@ -497,7 +499,6 @@
 				vm.formData.location = params.location;
 				vm.formData.spec = params.spec;
 				vm.formData.number = params.number;
-				//获取单位
 				vm.getLocationList();
 			}
 		})

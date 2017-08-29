@@ -226,7 +226,7 @@
 			}
 		})
 
-		//注册全局时间 让其意向ID 可以发生改变
+		//注册全局 让其意向ID 可以发生改变
 		window.addEventListener('getDetailInfo', function(event) {
 			if(event.detail !== undefined) {
 				vm.intentionId = event.detail.intentionId;

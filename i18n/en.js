@@ -15,6 +15,8 @@
 			mobile: 'Mobile',
 			systemlogin: 'System login',
 			submit: 'Submit',
+			input_account: 'Please enter account',
+			input_password: 'Please enter password',
 			headline: 'Headline',
 			cost_price: 'Non-profit product cost',
 			historical_quotation: 'Historical quotation',

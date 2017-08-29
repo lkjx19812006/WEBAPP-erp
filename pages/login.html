@@ -99,12 +99,12 @@
 			<form class="mui-input-group">
 				<div class="mui-input-row">
 					<label>{{$t('message.userName')}}</label>
-					<input v-model='no' type="text" class="mui-input" :placeholder="$t('message.account_or_password')">
+					<input v-model='no' type="text" class="mui-input" :placeholder="$t('message.input_account')">
 					<span v-tap="{'func': clearNo}" v-show="no" class="mui-icon mui-icon-close"></span>
 				</div>
 				<div class="mui-input-row">
 					<label>{{$t('message.passWord')}}</label>
-					<input v-model='password' type="password" class="mui-input" :placeholder="$t('message.account_or_password')">
+					<input v-model='password' type="password" class="mui-input" :placeholder="$t('message.input_password')">
 					<span v-tap="{'func': clearPW}" v-show="password" class="mui-icon mui-icon-close"></span>
 				</div>
 			</form>
@@ -136,7 +136,7 @@
 		<script src="../libs/httpService.js"></script>
 		<script>
 			mui.init({
-				swipeBack:false,
+				swipeBack: false,
 				keyEventBind: {
 					backbutton: true,
 					menubutton: true
@@ -147,15 +147,18 @@
 				el: '#login',
 				i18n: window.i18n,
 				data: {
+					isMsgSuc: false,
 					isIos: false,
 					no: '',
 					password: '',
 					autoLogin: 'on',
 					language: 'zh',
 					clientId: '',
+					token: '',
 					showMask: false,
 					proTxt: '',
 					showPro: false
+
 				},
 				watch: {
 					language: function(newVal) {
@@ -197,7 +200,7 @@
 											aniShow: 'slide-in-right'
 										}
 									});
-								}, 200)
+								}, 300)
 							})
 						})
 					},
@@ -205,6 +208,7 @@
 					submit: function(fn) {
 						//获取客户端ID 传入后台绑定所用
 						this.clientId = plus.push.getClientInfo().clientid;
+						this.token = plus.push.getClientInfo().token
 						//校验通过 进行登录
 						if(common.validate([common.ruls.no(this.no), common.ruls.password(this.password)])) {
 							mui(this.$refs.submit).button('loading')
@@ -214,6 +218,9 @@
 									password: this.password,
 									clientId: this.clientId
 								}
+							}
+							if(plus.os.name === 'iOS') {
+								obj.biz_param.token = this.token;
 							}
 							var _self = this;
 							common.commonPost(common.commonUrl + common.apiUrl.login, obj, function(suc) {
@@ -259,8 +266,6 @@
 							common.commonPost(url, body, function(suc) {
 								window.localStorage.userInfo = JSON.stringify(suc.biz_result);
 								common.setItem('userInfo', window.localStorage.userInfo)
-								//获取用户信息完成后开启事件监听								
-								_self.addPush();
 								if(fn !== undefined && typeof fn === 'function') {
 									fn(suc);
 								}
@@ -272,43 +277,75 @@
 					//监听系统消息
 					addPush: function() {
 						var _self = this;
+						plus.push.addEventListener("click", function(msg) {
+							_self.isMsgSuc = true;
+							var result = JSON.parse(msg.payload);
+							if(!plus.webview.getWebviewById('home')) {
+								//打開home页面
+								mui.openWindow({
+									url: './home.html',
+									id: 'home',
+									show: {
+										aniShow: 'slide-in-right'
+									}
+								});
+								setTimeout(function() {
+									_self.msgHandler(result);
+								}, 1000)
+							} else {
+								_self.msgHandler(result);
+							}
+							//执行消息逻辑
+
+						}, false);
 						//消息监听完毕
 						plus.push.addEventListener("receive", function(msg) {
+							_self.isMsgSuc = true;
 							var result = JSON.parse(msg.payload);
-							switch(result.bizType) {
-								//意向信息跳转
-								case 'offer_task':
-									//执行登录
-									_self.submit(function() {
-										//登录成功获取用户信息
-										_self.getUserInfo();
-										//获取详情页数据
-										mui.fire(needIntention, 'getDetailInfo', {
-											intentionId: result.bizId
-										})
-										setTimeout(function() {
-											needIntention.show('slide-in-right', 300);
-										}, 300)
-									})
-									break;
-								default:
-									//暂时只有两种跳转 以后能加 跳转到报价详情
-									//执行登录
-									_self.submit(function() {
-										//登录成功获取用户信息
-										_self.getUserInfo();
-										//获取详情页数据
-										mui.fire(myOfferDetail, 'myOfferDetailId', {
-											id: result.bizId
-										})
-
-										setTimeout(function() {
-											myOfferDetail.show('slide-in-right', 300);
-										}, 300)
-									})
-									break;
+							if(!plus.webview.getWebviewById('home')) {
+								//打開home页面
+								mui.openWindow({
+									url: './home.html',
+									id: 'home',
+									show: {
+										aniShow: 'slide-in-right'
+									}
+								});
+								setTimeout(function() {
+									_self.msgHandler(result);
+								}, 1000)
+							} else {
+								_self.msgHandler(result);
 							}
+							//执行消息逻辑
+
 						}, false);
+					},
+					//执行消息内容
+					msgHandler: function(result) {
+						var _self = this;
+						switch(result.bizType) {
+							//意向信息跳转
+							case 'offer_task':
+								//执行登录
+								mui.fire(needIntention, 'getDetailInfo', {
+									intentionId: result.bizId
+								})
+								setTimeout(function() {
+									needIntention.show('slide-in-right', 300);
+								}, 300)
+								break;
+							default:
+								//暂时只有两种跳转 以后能加 跳转到报价详情
+								//执行登录
+								mui.fire(myOfferDetail, 'myOfferDetailId', {
+									id: result.bizId
+								})
+								setTimeout(function() {
+									myOfferDetail.show('slide-in-right', 300);
+								}, 300)
+								break;
+						}
 					},
 					//从后台拿取版本号 检查版本更新
 					validateVersion: function(fn) {
@@ -332,22 +369,25 @@
 			var login;
 			mui.plusReady(function() {
 				login = plus.webview.currentWebview();
-				login.setStyle({'popGesture':'none'});
+				login.setStyle({
+					'popGesture': 'none'
+				});
 				vm.no = common.getItem('no');
 				vm.password = common.getItem('password');
-				
-				//消息监听
-				vm.addPush();
+
 				//预加载意向详情页
 				needIntention = mui.preload({
 					url: './purchaseOrders/needIntention.html',
-					id: 'needIntention'
+					id: 'needIntention',
 				});
 				//预加载报价详情页
 				myOfferDetail = mui.preload({
 					url: './purchaseOrders/myOfferDetail.html',
 					id: 'myOfferDetail'
 				})
+
+				//消息监听
+				vm.addPush();
 
 				//获取当前设备系统的名称 
 				var deviceName;
@@ -406,11 +446,11 @@
 						vm.autoLogin = common.getItem('autoLogin');
 						vm.language = common.getItem('language') || vm.language;
 						if(vm.autoLogin === 'on') {
-							if(vm.no && vm.password) {
+							if(vm.no && vm.password && !vm.isMsgSuc) {
 								vm.submit(function() {
 									//登录成功获取用户信息
 									vm.getUserInfo(function() {
-										//获取用户信息成功 后 打开首页
+										//获取用户信息成功 后 打开首页										
 										setTimeout(function() {
 											mui.openWindow({
 												url: './home.html',
@@ -419,7 +459,7 @@
 													aniShow: 'slide-in-right'
 												}
 											});
-										}, 200)
+										}, 300)
 									})
 								})
 							}
@@ -447,7 +487,6 @@
 								plus.nativeUI.alert("下载更新失敗！");
 							}
 						});
-
 						dtask.addEventListener("statechanged", function() {
 							//计算百分比
 							//vm.proTxt = Math.floor((dtask.downloadedSize / dtask.totalSize) * 10000) / 100 + "%";
@@ -457,9 +496,8 @@
 						dtask.start();
 					} else if(deviceName === 'iOS') {
 						vm.showPro = false;
-						
 						//iOS打开地址下载
-						if(result.iosUrl) plus.runtime.openURL(result.iosUrl);
+						plus.runtime.openURL('https://www.pgyer.com/xT7u');
 					}
 				}
 
