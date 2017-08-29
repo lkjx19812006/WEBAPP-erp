@@ -57,7 +57,7 @@
 	<body>
 		<div class="mui-content" id="supplier" :class="{'offerPrice-isIos': isIos === true, 'offerPrice-isIos-no': isIos === false}">
 			<!--页面头部-->
-			<header class="mui-bar mui-bar-nav">
+			<header class="mui-bar mui-bar-nav" :class="{'position-isIos': isIos === true}">
 				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 				<input v-model="supplierName" v-on:input="inputValue" type="text" placeholder="请输入供应商名称" />
 				<span v-tap="{func: clear}" v-show="supplierName !== ''" class="mui-icon mui-icon-close"></span>
