@@ -168,7 +168,6 @@
 				margin-left: 40%;
 				background-color: #007AFF;
 			}
-			
 		</style>
 	</head>
 
@@ -226,10 +225,14 @@
 		<script src="../../libs/httpService.js"></script>
 		<script src="../../libs/vueComponents.js"></script>
 		<script src="./purchase.js"></script>
+		<script type="text/javascript">
+
+
+		</script>
 		<script>
 			//			初始化上拉下拉
 			mui.init({
-				swipeBack:false,
+				swipeBack: false,
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
@@ -253,7 +256,9 @@
 			mui.plusReady(function() {
 				//获取当前页面对象
 				sayPriceList = plus.webview.currentWebview();
-				sayPriceList.setStyle({'popGesture':'none'});
+				sayPriceList.setStyle({
+					'popGesture': 'none'
+				});
 				vm.formData = formData;
 				setTimeout(function() {
 					//预加载品种搜索
@@ -324,7 +329,6 @@
 							this.getHttp();
 						}
 					},
-
 					//跳转到详情页
 					jumpDetail: function(id) {
 						//获取详情页的数据后 传入到详情页 并显示详情页
