@@ -23,6 +23,9 @@
 			position: relative !important;
 		}
 		/*表单列表开始*/
+		/*#offerPrice .head{
+			position: static;
+		}*/
 		
 		#offerPrice .offerList .detail {
 			display: flex;
@@ -102,6 +105,7 @@
 </head>
 
 <body>
+
 	<div class="mui-content" id="offerPrice" :class="{'offerPrice-isIos':isIos === true, 'offerPrice-isIos-no': isIos === false}">
 		<header class="mui-bar mui-bar-nav" :class="{'position-isIos':isIos === true}">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
@@ -187,6 +191,7 @@
 		var offerPrice, supplier, offerSuc;
 		mui.plusReady(function() {
 			offerPrice = plus.webview.currentWebview();
+			vm.getUnitHttp();
 			offerPrice.setStyle({
 				'popGesture': 'none'
 			});
@@ -217,7 +222,7 @@
 					}
 				})
 			}, 300)
-			vm.getUnitHttp();
+
 		})
 		var vm = new Vue({
 			el: '#offerPrice',
@@ -444,6 +449,7 @@
 									break;
 							}
 						});
+
 					}
 
 				},
@@ -486,7 +492,6 @@
 		window.addEventListener("getIntentionInfo", function(event) {
 			//重置所有表单数据
 			vm.resetFormData();
-			//获取单位			
 			vm.getUnitHttp();
 			//滚动到页面头部
 			window.scrollTo(0, 0);

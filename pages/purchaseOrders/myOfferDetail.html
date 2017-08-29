@@ -182,9 +182,6 @@
 		mui.plusReady(function() {
 			myOfferDetail = plus.webview.currentWebview(); //获取当前页面对象
 			myOfferDetail.setStyle({'popGesture':'none'});
-			if(myOfferDetail.offerId) {
-				vm.getHttp()
-			}
 		})
 
 		var vm = new Vue({
